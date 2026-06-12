@@ -1,0 +1,237 @@
+KIVORA MASTER SITEMAP & USER FLOW BLUEPRINT v2.0
+
+────────────────────────────────────────────────────────────
+PUBLIC WEBSITE
+────────────────────────────────────────────────────────────
+/
+├── Home
+├── About Kivora
+├── Learning Worlds
+├── Activities
+├── Games
+├── Stories
+├── Videos
+├── Coloring Hub
+├── Printables
+├── Pricing
+├── Schools
+├── Safety Center
+├── Help Center
+├── Blog
+└── Contact
+
+────────────────────────────────────────────────────────────
+AUTH
+────────────────────────────────────────────────────────────
+/auth
+├── Login
+├── Register
+├── Forgot Password
+└── Verify Email
+
+Note: Child accounts have no direct login.
+      Children access the portal via parent/teacher session.
+
+────────────────────────────────────────────────────────────
+CHILD PORTAL
+────────────────────────────────────────────────────────────
+/child
+├── Dashboard
+├── My Learning Journey
+├── Learning Worlds
+├── Learn
+│   ├── Literacy
+│   ├── Math
+│   ├── Science
+│   ├── Coding
+│   └── Life Skills
+├── Play
+├── Read
+├── Watch
+├── Color
+├── Create
+├── Explore
+│   └── Seasonal                    (/child/explore/seasonal)
+├── Rewards
+├── Achievements
+├── Certificates
+├── Avatar Center
+├── My Portfolio
+└── Settings
+    └── Downloads                   (/child/settings/downloads)
+
+────────────────────────────────────────────────────────────
+PARENT PORTAL
+────────────────────────────────────────────────────────────
+/parent
+├── Dashboard
+├── Children
+├── Reports
+├── Goals
+├── Screen Time Controls
+├── Content Permissions
+├── AI Permissions
+├── Reward Management
+├── Notifications
+├── Subscription
+├── Resources                       (/parent/resources)
+│   ├── Parenting Guides
+│   ├── Learning Tips
+│   ├── Child Development
+│   └── Activity Ideas
+└── Settings
+    └── Accessibility               (/parent/settings/accessibility)
+        (Special Education profile per child)
+
+────────────────────────────────────────────────────────────
+TEACHER PORTAL
+────────────────────────────────────────────────────────────
+/teacher
+├── Dashboard
+├── Classrooms
+├── Students
+├── Assignments
+├── Lesson Plans
+├── Classroom Challenges
+├── Learning Resources              (/teacher/resources)
+│   ├── Lesson Plans Library
+│   ├── Assessments
+│   ├── Worksheets
+│   └── Classroom Activities
+├── Progress Analytics
+├── Skill Gap Analysis
+├── Reports
+├── Parent Reports
+└── Settings
+
+────────────────────────────────────────────────────────────
+SCHOOL PORTAL
+────────────────────────────────────────────────────────────
+/school
+├── Dashboard
+├── Teachers
+├── Students
+├── Classrooms
+├── Analytics
+├── Curriculum
+├── Licenses
+├── Billing
+└── Settings
+
+────────────────────────────────────────────────────────────
+ADMIN PORTAL
+────────────────────────────────────────────────────────────
+/admin
+├── Dashboard
+├── User Management
+├── Content Management
+├── Learning Management
+├── Rewards
+├── Analytics
+├── Moderation
+└── System
+
+────────────────────────────────────────────────────────────
+LEARNING WORLDS
+────────────────────────────────────────────────────────────
+All 9 worlds — phased by launch schedule (see Content
+Phasing Roadmap in Master Spec).
+
+Phase 1 (MVP Launch):
+  Alphabet Island
+  Math Mountain
+  Story Cove
+  Creativity Kingdom
+
+Phase 2 (Growth):
+  Science Safari
+  Music Meadow
+  Brain Game Galaxy
+  Life Skills Village
+
+Phase 2 (Growth, late):
+  Coding City
+
+────────────────────────────────────────────────────────────
+SETTINGS (GLOBAL)
+────────────────────────────────────────────────────────────
+/settings
+└── Language                        (/settings/language)
+    Available to parent and teacher portals.
+    Child language follows parent setting by default;
+    override available with parent permission.
+
+────────────────────────────────────────────────────────────
+CHILD USER FLOW
+────────────────────────────────────────────────────────────
+Parent Registers
+→ Verifies Email
+→ Creates Child Profile
+→ Sets Accessibility Preferences (optional)
+→ Child Selects Avatar
+→ Placement Assessment (optional, age 5+)
+→ Choose Interests
+→ Personalized Dashboard
+→ Daily Missions
+→ Activities
+→ Earn XP & Badges
+→ Unlock Rewards & Cosmetics
+→ Advance Skill Levels
+→ Earn Certificates
+→ Master Learning Path
+
+────────────────────────────────────────────────────────────
+PARENT USER FLOW
+────────────────────────────────────────────────────────────
+Register
+→ Verify Email
+→ Create Child Profiles
+→ Set Accessibility Preferences
+→ Configure Controls
+→ Monitor Learning
+→ Receive Weekly Reports
+→ Adjust Learning Goals
+→ Renew Subscription
+
+────────────────────────────────────────────────────────────
+TEACHER USER FLOW
+────────────────────────────────────────────────────────────
+Register
+→ Verify Email
+→ Create Classroom
+→ Add Students
+→ Assign Activities & Challenges
+→ Track Progress
+→ Generate Reports
+→ Share Parent Reports
+
+────────────────────────────────────────────────────────────
+CONTENT CLASSIFICATION MODEL
+────────────────────────────────────────────────────────────
+title
+type
+subject
+world
+ageGroup
+grade
+difficulty
+duration
+theme
+skills
+learningObjectives
+rewardPoints
+
+────────────────────────────────────────────────────────────
+LAUNCH CONTENT TARGETS (PHASED)
+────────────────────────────────────────────────────────────
+                Phase 1   Phase 2   Phase 3 (Final)
+Activities         300       900        1,500+
+Games               80       280          500+
+Stories            100       300          500+
+Videos              60       160          300+
+Coloring Pages     200       600        1,000+
+Printables         150       550        1,000+
+Crafts              40       140          300+
+Quizzes             80       280          500+
+Lesson Plans        20        60          100+
+Learning Paths       8        26           50+
