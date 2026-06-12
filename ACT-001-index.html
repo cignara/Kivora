@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ACT-001 — Counting Coconuts: 1 to 10 | Kivora Content Index</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;800&family=Inter:wght@400;500;600&display=swap');
+
+  :root {
+    --sand:       #FDF6E3;
+    --ocean:      #2AB8C8;
+    --ocean-deep: #1A7F8E;
+    --coral:      #FF6B5B;
+    --coconut:    #5C3B1E;
+    --leaf:       #3AAA5F;
+    --sky:        #E8F7FA;
+    --ink:        #1E293B;
+    --mist:       #94A3B8;
+    --approved:   #22C55E;
+    --pending:    #F59E0B;
+    --missing:    #EF4444;
+    --white:      #FFFFFF;
+    --card-bg:    #FFFDF7;
+    --divider:    #E2D9C8;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--sand);
+    color: var(--ink);
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: linear-gradient(135deg, var(--ocean-deep) 0%, var(--ocean) 60%, #5DD6E4 100%);
+    padding: 36px 48px 30px;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 120'%3E%3Cpath d='M0 60 Q100 20 200 60 Q300 100 400 60 Q500 20 600 60 Q700 100 800 60 L800 120 L0 120Z' fill='rgba(255,255,255,0.06)'/%3E%3C/svg%3E") bottom / cover no-repeat;
+    pointer-events: none;
+  }
+  .header-eyebrow {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.65);
+    margin-bottom: 8px;
+  }
+  header h1 {
+    font-family: 'Baloo 2', cursive;
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--white);
+    line-height: 1.15;
+    margin-bottom: 6px;
+  }
+  header h1 span {
+    color: #FFE066;
+  }
+  .header-sub {
+    font-size: 14px;
+    color: rgba(255,255,255,0.78);
+    font-weight: 400;
+    margin-bottom: 20px;
+  }
+  .header-badges {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    background: rgba(255,255,255,0.15);
+    color: var(--white);
+    border: 1px solid rgba(255,255,255,0.25);
+  }
+  .badge.approved { background: rgba(34,197,94,0.25); border-color: rgba(34,197,94,0.5); }
+  .badge.world { background: rgba(255,224,102,0.2); color: #FFE066; border-color: rgba(255,224,102,0.35); }
+
+  /* ── LAYOUT ── */
+  main {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 36px 24px 64px;
+  }
+
+  /* ── METADATA GRID ── */
+  .meta-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+  .meta-card {
+    background: var(--card-bg);
+    border: 1px solid var(--divider);
+    border-radius: 10px;
+    padding: 14px 16px;
+  }
+  .meta-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--mist);
+    margin-bottom: 4px;
+  }
+  .meta-value {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .meta-value.tag {
+    display: inline-block;
+    background: var(--sky);
+    color: var(--ocean-deep);
+    border-radius: 4px;
+    padding: 1px 6px;
+    font-size: 12px;
+  }
+  .reward-row {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+  .reward-chip {
+    font-size: 12px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 12px;
+  }
+  .xp  { background: #EEF2FF; color: #4F46E5; }
+  .coin { background: #FFF8E1; color: #B45309; }
+  .gem  { background: #F0FFF4; color: #16A34A; }
+
+  /* ── SECTION HEADER ── */
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 32px 0 16px;
+  }
+  .section-icon {
+    width: 32px; height: 32px;
+    background: var(--ocean);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+  .section-header h2 {
+    font-family: 'Baloo 2', cursive;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .section-header .count-pill {
+    margin-left: auto;
+    font-size: 11px;
+    font-weight: 600;
+    background: var(--ocean);
+    color: white;
+    padding: 2px 9px;
+    border-radius: 12px;
+  }
+
+  /* ── PHASE TIMELINE ── */
+  .phase-track {
+    background: var(--card-bg);
+    border: 1px solid var(--divider);
+    border-radius: 14px;
+    padding: 20px;
+    margin-bottom: 32px;
+  }
+  .phase-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 12px 0;
+    border-bottom: 1px dashed var(--divider);
+  }
+  .phase-row:last-child { border-bottom: none; }
+  .phase-num {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: var(--ocean);
+    color: white;
+    font-family: 'Baloo 2', cursive;
+    font-size: 15px;
+    font-weight: 800;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .phase-body {}
+  .phase-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 3px;
+  }
+  .phase-desc {
+    font-size: 13px;
+    color: #475569;
+    line-height: 1.55;
+  }
+  .phase-meta {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 6px;
+  }
+  .phase-chip {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 10px;
+    background: var(--sky);
+    color: var(--ocean-deep);
+  }
+
+  /* ── INTERACTIONS TABLE ── */
+  .interactions-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--card-bg);
+    border: 1px solid var(--divider);
+    border-radius: 14px;
+    overflow: hidden;
+    margin-bottom: 32px;
+    font-size: 13px;
+  }
+  .interactions-table thead {
+    background: linear-gradient(90deg, var(--ocean-deep), var(--ocean));
+  }
+  .interactions-table thead th {
+    color: white;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    padding: 11px 14px;
+    text-align: left;
+  }
+  .interactions-table tbody tr:nth-child(even) { background: #F8F5EF; }
+  .interactions-table tbody tr:hover { background: #F0EDE5; }
+  .interactions-table td {
+    padding: 11px 14px;
+    border-bottom: 1px solid var(--divider);
+    vertical-align: top;
+    line-height: 1.5;
+    color: var(--ink);
+  }
+  .interactions-table tbody tr:last-child td { border-bottom: none; }
+  .int-num {
+    font-family: 'Baloo 2', cursive;
+    font-weight: 800;
+    color: var(--ocean-deep);
+    font-size: 14px;
+  }
+  .int-type {
+    display: inline-block;
+    background: #EDF7F9;
+    color: var(--ocean-deep);
+    border-radius: 5px;
+    padding: 1px 7px;
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  /* ── SKILLS TAGS ── */
+  .skills-block {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 32px;
+  }
+  .skill-tag {
+    background: var(--card-bg);
+    border: 1px solid var(--divider);
+    border-radius: 8px;
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--coconut);
+  }
+
+  /* ── ACCESSIBILITY TABLE ── */
+  .a11y-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--card-bg);
+    border: 1px solid var(--divider);
+    border-radius: 14px;
+    overflow: hidden;
+    margin-bottom: 32px;
+    font-size: 13px;
+  }
+  .a11y-table thead {
+    background: #3AAA5F;
+  }
+  .a11y-table thead th {
+    color: white;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    padding: 10px 14px;
+    text-align: left;
+  }
+  .a11y-table tbody tr:nth-child(even) { background: #F3FBF5; }
+  .a11y-table td {
+    padding: 11px 14px;
+    border-bottom: 1px solid var(--divider);
+    vertical-align: top;
+    line-height: 1.55;
+    color: var(--ink);
+  }
+  .a11y-table tbody tr:last-child td { border-bottom: none; }
+  .a11y-profile {
+    font-weight: 700;
+    color: var(--leaf);
+  }
+
+  /* ── ASSET CHECKLIST ── */
+  .asset-list {
+    background: var(--card-bg);
+    border: 1px solid var(--divider);
+    border-radius: 14px;
+    overflow: hidden;
+    margin-bottom: 32px;
+  }
+  .asset-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 16px;
+    border-bottom: 1px solid var(--divider);
+    font-size: 13px;
+  }
+  .asset-row:last-child { border-bottom: none; }
+  .status-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .dot-ok      { background: var(--approved); }
+  .dot-pending { background: var(--pending); }
+  .dot-missing { background: var(--missing); }
+  .asset-name { font-weight: 600; color: var(--ink); flex: 1; }
+  .asset-type { color: var(--mist); font-size: 12px; }
+  .asset-note { font-size: 11px; color: #EF4444; font-style: italic; margin-left: auto; }
+
+  /* ── CHECKLIST ── */
+  .checklist {
+    background: var(--card-bg);
+    border: 1px solid var(--divider);
+    border-radius: 14px;
+    padding: 16px 20px;
+    margin-bottom: 32px;
+  }
+  .check-group { margin-bottom: 16px; }
+  .check-group-title {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--mist);
+    margin-bottom: 8px;
+  }
+  .check-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 4px 0;
+    font-size: 13px;
+    color: var(--ink);
+    line-height: 1.5;
+  }
+  .check-box {
+    width: 16px; height: 16px;
+    border-radius: 4px;
+    background: var(--approved);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .check-box::after {
+    content: '✓';
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    text-align: center;
+    padding: 20px;
+    font-size: 12px;
+    color: var(--mist);
+    border-top: 1px solid var(--divider);
+    margin-top: 40px;
+  }
+  footer strong { color: var(--ocean-deep); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 640px) {
+    header { padding: 24px 20px 20px; }
+    header h1 { font-size: 22px; }
+    main { padding: 24px 16px 48px; }
+    .meta-grid { grid-template-columns: 1fr 1fr; }
+    .interactions-table thead th:nth-child(4),
+    .interactions-table td:nth-child(4) { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-eyebrow">Kivora · Content Index · Initial Review</div>
+  <h1><span>ACT-001</span> — Counting Coconuts: 1 to 10</h1>
+  <div class="header-sub">Math Mountain · Pre-K · Easy · ~8 minutes · Status: Approved</div>
+  <div class="header-badges">
+    <span class="badge approved">✅ Approved</span>
+    <span class="badge world">🏔 Math Mountain</span>
+    <span class="badge">🎒 Pre-K</span>
+    <span class="badge">⏱ 8 min</span>
+    <span class="badge">🔊 Audio-First</span>
+    <span class="badge">🦊 KV-003 Primary</span>
+  </div>
+</header>
+
+<main>
+
+  <!-- METADATA GRID -->
+  <div class="section-header">
+    <div class="section-icon">📋</div>
+    <h2>Activity Metadata</h2>
+  </div>
+
+  <div class="meta-grid">
+    <div class="meta-card">
+      <div class="meta-label">Activity ID</div>
+      <div class="meta-value">ACT-001</div>
+    </div>
+    <div class="meta-card">
+      <div class="meta-label">Subject</div>
+      <div class="meta-value"><span class="tag">math</span></div>
+    </div>
+    <div class="meta-card">
+      <div class="meta-label">World</div>
+      <div class="meta-value"><span class="tag">math-mountain</span></div>
+    </div>
+    <div class="meta-card">
+      <div class="meta-label">Age Group</div>
+      <div class="meta-value">Pre-K (3–5)</div>
+    </div>
+    <div class="meta-card">
+      <div class="meta-label">Difficulty</div>
+      <div class="meta-value"><span class="tag">easy</span></div>
+    </div>
+    <div class="meta-card">
+      <div class="meta-label">Duration</div>
+      <div class="meta-value">8 minutes</div>
+    </div>
+    <div class="meta-card">
+      <div class="meta-label">Theme</div>
+      <div class="meta-value"><span class="tag">tropical-beach</span></div>
+    </div>
+    <div class="meta-card">
+      <div class="meta-label">Rewards</div>
+      <div class="reward-row">
+        <span class="reward-chip xp">10 XP</span>
+        <span class="reward-chip coin">5 🪙</span>
+        <span class="reward-chip gem">0 💎</span>
+      </div>
+    </div>
+    <div class="meta-card">
+      <div class="meta-label">Kivi Asset</div>
+      <div class="meta-value">KV-003 (primary)</div>
+    </div>
+    <div class="meta-card">
+      <div class="meta-label">Audio Required</div>
+      <div class="meta-value">Yes</div>
+    </div>
+    <div class="meta-card">
+      <div class="meta-label">Offline</div>
+      <div class="meta-value">No</div>
+    </div>
+    <div class="meta-card">
+      <div class="meta-label">Status</div>
+      <div class="meta-value" style="color:var(--approved)">✅ Approved</div>
+    </div>
+  </div>
+
+  <!-- LEARNING OBJECTIVE -->
+  <div class="section-header">
+    <div class="section-icon">🎯</div>
+    <h2>Learning Objective</h2>
+  </div>
+  <div style="background:var(--card-bg);border:1px solid var(--divider);border-radius:14px;padding:18px 20px;margin-bottom:32px;">
+    <div style="font-size:15px;font-weight:600;color:var(--ink);line-height:1.55;">
+      Count objects from 1 to 10 by touching each one
+    </div>
+    <div style="margin-top:10px;font-size:12px;color:var(--mist);">Next suggested activity → <strong style="color:var(--ocean-deep)">ACT-002: Number Party 1–10</strong></div>
+  </div>
+
+  <!-- SKILLS -->
+  <div class="section-header">
+    <div class="section-icon">🧠</div>
+    <h2>Skills Covered</h2>
+  </div>
+  <div class="skills-block">
+    <span class="skill-tag">counting</span>
+    <span class="skill-tag">number-recognition</span>
+    <span class="skill-tag">one-to-one correspondence</span>
+  </div>
+
+  <!-- PHASE TIMELINE -->
+  <div class="section-header">
+    <div class="section-icon">🗺</div>
+    <h2>Activity Phases</h2>
+    <span class="count-pill">4 phases</span>
+  </div>
+  <div class="phase-track">
+    <div class="phase-row">
+      <div class="phase-num">1</div>
+      <div class="phase-body">
+        <div class="phase-title">Hook</div>
+        <div class="phase-desc">Kivi arrives on a tropical beach carrying a basket. Sets scene, no text on screen. Kivi speech ≤ 12 words. Introduces the counting challenge.</div>
+        <div class="phase-meta">
+          <span class="phase-chip">30 seconds</span>
+          <span class="phase-chip">No score</span>
+          <span class="phase-chip">KV-002</span>
+        </div>
+      </div>
+    </div>
+    <div class="phase-row">
+      <div class="phase-num">2</div>
+      <div class="phase-body">
+        <div class="phase-title">Warm-Up</div>
+        <div class="phase-desc">2 unscored interactions. Crabs (count to 3), then starfish (count to 5). Score NOT recorded. No penalty for tapping same object twice — sparkle and replay.</div>
+        <div class="phase-meta">
+          <span class="phase-chip">2 minutes</span>
+          <span class="phase-chip">2 interactions</span>
+          <span class="phase-chip">Score not recorded</span>
+          <span class="phase-chip">KV-005</span>
+        </div>
+      </div>
+    </div>
+    <div class="phase-row">
+      <div class="phase-num">3</div>
+      <div class="phase-body">
+        <div class="phase-title">Core Learning</div>
+        <div class="phase-desc">10 scored interactions. Counts 1→10, introduces comparison ("which has more?"), row layout (Int 6, pre-number-line), 2×4 grid (Int 8, pre-addition), and numeral card matching (Int 9). Score hidden during activity.</div>
+        <div class="phase-meta">
+          <span class="phase-chip">8 minutes</span>
+          <span class="phase-chip">10 interactions</span>
+          <span class="phase-chip">Hint on 2nd wrong</span>
+          <span class="phase-chip">No timers</span>
+        </div>
+      </div>
+    </div>
+    <div class="phase-row">
+      <div class="phase-num">4</div>
+      <div class="phase-body">
+        <div class="phase-title">Wrap-Up</div>
+        <div class="phase-desc">Full celebration moment. XP + Coins displayed. 1–3 stars calculated server-side. Parent report auto-generated. Next activity suggested.</div>
+        <div class="phase-meta">
+          <span class="phase-chip">60 seconds</span>
+          <span class="phase-chip">KV-004 celebrate</span>
+          <span class="phase-chip">+5 bonus coins for perfect</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INTERACTIONS TABLE -->
+  <div class="section-header">
+    <div class="section-icon">🎮</div>
+    <h2>Core Learning Interactions</h2>
+    <span class="count-pill">10 interactions</span>
+  </div>
+  <table class="interactions-table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Title</th>
+        <th>Type</th>
+        <th>Count / Concept</th>
+        <th>Progressive Concept</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="int-num">1</span></td>
+        <td>Count 1 coconut</td>
+        <td><span class="int-type">tap-to-select</span></td>
+        <td>1 object</td>
+        <td>—</td>
+      </tr>
+      <tr>
+        <td><span class="int-num">2</span></td>
+        <td>Count 2 coconuts</td>
+        <td><span class="int-type">sequential tap</span></td>
+        <td>2 objects</td>
+        <td>—</td>
+      </tr>
+      <tr>
+        <td><span class="int-num">3</span></td>
+        <td>Count 3 coconuts</td>
+        <td><span class="int-type">sequential tap</span></td>
+        <td>3 objects</td>
+        <td>Scatter layout</td>
+      </tr>
+      <tr>
+        <td><span class="int-num">4</span></td>
+        <td>Which group has 4?</td>
+        <td><span class="int-type">choose group</span></td>
+        <td>4 vs 2</td>
+        <td>Group comparison</td>
+      </tr>
+      <tr>
+        <td><span class="int-num">5</span></td>
+        <td>Find 5 hidden coconuts</td>
+        <td><span class="int-type">scatter search</span></td>
+        <td>5 objects, wider scene</td>
+        <td>Visual scanning</td>
+      </tr>
+      <tr>
+        <td><span class="int-num">6</span></td>
+        <td>Count 6 in a row</td>
+        <td><span class="int-type">sequential tap</span></td>
+        <td>6 objects, row layout</td>
+        <td>Row / pre-number-line</td>
+      </tr>
+      <tr>
+        <td><span class="int-num">7</span></td>
+        <td>Which group has MORE?</td>
+        <td><span class="int-type">comparison</span></td>
+        <td>4 vs 7</td>
+        <td>Quantity comparison</td>
+      </tr>
+      <tr>
+        <td><span class="int-num">8</span></td>
+        <td>Count 8 in two rows</td>
+        <td><span class="int-type">sequential tap</span></td>
+        <td>8 in 2×4 grid</td>
+        <td>Grouped rows / pre-addition</td>
+      </tr>
+      <tr>
+        <td><span class="int-num">9</span></td>
+        <td>Match numeral card</td>
+        <td><span class="int-type">count → select card</span></td>
+        <td>9 objects → cards: 7 / 9 / 11</td>
+        <td>Numeral recognition</td>
+      </tr>
+      <tr>
+        <td><span class="int-num">10</span></td>
+        <td>Grand Finale: Count ALL 10</td>
+        <td><span class="int-type">sequential tap</span></td>
+        <td>10 objects, full celebration</td>
+        <td>Milestone climax</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ACCESSIBILITY -->
+  <div class="section-header">
+    <div class="section-icon">♿</div>
+    <h2>Accessibility Accommodations</h2>
+  </div>
+  <table class="a11y-table">
+    <thead>
+      <tr>
+        <th>Profile</th>
+        <th>Accommodation</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="a11y-profile">Toddler (2–3)</span></td>
+        <td>All tap targets ≥ 64px, audio-first — works for mature 3-year-olds with parent present</td>
+      </tr>
+      <tr>
+        <td><span class="a11y-profile">ADHD</span></td>
+        <td>Short-segment mode: deliver Int 1–5 only (5 min), celebrate at Int 5, return for 6–10</td>
+      </tr>
+      <tr>
+        <td><span class="a11y-profile">Dyslexia</span></td>
+        <td>Zero reading required throughout. Only numerals: 3 large cards in Int 9 (high contrast + spoken aloud)</td>
+      </tr>
+      <tr>
+        <td><span class="a11y-profile">Fine Motor</span></td>
+        <td>Single taps only — no drag. Generous hit detection radius. All targets ≥ 64px</td>
+      </tr>
+      <tr>
+        <td><span class="a11y-profile">Visual</span></td>
+        <td>High contrast: coconuts outlined #1E293B on light sand. Beach background desaturated when toggle on</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ASSET CHECKLIST -->
+  <div class="section-header">
+    <div class="section-icon">🎨</div>
+    <h2>Asset Requirements</h2>
+  </div>
+  <div class="asset-list">
+    <div class="asset-row">
+      <div class="status-dot dot-pending"></div>
+      <div class="asset-name">Beach background illustration</div>
+      <div class="asset-type">Illustration</div>
+      <div class="asset-note">Art team TBC</div>
+    </div>
+    <div class="asset-row">
+      <div class="status-dot dot-pending"></div>
+      <div class="asset-name">Coconut sprite sheet (10 sprites, 2 states each)</div>
+      <div class="asset-type">Sprite sheet</div>
+    </div>
+    <div class="asset-row">
+      <div class="status-dot dot-pending"></div>
+      <div class="asset-name">Crab animated sprites ×3 (Warm-Up 1)</div>
+      <div class="asset-type">Animated sprite</div>
+    </div>
+    <div class="asset-row">
+      <div class="status-dot dot-pending"></div>
+      <div class="asset-name">Starfish sprites ×5 (Warm-Up 2)</div>
+      <div class="asset-type">Sprite</div>
+    </div>
+    <div class="asset-row">
+      <div class="status-dot dot-pending"></div>
+      <div class="asset-name">Wooden shelf element (Interaction 6)</div>
+      <div class="asset-type">BG element (static)</div>
+    </div>
+    <div class="asset-row">
+      <div class="status-dot dot-pending"></div>
+      <div class="asset-name">Number cards: 7, 9, 11 in Baloo 2 800 (Interaction 9)</div>
+      <div class="asset-type">UI element</div>
+    </div>
+    <div class="asset-row">
+      <div class="status-dot dot-missing"></div>
+      <div class="asset-name">Kivi SVG: KV-002, KV-003, KV-004, KV-005, KV-006</div>
+      <div class="asset-type">SVG (×5 states)</div>
+      <div class="asset-note">⚠ Pending illustrator commission</div>
+    </div>
+    <div class="asset-row">
+      <div class="status-dot dot-pending"></div>
+      <div class="asset-name">Counting SFX — voice 1–10 (one number per tap)</div>
+      <div class="asset-type">Audio</div>
+    </div>
+    <div class="asset-row">
+      <div class="status-dot dot-pending"></div>
+      <div class="asset-name">Celebration music (2-second swell, Interaction 10)</div>
+      <div class="asset-type">Audio (SFX library)</div>
+    </div>
+  </div>
+
+  <!-- PRE-PUBLISH CHECKLIST -->
+  <div class="section-header">
+    <div class="section-icon">✅</div>
+    <h2>Pre-Publish Checklist</h2>
+  </div>
+  <div class="checklist">
+    <div class="check-group">
+      <div class="check-group-title">Metadata</div>
+      <div class="check-item"><div class="check-box"></div>ID assigned: ACT-001</div>
+      <div class="check-item"><div class="check-box"></div>Title is fun and world-themed</div>
+      <div class="check-item"><div class="check-box"></div>Learning objective is one string starting with a verb</div>
+      <div class="check-item"><div class="check-box"></div>Reward values correct for Easy tier (10 XP, 5 coins, 0 gems)</div>
+      <div class="check-item"><div class="check-box"></div>kiviAsset: KV-003 specified for primary celebration</div>
+      <div class="check-item"><div class="check-box"></div>Duration: 8 min ≤ 10-minute ceiling</div>
+      <div class="check-item"><div class="check-box"></div>audioRequired: true</div>
+    </div>
+    <div class="check-group">
+      <div class="check-group-title">Content</div>
+      <div class="check-item"><div class="check-box"></div>Hook has vivid scene description, Kivi speech ≤ 12 words</div>
+      <div class="check-item"><div class="check-box"></div>Warm-Up: exactly 2 interactions, score not recorded</div>
+      <div class="check-item"><div class="check-box"></div>Core Learning: exactly 10 interactions</div>
+      <div class="check-item"><div class="check-box"></div>Hint appears on 2nd wrong attempt (not 1st, not withheld)</div>
+      <div class="check-item"><div class="check-box"></div>Wrap-Up shows XP + Coins + Kivi celebration</div>
+      <div class="check-item"><div class="check-box"></div>No countdown timers anywhere</div>
+      <div class="check-item"><div class="check-box"></div>Score hidden during activity — wrap-up only</div>
+      <div class="check-item"><div class="check-box"></div>No FOMO/scarcity/pressure language</div>
+    </div>
+    <div class="check-group">
+      <div class="check-group-title">Accessibility</div>
+      <div class="check-item"><div class="check-box"></div>ADHD short-segment mode defined (Int 1–5)</div>
+      <div class="check-item"><div class="check-box"></div>No reading required — fully audio-first</div>
+      <div class="check-item"><div class="check-box"></div>All tap targets ≥ 64px</div>
+      <div class="check-item"><div class="check-box"></div>High contrast accommodation noted</div>
+      <div class="check-item"><div class="check-box"></div>Fine motor accommodation (generous tap radius) specified</div>
+    </div>
+  </div>
+
+  <!-- REVIEWER NOTE -->
+  <div style="background:#F0FFF4;border:1px solid #BBF7D0;border-radius:14px;padding:18px 20px;margin-bottom:32px;">
+    <div style="font-size:13px;font-weight:700;color:#15803D;margin-bottom:6px;">📝 Reviewer Sign-Off</div>
+    <div style="font-size:13px;color:#166534;line-height:1.6;">
+      Status: <strong>✅ Approved as canonical reference sample.</strong><br>
+      This activity serves as the canonical example for all subsequent Easy-tier Math Mountain activities. reviewedBy field is still blank — assign before bulk production begins.
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  Generated for <strong>Kivora</strong> · ACT-001 Initial Review · June 2026 · kivora.lk
+</footer>
+
+</body>
+</html>
