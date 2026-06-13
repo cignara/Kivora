@@ -1,137 +1,0 @@
-KIVORA
-Design Handoff Package
-v1.0  |  Phase 1 MVP
-For Web Designer Use
-
-1. Design Brief
-This brief defines the visual identity, tone, and experience goals for Kivora. Every design decision should be measured against this document before moving to production.
-
-1.1  Platform Identity
-Platform nameKivoraTaglineWhere Kids Love to Learn & PlayMascotKivi the Fox — friendly, curious, energetic guideTarget usersChildren aged 2–11 (primary); Parents & Teachers (secondary)Tone of voiceWarm, playful, encouraging — never condescending or pressuringEmotional goalA child should feel excited, safe, and proud when using Kivora
-1.2  Visual Tone
-Kivora sits between the soft warmth of Duolingo and the structured clarity of Khan Academy Kids. It should feel adventurous but never chaotic. Think: theme park map, not a cluttered toy store.
-
-Reference benchmarks
-PlatformBorrowAvoidDuolingo KidsWarm palette, reward loopsStreak anxiety, loss framingKhan Academy KidsStructured layout, clear hierarchyFlat, corporate feelStarfallAudio-first simplicity for toddlersDated visual stylePBS KidsCharacter-led warmth, safe feelOverly cluttered home screen
-1.3  Colour Palette
-TokenHexRoleUsagekivora-purple#7C3AEDPrimary brandCTAs, nav, badges, headingskivora-orange#FF6B35Energy / actionButtons, highlights, Kivi accentskivora-teal#0EA5E9ExplorationLearning Worlds, links, info stateskivora-green#22C55ESuccess / growthProgress bars, correct answers, XPkivora-yellow#FFD93DDelight / rewardStars, coins, shimmer, streakskivora-pink#FF4E8BCreativityCreativity Kingdom, portfolio, artkivora-indigo#4F46E5Depth / learningSecondary CTA, coding, brain gamesSlate-800#1E293BBody textAll primary text on light backgroundsSlate-100#F1F5F9SurfacePage backgrounds, card fills
-Non-negotiable rule:
-No dark backgrounds in the child portal. All child-facing UI uses light surfaces. Dark mode applies to parent/teacher portals only.
-1.4  Typography
-RoleFontWeightUsed forDisplayBaloo 2800 (ExtraBold)H1, H2, hero text, world names, mascot speechBodyNunito400, 600, 700All body copy, labels, descriptionsUI / NumbersNunito800, 900Stats, XP counts, score displays
-1.5  Animation & Motion Rules
-• All page transitions: fade-up (0.6s ease-out)
-• Cards: translateY(-6px) + scale(1.02) on hover, 0.25s
-• Mascot Kivi: float animation (translateY 0 ? -12px, 3s loop)
-• Reward unlock: wiggle + shimmer + scale burst
-• Progress bars: fill with 1.2s ease transition on mount
-• ADHD focus mode: all non-essential animations disabled
-• Toddler tier: no sudden audio or animation surprises — all motion is triggered by child interaction only
-
-1.6  Accessibility Baseline
-• WCAG 2.1 AA minimum for all public and parent/teacher pages
-• WCAG 2.1 AAA target for child portal (critical path screens)
-• Minimum touch target: 44×44px (48×48px for toddler tier)
-• All text must pass 4.5:1 contrast ratio on its background
-• Dyslexia font toggle must be available on all child-facing text
-• Audio read-aloud on all child-facing text (not optional)
-• No timed interactions without a “More Time” override for ADHD/Dyslexia profiles
-
-2. Design Priority List (Phase 1 MVP)
-Design work must follow this order. Do not start a later tier until all screens in the current tier are approved by the product owner.
-
-Tier 1 — Launch Blockers
-These screens must be designed, reviewed, and developer-ready before any other work begins.
-
-#ScreenPortalWhy it’s Tier 11Homepage (/)PublicPrimary conversion surface; already prototyped in HTML2Register — Parent (3-step wizard)AuthNo user acquisition without it3LoginAuthRequired for returning users4Verify EmailAuthMandatory before account activates5Create Child ProfileParent PortalFirst action after registration6Child Dashboard (/child/dashboard)Child PortalCore loop entry point7Pricing (/pricing)PublicConversion to paid; needed pre-launch
-Tier 2 — Launch-Adjacent
-Design in parallel with Tier 1 development, target completion within 2 weeks of Tier 1 sign-off.
-
-#ScreenPortalNotes8Parent Dashboard (/parent/dashboard)Parent PortalWeekly usage driver for retention9Learning Worlds (/child/worlds)Child PortalPhase 1: 4 worlds only10Activity Player (generic template)Child Portal1 reusable template for all activity types11Rewards / XP screen (/child/rewards)Child PortalCore gamification loop12Screen Time Controls (/parent/screen-time)Parent PortalLegal/safety expectation13Learning Worlds public page (/learning-worlds)PublicSEO + marketing14About (/about)PublicTrust-building; needed for schools pitch
-Tier 3 — Post-Launch (Phase 2)
-• Teacher Portal — all screens
-• School Portal — all screens
-• Stories Reader (/child/read)
-• Video Player (/child/watch)
-• Coloring Hub (/child/color)
-• Avatar Center (/child/avatar)
-• My Portfolio (/child/portfolio)
-• Blog, Help Center, Safety Center (public)
-• Accessibility settings (/parent/settings/accessibility)
-• Sinhala & Tamil UI variants
-
-3. MVP Page Section Outlines
-Each public page is broken into required sections below. Sections are listed top-to-bottom. Content requirements are defined; design layout is the designer’s interpretation.
-
-Page 1 — Homepage (/)
-
-#SectionRequired ContentNotes1Announcement BarScrolling marquee: launch offers, new content alertsDismissible; purple background2Sticky NavLogo + Kivi icon, main nav links, Login, Start Free CTA, dark mode toggleCollapses to hamburger on mobile3HeroHeadline, sub-headline, 2 CTAs (Start Free / Watch Demo), animated stat counters (500 activities, 100 games, 100 stories), floating Kivi illustrationGradient background; no stock photos4Trust Bar5–6 trust badges: COPPA safe, award-winning, curriculum-aligned, no ads, parent-controlled1 row; logos/icons + short label each5Learning Worlds Preview4 Phase 1 worlds as visual cards (Alphabet Island, Math Mountain, Story Cove, Creativity Kingdom), each with name + age range + activity count + Enter CTAGrid of 4; world-themed gradient each6Grade BrowserPre-K through Grade 5 + Special Needs cards, horizontally scrollable, each showing activity count + Explore buttonSnap scroll on mobile7How It Works4-step process: Create Account ? Meet Kivi ? Explore Worlds ? Earn RewardsIcon + number + title + 1-line desc each8Games PreviewFilterable grid (All/Math/Reading/Science/Creative), 10 sample game cards, View All CTAFilter tabs; dynamically rendered9Rewards SystemStars, XP, Gems, Coins, Badges, Certificates — icon + name + earn description eachPurple-to-indigo gradient bg section10For ParentsParent dashboard preview: child progress, screen time controls, weekly reports, multi-child supportSide-by-side image mock + bullet list11Testimonials6 parent reviews with avatar, name, star rating, quote, child ageCard carousel on mobile12Pricing TeaserFree / Explorer / Family plan cards with key feature differences + primary CTA eachLinks to full /pricing page13FAQ8–10 questions, accordion expand/collapseMost common parent objections14FooterLogo, nav columns, newsletter signup, social icons, legal links (Privacy, Terms, COPPA)Dark background; 4-column desktop
-Page 2 — Learning Worlds (/learning-worlds)
-
-#SectionRequired ContentNotes1HeroHeadline: “9 Magical Worlds of Learning”, sub-copy about exploration, Phase 1 vs Phase 2 framingMap or world-grid illustration2Phase BadgeClear label: “Launching with 4 worlds — more coming soon”Avoid making Phase 2 look missing3World Cards (Phase 1)Alphabet Island, Math Mountain, Story Cove, Creativity Kingdom — each: name, icon, description, age range, subject tags, activity count, Enter CTAFull-width; rich card design4World Cards (Phase 2 — Coming Soon)Science Safari, Music Meadow, Brain Game Galaxy, Life Skills Village, Coding City — greyed out with Coming Soon badgeSame card layout, lower opacity5Skills CoveredPer-world skills grid: subject tags mapped to curriculum standardsExpandable per world6CTAStart Exploring Free + View PricingSticky on scroll or section-end
-Page 3 — About Kivora (/about)
-
-#SectionRequired ContentNotes1Mission Statement“Kivora exists to make every child’s first learning experience joyful, safe, and deeply effective.” — expand with vision paragraphHero-style; large type2The Problem We Solve3 parent pain points: unsafe content, boring apps, no curriculum alignmentIcon + stat + 1-line each3Meet KiviKivi the Fox character origin, personality, role as guideIllustration feature; mascot spotlight4Our ApproachAdaptive learning engine, gamification done right, safety-first design3-column; short paragraphs5Compliance & SafetyCOPPA, GDPR-K, FERPA, UK AADC logos + short explanation eachTrust-critical; do not omit6Curriculum AlignmentCommon Core, UK Curriculum, Sri Lankan Curriculum, Homeschool StandardsBadge/logo row7CTAStart Free Today + Schools EnquiryEnd of page
-Page 4 — Pricing (/pricing)
-
-#SectionRequired ContentNotes1HeaderHeadline + monthly/annual toggle (annual = 2 months free)Toggle must be prominent2Plan CardsFree | Explorer ($9.99/mo) | Family ($14.99/mo) | School (contact) | Enterprise (contact) — each with feature list, CTA, highlighted recommended planFamily = recommended; visually distinct3Feature Comparison TableRow-by-row comparison of all 5 plans across 15–20 featuresExpandable on mobile; sticky header col4Free Plan Reassurance“No credit card. No tricks. Cancel any time.” with trust iconsBelow plan cards5FAQ — Billing6–8 billing-specific questions (refunds, switching plans, family accounts)Accordion6Schools CTACustom pricing for schools + Book a Demo buttonDistinct visual treatment
-Page 5 — Schools (/schools)
-
-#SectionRequired ContentNotes1HeroHeadline for teachers/admins, key benefit statement, Book a Demo CTADifferent visual mood to parent homepage2Key Benefits5 school-specific benefits: classroom management, curriculum tools, progress reports, bulk licensing, teacher portalIcon + headline + 2 lines each3Teacher Portal PreviewClassroom view, student progress, assignments, skill gap analysisUI screenshot mock or illustration4Curriculum AlignmentCommon Core, UK, Sri Lankan standards — how Kivora mapsTable or visual grid5PricingPer-student licensing, volume tiers, free trial for schoolsContact form or calculator6Testimonials3 teacher/school admin quotesDifferent from parent testimonials7Demo CTABook a Demo form: name, email, school, student count, messageInline form; no redirect
-4. Component Inventory
-All components below must exist in the design system before any page design begins. Components are categorised by portal scope.
-
-4.1  Global Components (all portals)
-ComponentVariantsNotesButton (Primary)Default, Hover, Disabled, LoadingGradient fill; rounded-fullButton (Secondary)Default, Hover, DisabledOutlined; no fillButton (Ghost)Default, HoverText-only with underlineInput FieldDefault, Focus, Error, DisabledWith and without icon prefixSelect DropdownDefault, Open, DisabledCustom styled; no native browser selectCheckboxUnchecked, Checked, IndeterminateWCAG AA contrastToggle SwitchOff, On, DisabledUsed for settings and permissionsModal / OverlayStandard, Full-screen, DrawerBlur backdrop; close on ESCToast NotificationSuccess, Error, Info, WarningAuto-dismiss 4s; top-rightTooltipDefault, WideOn hover/focus; accessibleBadge / TagSubject, Grade, Difficulty, StatusColour-coded per typeAvatarEmoji, Initials, PhotoCircular; 5 sizes (xs–xl)Loading SpinnerInline, Full-pageBrand purple; no generic greySkeleton ScreenCard, List row, Text blockAnimated shimmer; matches real layoutEmpty StateNo content, No results, ErrorKivi illustration + message + CTA eachAccordion / FAQCollapsed, ExpandedSmooth height transitionProgress BarXP, Activity, Subject masteryForward-looking only; no loss framingNavbar (Desktop)Default, Scrolled (condensed)Sticky; shadow on scrollNavbar (Mobile)Closed, Open (drawer)Hamburger; full-screen drawerFooterFull (public), Minimal (portals)4-col desktop; stacked mobile
-4.2  Child Portal Components
-ComponentVariantsNotesWorld CardActive, Coming SoonFull gradient; name, age, activity countActivity CardDefault, In-Progress, Completed, LockedSubject icon, title, XP reward, difficultyGame CardDefault, Featured, NewThumbnail, filter tag, play buttonXP Level BarAny level 1–10Level name + current/next XP + fillStar CounterAnimated on earnFloating +star animation on awardBadgeLocked, Unlocked, NewCircular; medal-style; tooltip with criteriaDaily Mission CardNot started, In progress, CompleteIcon, name, reward, progress barDaily StreakActive, BrokenFlame icon; day count; no anxiety framingKivi Speech BubbleEncouragement, Hint, InstructionMascot + rounded speech bubbleReward Unlock OverlayBadge, Level, CertificateFull-screen celebratory; dismiss on tapPlacement Quiz UIQuestion, ResultLarge tap targets; audio read-aloudToddler Mode UITap-only, Audio-firstExtra-large targets; no text required
-4.3  Parent Portal Components
-ComponentVariantsNotesChild Profile CardDefault, Active sessionAvatar, name, age, grade, quick statsSubject Progress BarPer subjectColour matches world themeWeekly Report CardSummary, ExpandedTime, activities, XP, badgesScreen Time MeterUnder limit, At limit, OverCircular gauge + time remainingPermission Toggle RowOn/Off per content typeLabel + description + toggleGoal CardActive, Completed, OverdueSubject, target, progress, due dateAdd Child ButtonDefaultDashed border; + icon; upgrade prompt if Free
-5. Responsive Breakpoint Strategy
-Kivora is mobile-first. The majority of child users will be on tablets and phones. Design for the smallest supported screen first.
-
-BreakpointWidthPrimary DeviceKey Layout Rulesxs (base)< 480pxPhones (portrait)1-column; large tap targets; hamburger nav; stacked CTAssm480–767pxPhones (landscape) / small tablet1–2 col grid; condensed cardsmd768–1023pxTablets (portrait)2–3 col grid; sidebar begins; nav expandslg1024–1279pxTablets (landscape) / small laptop3–4 col grid; full nav; sidebar fixedxl1280px+DesktopMax-width container (1280px); full layout
-Toddler Mode exception:
-Toddler tier (ages 2–3) must be designed exclusively for tablet (md breakpoint) as primary canvas. Phones are not recommended for this age group due to fine motor limitations. Design touch targets at 64×64px minimum.
-5.1  Layout Rules by Portal
-PortalMobileDesktopPublic websiteFull-width; stacked sections; hamburger navSticky navbar; max-width 1280px; multi-column sectionsChild portalBottom tab nav (5 tabs); full-width cards; no sidebarLeft sidebar nav; 3-col dashboard gridParent portalStacked view; collapsible sidebarLeft sidebar (240px fixed); main content areaTeacher portalSame as parent portalSame as parent portal; wider data tables
-6. State & Edge Case Requirements
-Every interactive screen must have designs for all states below. Failing to design these upfront causes rework during development.
-
-StateApplies toDesign requirementEmpty (new user)Child dashboard, Parent dashboardKivi welcome illustration + guided first actionLoading / SkeletonAll data-fetching screensAnimated shimmer matching exact layoutError (API failure)All screens with dataKivi sad illustration + retry button + help linkNo search resultsActivity/game/story searchKivi shrug + “Try a different search” + suggested tagsLocked contentActivities behind grade/plan gateGreyed card + lock icon + upgrade or unlock pathComing SoonPhase 2 worlds, featuresBadge over card; notify me option; no broken UISession timeoutChild portal (screen time limit)Friendly Kivi “See you tomorrow!” screen; no abrupt cut-offOffline modeDownloaded content screensOffline badge; sync indicator on reconnectFirst loginChild dashboardKivi onboarding tour (3–5 steps, skippable)Reward unlockAny badge/level/cert earnFull-screen celebratory overlay; dismiss on tap or after 5s
-7. Designer Handoff Checklist
-Before submitting any screen for developer handoff, confirm all items below are complete.
-
-Design Quality
-• All required states designed (default, hover, active, disabled, loading, error, empty)
-• All breakpoints covered (xs, sm, md, lg, xl)
-• Colour contrast passes 4.5:1 on all text
-• Touch targets minimum 44×44px (64px for toddler screens)
-• Fonts loaded from Google Fonts CDN (Baloo 2 + Nunito)
-• All icons from a single consistent icon set (specify which set)
-
-Component Usage
-• No one-off components — all UI uses the component inventory in Section 4
-• No hardcoded colours — all colours from the brand token palette in Section 1.3
-• Kivi mascot used consistently (no redraws; use provided asset files only)
-
-Content & Copy
-• No lorem ipsum on any screen submitted for review
-• All child-facing text at Grade 1–2 reading level maximum (Flesch-Kincaid check)
-• Error messages and empty states written in human, friendly language
-• No countdown timers, scarcity text, or FOMO mechanics anywhere in child portal
-
-Accessibility
-• Focus states visible on all interactive elements
-• Alt text defined for all images and illustrations
-• Form fields have visible labels (no placeholder-only labels)
-• Dyslexia font and high-contrast mode variants noted in spec
-
-Developer Handoff
-• Redlines/measurements annotated or auto-inspect enabled
-• All asset exports named in kebab-case (e.g., kivi-fox-wave.svg)
-• Responsive behaviour annotated per component
-• Animation specs noted (duration, easing, trigger) per animated element
-
-Final note:
-This is a living document. Update it when product decisions change. Do not let the design diverge from this spec without a documented decision.
