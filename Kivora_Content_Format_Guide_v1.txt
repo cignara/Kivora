@@ -1,215 +1,0 @@
-
-??
-
-KIVORA
-Content Format Guide
-v1.0  |  Phase 1 MVP  |  Internal Reference
-Defines what every content type looks like, feels like, and teaches.
-
-Purpose of This Guide
-Every piece of content on Kivora — every activity, story, quiz, game, and video — must make a child feel three things the moment it starts:
-
-• Excited  —  "This looks fun, I want to do this!"
-• Safe  —  "I understand what's happening here."
-• Proud  —  "I did it!" (even when it was hard)
-
-This guide defines the exact anatomy of each format: its structure, tone, interaction rules, duration, reward logic, and quality checklist. Every content creator, designer, and developer must follow it. When in doubt: ask yourself if Kivi would approve.
-
-Kivi the Fox — Your Co-Creator
-Kivi is Kivora's mascot and every child's best guide. Kivi appears in every content type — in speech bubbles, loading states, reward celebrations, hints, and transitions. Kivi is never absent from a learning moment.
-
-Kivi's Character Rules
-SituationWhat Kivi DoesWhat Kivi Never DoesChild answers correctlyDoes a happy wiggle, says something encouraging like "You're on fire!" or "Kivi knew you could!"Never says "Correct!" flatly. Never ignores the moment.Child answers wrongGently says "Oops! Let's try again together." Offers a hint without revealing the answer.Never says "Wrong!" or "Incorrect." Never skips the mistake.Child completes a full activityCheers loudly — animated shimmer, XP burst, badge reveal if applicable.Never just returns to a menu silently.Child is idle 60+ secondsPops in with a gentle nudge: "Still there? Kivi's waiting for you!"Never interrupts mid-activity. Never shows a timeout warning.Child earns a badge or levels upFull celebration overlay — Kivi jumps, spins, or does a happy dance.Never reduces the moment. Always celebrate big.First time a child enters a WorldKivi gives a 3-step guided tour (skippable), names the World, tells the child what to expect.Never drops a child into content cold.Loading statesKivi is animated (floating, tail wagging). Shows a fun fact or mini-game tip while loading.Never shows a blank spinner without Kivi.
-Kivi Asset Reference
-? All Kivi assets are named in kebab-case. Use only the approved asset library — never redraw or modify Kivi's design.
-
-Asset IDFile NameUse CaseNotesKV-001kivi-idle.svgDefault dashboard / sidebarFloat animation activeKV-002kivi-wave.svgWelcome, onboarding, first loginUsed in Kivi speech bubblesKV-003kivi-happy-jump.svgCorrect answer, mission completePaired with shimmer animationKV-004kivi-celebrate.svgBadge earned, level up, streakFull-screen overlay versionKV-005kivi-think.svgHint delivery, loading, quizThoughtful poseKV-006kivi-oops.svgWrong answer, error, retry promptFriendly — not sad or scaryKV-007kivi-read.svgStory Cove, Read sectionKivi holding a bookKV-008kivi-paint.svgCreativity Kingdom, Coloring HubKivi holding a paintbrushKV-009kivi-run.svgTransition screens, loadingMotion stateKV-010kivi-sleep.svgSession timeout / bedtime lock screenGentle send-off onlyKV-011kivi-sinhala.svgSinhala-language content momentsKivi in traditional Sri Lankan elements (Phase 2)KV-012kivi-trophy.svgCertificate, mastery badge, Level 10Gold shimmer effect
-Kivi Speech Bubble Copy Rules
-• All speech must be at Grade 1–2 reading level (Flesch-Kincaid ? 70 score)
-• Maximum 12 words per bubble — children don't read long instructions
-• Always use exclamation marks for positive moments: "You're amazing!" not "Good work."
-• Always use "we" framing for challenges: "Let's try together!" not "Try again."
-• No pressure language: never "Quick!" or "Hurry!" or "Time's running out!"
-• Use the child's name when available: "You're amazing, Asel!"
-
-
-
-Reward Currency Decision — Gems & Coins
-?  DECISION REQUIRED BEFORE CONTENT TAGGING BEGINS
-The rewardPoints field in content metadata must know what currency it is expressing. This section defines that decision and the full Gems/Coins split.
-The Decision: Dual-Currency System
-Kivora uses TWO currencies — they are not interchangeable. Each has a distinct earning mechanism, spending domain, and emotional role. Conflating them in the metadata will break the reward engine at scale.
-
-?  Stars (XP)??  Gems??  CoinsWhat it isExperience points — not a collectible currencyPremium collectible — earned through skill and achievementDaily-use currency — earned through everyday playEarned byAll activities, missions, streaks, reading, watchingMastery badges, world completion, special challenges, Level-up milestonesDaily missions, perfect scores, login streaks, bonus activitiesSpent on / unlocksXP Level progression only — cannot be spentRare avatar items, special themes, certificate frames, exclusive Kivi outfitsStandard avatar accessories, background themes, coloring page unlocksReal-money equivalentNone — XP is progress tracking onlyNone — Gems are earned, never purchasedNone — Coins are earned, never purchasedDaily earn capPer activity tier (see Rewards Economy in Spec)3 Gems per day maximum50 Coins per day maximumCan parent disable?No — XP is learning progressYes — parent can disable Gem earning without affecting XPYes — parent can disable Coin economy entirelyDisplayed in child UIAlways (XP bar top of dashboard)Always (Gem count, top bar)Always (Coin count, top bar)In metadata fieldrewardPoints (XP value)gemReward (integer, 0–3)coinReward (integer, 0–25)
-Metadata Patch — rewardPoints Field
-The existing rewardPoints field in the content classification model expresses XP only. Two new fields are added:
-
-FieldTypeValue RangeDefinitionrewardPointsInteger10–50 (per difficulty tier)XP awarded on completion. Not a currency — drives level progression.gemRewardInteger0, 1, 2, or 3Gems awarded. 0 = no gem. 1 = standard. 2 = challenge content. 3 = mastery/world-completion only.coinRewardInteger0–25Coins awarded. Scales with difficulty: Easy 5, Intermediate 10, Advanced 15, Master 25. +5 bonus for perfect score.
-? No content should ever display a monetary value (USD or any real currency) to a child. All values are platform-internal integers. The word 'currency' should never appear in any child-facing copy.
-
-
-
-??  FORMAT 1 — ACTIVITY
-The primary learning unit of Kivora
-Activity Format
-An Activity is the core learning unit. It is the thing children do most. Every subject is taught through Activities before any other format. An Activity is never just a worksheet — it is an interactive, guided experience with Kivi present throughout.
-
-Activity Anatomy
-PhaseDurationWhat HappensKivi Role1. Hook (Intro)15–30 secKivi introduces the topic with a mini-story or fun fact. One animated scene — no text walls.Kivi narrates in speech bubble. Full audio read-aloud. Skip button after 5 sec.2. Warm-Up1–2 min1–2 low-stakes interactions to calibrate the child. No score recorded.Kivi says: "Let's warm up first!" Mistakes here are safe — no negative feedback.3. Core Learning4–8 min5–10 interactions per activity. Difficulty adapts in real time via the engine.Kivi reacts to every answer. Hints available on 2nd wrong attempt. Celebrations on streaks.4. Wrap-Up30–60 secSummary screen: what the child learned, XP earned, Coins & Gems awarded, Kivi celebration.Kivi celebrates. Parent report auto-generated. "Next activity" suggestion shown.
-Activity Types
-INTERACTION TYPES (by age group)
-? Tap-to-select (all ages)
-? Drag-and-drop (Pre-K+)
-? Sequence ordering (Grade 1+)
-? Fill-in-the-blank (Grade 2+)
-? Audio response (optional, Grade 3+)
-? Draw/trace (Toddler, Pre-K)
-? Matching pairs (Pre-K+)
-? Sort-and-categorise (Grade 1+)SUBJECT CONTENT EXAMPLES
-? Alphabet Island: tap the letter you hear
-? Math Mountain: drag apples to count to 5
-? Story Cove: put the story events in order
-? Science Safari: fill in the missing word
-? Coding City: sequence the code blocks
-? Creativity Kingdom: trace and colour the shape
-? Music Meadow: match the instrument to its sound
-? Life Skills Village: choose the safe action
-Activity Rules (Non-Negotiable)
-• Maximum 10 minutes total. No activity exceeds this — break into two if needed.
-• Audio read-aloud on every single text element. Children should never be blocked by reading ability.
-• At least one visual (illustration, animation, or icon) per interaction screen.
-• 2nd wrong answer always surfaces a Kivi hint — never let a child feel stuck and alone.
-• No score displayed during the activity — only at the end. Mid-activity scores create anxiety.
-• Completion always rewards something — even if the score is 40%, Kivi celebrates the effort.
-• Each Activity maps to exactly one Learning Objective. Not two. Not three. One.
-
-Activity Metadata Template
-FieldExample ValueNotestitle"Counting Coconuts: 1 to 10"Fun, world-themed title. Never generic like 'Math Activity 3'.type"activity"Fixed valuesubject"math"One of: literacy, math, science, coding, life-skills, creativity, musicworld"math-mountain"Slug of the Learning WorldageGroup"pre-k"One of: toddler, pre-k, kindergarten, grade-1 through grade-5grade"Pre-K"Display grade labeldifficulty"easy"One of: pre-easy, easy, intermediate, advanced, masterduration5Estimated minutes. Integer only.theme"tropical-beach"Visual theme. Maps to world visual library.skills["counting", "number-recognition"]Array of skill slugs. 1–3 skills maximum.learningObjectives["Count objects 1–10"]Single objective string. Maximum 1 per activity.rewardPoints10XP. Easy=10, Intermediate=20, Advanced=35, Master=50.gemReward00 for standard activities. 1+ for challenge activities.coinReward5Easy=5, Intermediate=10, Advanced=15, Master=25.kiviAsset"KV-003"Asset ID for Kivi variant used in this activity's celebration moment.audioRequiredtrueAlways true for Toddler and Pre-K. True for all ages by default.accessibilityFlags["large-targets", "audio-first"]Applied automatically by grade; override manually if needed.
-
-
-??  FORMAT 2 — STORY
-Where imagination meets learning in Story Cove
-Story Format
-Stories on Kivora are not passive reading — they are interactive, audio-led, illustrated adventures that build literacy, empathy, and world knowledge simultaneously. Every story has a learning outcome embedded in the narrative.
-
-Story Anatomy
-PartDurationWhat HappensInteractive Elements1. Cover & Title10–15 secAnimated cover art. Title read aloud by Kivi or narrator. Genre badge displayed.Tap to begin. World badge shown. Age/grade indicator.2. Story Pages5–12 minIllustrated pages (6–20 pages depending on grade). Each page has audio narration, highlighted text as it's read, and at least one interaction.Tap to advance. Interactive objects on select pages. Vocabulary highlights (tap for definition).3. Story InteractionsEmbedded throughout1–3 comprehension moments mid-story. Not quizzes — these are story choices, predictions, or observations."What do you think happens next?" / "Tap the thing that doesn't belong!"4. Story End & Reflect60–90 secFinal illustration. Narrator wraps up. Kivi appears with a reflection prompt (1 question).Child taps their answer. No right/wrong — it's about thinking. XP + Coins awarded.5. Vocabulary BuilderOptional, 1–2 min3–5 new words from the story shown with illustrations and audio. Child can replay them.Tap to hear pronunciation. Tap to see the word used in a sentence. Saves to child's Word Collection.
-Story Types
-TypeDescriptionWorldGrade RangeOriginal FictionOriginal Kivora stories featuring Kivi and friends.Story CoveToddler – Grade 5Adapted Folk TalesSinhala, Tamil, and global folk tales simplified for age group. Full cultural credit shown.Story CovePre-K – Grade 5Jataka StoriesBuddhist Jataka tales adapted with moral framing and illustrated Sri Lankan art style.Story CoveGrade 1 – Grade 5Subject StoriesStories embedded in subject learning — e.g., a story about a shape-changing monster teaches geometry.All worldsPre-K – Grade 3Social StoriesShort, predictable stories for Autism profile. Teach daily routines, emotions, social situations.Life Skills VillageToddler – Grade 3Bilingual StoriesSame story told in two languages on alternating pages. Phase 2: English/Sinhala.Story CovePre-K – Grade 3
-Story Writing Rules
-• One moral or learning theme per story — clearly resolvable by the end.
-• Stories for Toddler–Pre-K: maximum 8 pages, maximum 10 words per page. Illustration carries the meaning.
-• Stories for Grade 1–2: 10–15 pages, 20–35 words per page. One new vocabulary word per 3 pages.
-• Stories for Grade 3–5: 15–25 pages, 40–80 words per page. 3–5 vocabulary targets.
-• All folk tale and Jataka adaptations must include: source culture, original language name, and a respectful author note.
-• No villains who are permanently evil — antagonists must either change, be understood, or be shown as mistaken. This is a safety guardrail.
-• Every story must pass a 'Kivi test': would Kivi read this to a child and feel proud?
-
-Story Metadata Template
-FieldExample ValueNotestitle"The Fox Who Shared the Sun"Evocative, character-led title.type"story"Fixed valuesubject"literacy"Primary; can add secondary: ["literacy", "life-skills"]world"story-cove"Always Story Cove for standalone stories; other worlds for subject storiesageGroup"kindergarten"Target age groupgrade"Kindergarten"Display labeldifficulty"easy"Matches reading levelduration8Estimated reading minutes including interactionstheme"sharing-kindness"Social-emotional theme slugstoryType"original-fiction"See Story Types table abovepageCount12Total pagesvocabularyTargets["generous", "sunrise", "grateful"]New words the story teachesculturalOrigin"sri-lankan"Required for folk tales. 'original' for Kivora originals.skills["reading-comprehension", "vocabulary", "empathy"]1–3 skillslearningObjectives["Understand the concept of sharing through story"]One objectiverewardPoints15XP: 15 for all completed stories (flat rate)gemReward0Standard stories: 0. Featured/special stories: 1.coinReward8Flat 8 Coins for all story completionskiviAsset"KV-007"Kivi-read asset for story wrap-up momentaudioNarrator"narrator-warm-female-en"Narrator voice ID. Slug references audio library.
-
-
-??  FORMAT 3 — QUIZ
-Knowledge checks that feel like celebrations, not exams
-Quiz Format
-Quizzes on Kivora are not tests. They are structured knowledge-check moments designed to feel like a fun challenge — not an examination. A child should finish a quiz feeling proud regardless of their score. The data is for the adaptive engine and for parents — never weaponised against the child.
-
-Quiz Anatomy
-PhaseDurationWhat Happens1. Challenge Intro15–30 secKivi appears in an exciting pose (KV-005 'think' asset). Sets context: "Kivi has 10 questions for you — let's see how much you know!" No pressure language. No time warning.2. Question Sequence5–10 min5–10 questions. Each shown one at a time — never all at once. Question types vary (see Question Types table). Audio read-aloud on every question. Visual hint available on tap.3. Between-Question Moments5 sec eachAfter every answer: Kivi micro-reaction (correct: celebrate, incorrect: gentle retry moment). Score not displayed yet. Kivi says something encouraging regardless.4. Results Screen60–90 secBig celebration regardless of score. Score shown as stars (1–3) not percentage. XP + Coins awarded. Kivi personalised message based on score band. Parent report auto-updated. Retry option always available.5. Review Mode (optional)2–5 minChild can tap to review wrong answers. Kivi explains each one gently. Never shaming. Earns bonus Coins for reviewing.
-Question Types
-TypeFormatAge GroupExampleMultiple Choice (4 options)Tap the correct answer. Large visual options with text.Pre-K – Grade 5Which animal lives in the ocean? [Shark] [Lion] [Eagle] [Rabbit]True / FalseTwo big buttons. Optional image context.Pre-K – Grade 5Is a whale a fish? [True] [False]Image MatchTap the image that matches the word/sound.Toddler – Grade 2Tap the picture of a triangle.Audio MatchListen to the audio, select the matching word/image.Toddler – Grade 3Listen... now tap the letter you heard.SequencePut 3–4 items in the correct order.Grade 1 – Grade 5Put the life cycle of a butterfly in order.Fill in the BlankType or select the missing word.Grade 2 – Grade 5The capital of Sri Lanka is ___.Short Answer (AI-graded)Free text input. AI checks for key concepts, not exact wording.Grade 3 – Grade 5Name two things that plants need to grow.
-Quiz Rules (Non-Negotiable)
-• Stars (1–3), never percentages. A child who scores 40% sees 1 star — still a win.
-• No timer shown to the child during the quiz. Internal time tracking for the adaptive engine only.
-• No consecutive failure display — the engine must never show a child they failed 3+ in a row. Kivi intervenes with a hint sequence instead.
-• Retry always available immediately after completion. No cooldown. No gate.
-• Review Mode is always available — never locked behind a score threshold.
-• Short-answer AI grading must always err toward generous — mark 'correct' on partial understanding, surface feedback, not failure.
-
-Score Bands & Kivi Responses
-StarsScoreKivi Message (examples)Coins Awarded???90–100%"You're a superstar! Kivi is SO proud!" / "THREE STARS! You absolutely crushed it!"Coin reward + 5 bonus??60–89%"Two stars! You're getting SO good at this." / "Kivi sees you improving every time!"Coin reward (standard)?Below 60%"One star — and that's a GREAT start!" / "Kivi knows you'll get more next time — want to try again?"Coin reward (standard — no reduction for low scores)
-? Coins are NEVER reduced for low scores. A child should never be financially punished for learning. Every attempt earns the full standard Coin reward.
-
-Quiz Metadata Template
-FieldExample ValueNotestitle"Ocean Animals Challenge"Fun, world-themed. Never 'Quiz 7' or 'Chapter 3 Test'.type"quiz"Fixed valuesubject"science"Primary subjectworld"science-safari"Parent worldageGroup"grade-1"Target groupgrade"Grade 1"Display labeldifficulty"intermediate"Matches question difficultyquestionCount8Total questions in the quizquestionTypes["multiple-choice", "image-match"]Array of types usedduration7Estimated minutesskills["animal-classification", "ocean-habitats"]1–3 skills assessedlearningObjectives["Identify common ocean animals"]One objectiverewardPoints20XP: Intermediate rategemReward1Quizzes always award 1 Gem — they are skill-check moments.coinReward10Intermediate base. All attempts earn this — not just 3-star results.adaptiveRetrytrueAlways true — engine may auto-assign a remedial quiz on failkiviAsset"KV-005"Think pose for intro
-
-
-??  FORMAT 4 — VIDEO
-Short, joyful, curriculum-aligned edutainment
-Video Format
-Videos on Kivora are short-form educational content — think a lovingly made YouTube Kids episode crossed with a Khan Academy explainer, but with Kivi, warmth, and Kivora's visual identity throughout. Videos are never filler — they are curriculum-aligned and always lead to a follow-up activity or quiz.
-
-Video Anatomy
-PartDurationContent1. Kivi Intro Bumper5–8 secAnimated Kivi in the video's world theme. Says the video title and one teaser line. Always the same energetic format — children learn to expect it.2. Hook Scene30–60 secA funny, surprising, or puzzling opening moment that creates a question in the child's mind. The teaching happens after this, not before.3. Core Teaching2–6 minThe main educational content. Uses animation, real-world footage, diagrams, or character scenarios depending on subject. Narrated in a warm, engaging voice. No reading required.4. Kivi Check-In20–30 secKivi pops in mid-video for a quick comprehension moment: "Can you remember what we just saw? Tap the right answer!" 1 interaction. Keeps attention engaged.5. Kivi Outro & CTA20–30 secKivi wraps up with the key takeaway in one memorable sentence. Then: "Want to try an activity about this?" — taps directly into a related activity or quiz.
-Video Specifications
-SpecRequirementTotal duration3–8 minutes. Under 3 min for Toddler/Pre-K. 5–8 min for Grade 1–5.Aspect ratio16:9 (landscape). 9:16 vertical shorts available as Phase 2 content.Resolution1080p minimum. 4K source files for future-proofing.CaptionsMandatory. Auto-generated + human-reviewed. Colour-coded by speaker.LanguagePhase 1: English narration. Phase 2: Sinhala + Tamil dub or subtitle tracks.Narration voiceWarm, clear, energetic. Age-appropriate pace: slower for Toddler, natural for Grade 3+.Background musicLow-volume, royalty-free, world-themed. Fades during narration. Fully off in ADHD focus mode.Text on screenMinimum. Key vocabulary only, max 5 words on screen at once. Always paired with audio.Kivi presenceKivi must appear at minimum in Intro + Check-In + Outro. Mid-video cameos encouraged.No ads, no YouTube-style cardsKivora videos contain zero external links, sponsor mentions, or non-Kivi branding.Parental skip controlParents can mark any video as 'watched' to prevent repeat-auto-play loops.
-Video Types by Subject
-CategoryFormat StyleWorldExample TitleConcept ExplainerAnimation + Kivi narrationMath Mountain, Science Safari"Why Does Ice Melt? Let's Find Out!"Story CompanionAnimated mini-story extending a Story Cove bookStory Cove"The Fox Who Shared the Sun — Director's Cut"Song & RhythmMusical video with lyrics shown, dance/movement encouragedMusic Meadow, Alphabet Island"The Alphabet Boogie (A to Z Dance)"Coding WalkthroughScreen-capture style with Kivi guideCoding City"Let's Build a Blinking Light (Scratch Jr)"Life Skills SceneLive-action style animation, social scenarioLife Skills Village"What To Do When You Feel Angry"World IntroductionCinematic flythrough of the Learning WorldAll worlds"Welcome to Math Mountain!"Seasonal / EventThemed event contentAll worlds"Vesak Lantern Making with Kivi"
-Video Rules (Non-Negotiable)
-• The Kivi Check-In interaction must appear in every video longer than 3 minutes. No passive watching marathons.
-• Auto-play to the next video is OFF by default. Child must tap to continue. Parent can enable auto-play.
-• No video ends without a Kivi CTA to a related activity. Videos are never dead ends.
-• No screen text that cannot be heard via audio — every on-screen word must also be spoken or available via captions.
-• Background music must pass the 'quiet listening' test: a child must be able to hear every word of narration clearly even without headphones.
-
-Video Metadata Template
-FieldExample ValueNotestitle"Why Does Ice Melt? Let's Find Out!"Question-led titles perform better with children. Curiosity hook.type"video"Fixed valuesubject"science"Primary subjectworld"science-safari"Parent worldageGroup"grade-2"Target age groupgrade"Grade 2"Display labeldifficulty"easy"Conceptual complexity levelduration5Runtime in minutes. Integer.videoCategory"concept-explainer"See Video Types tabletheme"states-of-matter"Curriculum theme slugskills["scientific-observation", "vocabulary"]Skills built through watchinglearningObjectives["Understand that heat causes ice to melt"]One curriculum objectivecheckInQuestion"What makes ice turn into water?"The mid-video Kivi Check-In question textlinkedActivityId"act-sci-melt-001"ID of follow-up activity. Required — no orphan videos.linkedQuizId"qz-sci-states-002"Optional linked quizrewardPoints10XP: flat 10 for all video completionsgemReward0Standard videos: 0. Featured launch videos: 1.coinReward5Flat 5 Coins for video completion + 5 bonus if Check-In answered correctlycaptionsAvailabletrueAlways truelanguageTracks["en"]Phase 1: en only. Phase 2: add si, ta.kiviAsset"KV-001"Kivi asset used in outro / CTA screenofflineAvailablefalseSet true once download is confirmed for this video
-
-
-?  QUALITY CHECKLIST
-Every content item must pass this before publishing
-Pre-Publish Quality Checklist
-No content item goes live without passing every applicable check below. This applies to all formats. The content reviewer signs off on this list — not the creator.
-
-ALL Formats
-• Title is fun, world-themed, and age-appropriate — not a database label
-• All text has audio read-aloud capability confirmed
-• Kivi appears at least once (intro, celebration, or wrap-up)
-• Correct Kivi asset ID referenced in metadata
-• rewardPoints, gemReward, and coinReward all set with correct values
-• learningObjectives is exactly one string — not multiple
-• No countdown timers, scarcity language, or FOMO mechanics
-• No real-money references — zero mention of USD, LKR, or any currency
-• Tested at all three accessibility profiles: Standard, ADHD, Dyslexia
-• Tested on mobile (xs breakpoint) — all tap targets pass 44x44px minimum
-
-Activity-Specific
-• Total duration confirmed under 10 minutes
-• Warm-Up phase is score-free and low-stakes
-• Hint appears on 2nd wrong attempt (not 1st, not never)
-• Wrap-up screen shows XP + Coins + Kivi celebration
-• Maps to exactly one Learning World
-
-Story-Specific
-• Page count within target range for age group
-• Vocabulary targets (3–5 words) defined in metadata
-• Cultural origin credited if folk tale or Jataka adaptation
-• Reflection prompt has no right/wrong answer
-• Vocabulary Builder module populated with illustrations and audio
-
-Quiz-Specific
-• Score shown as stars (1–3) — percentage never shown to child
-• Coins awarded equally regardless of score band
-• Review Mode available and tested
-• No more than 10 questions in a single quiz
-• At least one non-multiple-choice question type included
-
-Video-Specific
-• Captions generated and human-reviewed
-• Kivi Check-In interaction present (videos over 3 minutes)
-• linkedActivityId populated — no orphan videos
-• Background music passes quiet listening test
-• Auto-play is off by default — confirmed in CMS settings
-
-The Kivi Promise
-"Every child who opens Kivora today
-should feel smarter, happier, and more curious
-than the child who opened it yesterday."
-— Kivi, Kivora Mascot & Chief Learning Enthusiast
-This guide is a living document. When a new content format is added, a new section must be written here before a single piece of that content is produced. Format decisions and changes must be logged in the version history below.
-
-VersionDateAuthorChanges1.02025Kivora Product TeamInitial release: Activity, Story, Quiz, Video formats. Gems/Coins decision. Kivi asset library.
-KIVORA   Content Format Guide v1.0    Confidential — Internal Use Only
-
-Page 
-
