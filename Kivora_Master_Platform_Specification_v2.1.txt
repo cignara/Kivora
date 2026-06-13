@@ -1,113 +1,0 @@
-
-??
-
-KIVORA
-Master Platform Specification
-v2.1  |  Phase 1 MVP  |  Includes: Kivi Assets + Gems/Coins Economy Patch
-
-Vision
-Kivora is a child-safe, gamified, adaptive learning ecosystem for children aged 2–11 (Toddler to Grade 5), combining learning, creativity, exploration, storytelling, games, videos, coloring, printables, and life skills into a single adventure-based platform.
-
-?? PATCH v2.1 — Kivi the Fox — Mascot Specification (New Section)
-Mascot: Kivi the Fox
-Kivi is Kivora's official mascot, guide, and emotional anchor for every child on the platform. Kivi is a friendly, curious, energetic fox — always present, always encouraging, never scary, never pressuring. Kivi's role is to make every child feel that they have a companion alongside them as they learn.
-
-Kivi Character Pillars
-• Curious — Kivi is always discovering something new and invites the child to discover it with them.
-• Encouraging — Kivi celebrates every win, big or small. Kivi never judges, never shames.
-• Funny — Kivi has a gentle sense of humour. Puns, silly dances, surprised expressions. Age-appropriate only.
-• Safe — Kivi is predictable. Children know what to expect from Kivi, which builds trust.
-
-Kivi Asset Library (Official)
-? All assets named in kebab-case. Use ONLY approved files — never redraw or modify Kivi outside the design system.
-
-Asset IDFile NameUse CaseAnimationKV-001kivi-idle.svgDefault dashboard, sidebar presenceFloat loop: translateY 0?-12px, 3sKV-002kivi-wave.svgWelcome, onboarding, first login, email verifyWave arm: 2-cycle, 1.5sKV-003kivi-happy-jump.svgCorrect answer, mission complete, activity finishJump + scale burst, 0.5sKV-004kivi-celebrate.svgBadge earned, level-up, streak milestoneShimmer + wiggle, full-screen overlayKV-005kivi-think.svgHint delivery, quiz intro, loading stateTail flick, 2s loopKV-006kivi-oops.svgWrong answer, error state, retry promptHead-shake, 0.4s — friendly, not sadKV-007kivi-read.svgStory Cove, Read section, Vocabulary BuilderPage-turn motion, 2s loopKV-008kivi-paint.svgCreativity Kingdom, Coloring Hub, PortfolioBrush stroke, 1.5s loopKV-009kivi-run.svgWorld transitions, loading between screensRun cycle, 0.6s loopKV-010kivi-sleep.svgSession timeout, bedtime lock, screen-time limitBreathing motion, 4s loop — gentleKV-011kivi-sinhala.svgSinhala-language content moments (Phase 2)Phase 2 asset — reservedKV-012kivi-trophy.svgCertificate award, World mastery, Level 10Gold shimmer pulse, 1s loop
-? KV-010 (kivi-sleep.svg) is the ONLY Kivi asset allowed on timeout/bedtime screens. Never use KV-006 (oops) for session end — the child has done nothing wrong.
-
-Kivi Speech Rules
-• Maximum 12 words per speech bubble — children do not read long instructions
-• Grade 1–2 reading level maximum for all Kivi copy (Flesch-Kincaid check required)
-• Always use exclamation marks for positive moments: "You're amazing!" not "Good work."
-• Always use "we" framing for difficulty: "Let's try together!" not "Try again."
-• No pressure language: never 'Quick!', 'Hurry!', or 'Time's running out!'
-• Personalise when child name is available: "You're amazing, Asel!"
-
-Kivi Presence Rules by Screen
-Screen TypeKivi Required?AssetNotesChild Dashboard (empty state)Yes — mandatoryKV-002Welcome tour triggerActivity introYes — mandatoryKV-005Sets up the activity with a teaser lineCorrect answer momentYes — mandatoryKV-003Every single correct answerWrong answer momentYes — mandatoryKV-006Every single wrong answer — gentle onlyActivity completionYes — mandatoryKV-004Rewards screen anchorLoading statesYes — mandatoryKV-009Never a blank spinnerError / API failureYes — mandatoryKV-006Kivi sad + retry buttonSession timeout / bedtimeYes — mandatoryKV-010No abrupt cutoff — always Kivi send-offBadge / level-up / cert earnYes — mandatoryKV-004Full-screen celebratory overlayStory pagesOptionalKV-007Kivi appears in wrap-up, not on every pageVideo playerYes — in bumper + outroKV-001 or KV-003Bookends every videoParent portalOptionalKV-001Sidebar only — not dominantTeacher portalNo—Professional UI — Kivi not appropriate
-
-
-?? PATCH v2.1 — Rewards Economy — Gems/Coins Decision + Metadata Fields Updated
-Rewards Economy
-The rewards system has three layers: XP (progress tracking), Gems (premium earned currency), and Coins (daily-use earned currency). These are not interchangeable and must never be described as real-money equivalents in any child-facing copy.
-
-Currency Architecture Decision
-? XP (Stars)?? Gems?? CoinsWhat it isProgress points — not spendablePremium collectible — earned by skillDaily-use currency — earned by playEarned byAll activities, missions, streaks, reading, watchingMastery badges, world completion, quizzes, level milestonesDaily missions, perfect scores, login streaks, bonus tasksSpent onCannot be spent — drives level progression onlyRare avatar items, special themes, cert frames, exclusive Kivi outfitsStandard avatar accessories, backgrounds, coloring unlocksReal-money equivalentNoneNone — Gems are earned, NEVER purchasedNone — Coins are earned, NEVER purchasedDaily earn capPer tier (see XP Earn Rates)3 Gems/day maximum50 Coins/day maximumParent can disable?No — XP is learning progressYes — without affecting XPYes — full Coin economy can be toggled offChild-facing labelXP / StarsGemsCoinsMetadata fieldrewardPoints (integer)gemReward (0–3)coinReward (0–25)
-XP Earn Rates
-ActionXP EarnedDaily CapActivity (Easy)10 XP50 XPActivity (Intermediate)20 XP100 XPActivity (Advanced)35 XP175 XPActivity (Master)50 XP250 XPPerfect score bonus+10 XPNo daily capDaily Mission complete25 XP75 XPRead a story (finish)15 XP45 XPWatch educational video10 XP30 XPPortfolio submission30 XP30 XP7-day login streak bonus100 XPOnce per streakMastery badge earned200 XPOne-time per badge
-? Daily caps reset at midnight local time.
-
-Gem Earn Rates
-ActionGems EarnedNotesComplete a quiz (any score)1 GemQuizzes are skill-check moments — always rewardEarn a Mastery Badge2 GemsEnd-of-tier assessment passingComplete a full Learning World3 GemsOne-time per world per difficulty tier7-day login streak milestone1 GemOnce per streak cycleLevel-up milestone (Levels 4, 7, 10)2 GemsThree times in a child's journeyFeatured challenge activity1 GemContent flagged gemReward: 1 in metadata
-Coin Earn Rates
-ActionCoins EarnedNotesActivity (Easy)5 CoinsBase rateActivity (Intermediate)10 CoinsBase rateActivity (Advanced)15 CoinsBase rateActivity (Master)25 CoinsBase ratePerfect score bonus+5 CoinsAdded to base — no daily cap on this bonusDaily Mission complete10 CoinsPer missionStory completion8 CoinsFlat rate for all storiesVideo completion + Check-In correct5 Coins + 5 bonusBase 5 for watch, +5 for answering Check-InLogin streak (daily)3 CoinsDaily streak maintenance rewardQuiz completion (any score)coinReward field valuePer metadata — Coins NOT reduced for low scores
-? SAFETY RULE: Coins are NEVER reduced for low scores. A child must never be financially punished for attempting to learn.
-
-XP Levels
-LevelXP RequiredTitleUnlock10 XPExplorerStarting state2200 XPAdventurerAvatar accessories3500 XPDiscovererBackground theme #141,000 XPTrailblazerAnimated avatar effect52,000 XPChampionSpecial badge frame63,500 XPStar LearnerDashboard theme75,500 XPKnowledge SeekerRare avatar item88,000 XPMaster MindCertificate upgrade911,500 XPGeniusParent Hall of Fame1016,000 XPKivora LegendPhysical reward (paid plans only)
-Reward Controls
-• Parents can set a daily XP cap (override platform defaults)
-• Parents can disable Gem earning without affecting XP/badges
-• Parents can disable Coin economy entirely
-• Parents can require approval before rewards are redeemed
-• Teachers can create custom classroom badges and award manually
-• School admins can toggle the rewards system institution-wide
-• No real-money purchases in the child portal — all rewards are earned, never bought
-
-Safety Guardrails — Non-Negotiable
-GuardrailRuleNo countdown timers on rewardsTime pressure on reward states is prohibitedNo permanently missable rewardsSeasonal items recur annually — never permanently missedNo scarcity mechanicsNo 'Only 2 left!' or limited-quantity framingNo loss framingProgress shown as forward-looking bars, not 'you lost X'No FOMO language"Don't miss out!" and equivalents are banned in child portalCoins never reduced for low scoresEvery quiz/activity attempt earns the full Coin reward
-
-
-?? PATCH v2.1 — Content Classification Model — Metadata Fields Updated (gemReward + coinReward + kiviAsset added)
-Content Classification Model
-Every content item — activity, story, quiz, video, game, coloring page, printable, or craft — must be fully tagged with the fields below before it is published. Partial metadata blocks publication.
-
-FieldTypeRequiredNotestitleStringYesFun, world-themed. Never a database label.typeEnumYesactivity | story | quiz | video | game | coloring | printable | craftsubjectEnum/ArrayYesliteracy | math | science | coding | life-skills | creativity | musicworldSlugYesLearning World slug (e.g. math-mountain)ageGroupEnumYestoddler | pre-k | kindergarten | grade-1 through grade-5gradeStringYesDisplay label (e.g. "Grade 2")difficultyEnumYespre-easy | easy | intermediate | advanced | masterdurationIntegerYesEstimated minutes. Integer only.themeSlugYesVisual/curriculum theme slugskillsArrayYes1–3 skill slugslearningObjectivesArrayYesExactly ONE string. Not multiple.rewardPointsIntegerYesXP awarded on completion. Easy=10, Int=20, Adv=35, Master=50.gemRewardInteger (0–3)YesNEW. 0=none, 1=standard, 2=challenge, 3=mastery/world-completion only.coinRewardInteger (0–25)YesNEW. Easy=5, Int=10, Adv=15, Master=25. +5 bonus for perfect score.kiviAssetAsset IDYesNEW. KV-001 through KV-012. Asset used in celebration/reward moment.audioRequiredBooleanYesAlways true for Toddler/Pre-K. Default true for all.accessibilityFlagsArrayConditionalAuto-applied by grade; manual override if needed.offlineAvailableBooleanYesFalse until download confirmed in CMS.
-? gemReward and coinReward values are platform-internal integers. They must NEVER be described as monetary values in any child-facing copy, parent copy, or marketing material.
-
-
-
-Target Audiences
-• Children aged 2–11
-• Parents
-• Teachers
-• Schools
-
-Age & Grade Tiers
-TierAgeNotesToddler2–3Sensory/exploratory only. Parent-controlled. Audio-first, tap-only UX. Large touch targets.Pre-K3–4Grade-structured portal begins.Kindergarten5–6Grade 16–7Grade 27–8Grade 38–9Grade 49–10Grade 510–11
-? All COPPA/GDPR-K compliance rules apply from age 2.
-
-Skill Progression
-• Pre-Easy (Toddler sensory tier)
-• Easy
-• Intermediate
-• Advanced
-• Master
-
-Progression Rules
-TriggerConditionActionAdvance80%+ accuracy over 5 consecutive activitiesMove to next difficulty tierHold60–79% accuracyReinforce with varied content at same tierStep-downBelow 60% across 3 consecutiveDrop to previous tierMastery badge90%+ on end-of-tier assessmentBadge awarded; world tier unlockedAdult overrideParent or teacher decisionCan manually adjust tier at any timeWorld unlockGrade-based by defaultParent or teacher can unlock early
-Technical Stack
-LayerTechnologyFrontendNext.js + TypeScript + Tailwind CSS + Framer MotionBackendNestJSDatabasePostgreSQLStorageAWS S3AuthenticationFirebase AuthPaymentsStripeHostingVercel + AWS
-Child Safety & Compliance
-• COPPA
-• GDPR-K
-• FERPA
-• UK Age Appropriate Design Code
-• WCAG Accessibility
-
-RuleNo direct messagingBetween children or child-to-adultNo open chatNo unmoderated text input visible to othersNo advertising to childrenZero ads anywhere in child portalNo public profilesChildren's data never publicly visibleNo location sharingLocation never collected from child accountsNo unmoderated contentAll content human-reviewed before publishNo unrestricted AI conversationsAI interactions gated by parent permissionParent consent requiredFor all data collection, AI features, and account creation
-Version History
-VersionDateChangesv1.02025Initial specificationv2.02025Learning Worlds phasing, Skill-to-Grade mapping, Adaptive Engine detail, Special Education, Multilingual strategy, Offline learning, Seasonal contentv2.12025PATCH: Kivi asset library (KV-001–KV-012) added. Gems/Coins dual-currency decision finalised. Content metadata updated with gemReward, coinReward, kiviAsset fields. Coin earn rates defined. Safety guardrails expanded.
-KIVORA Master Platform Specification v2.1  |  Confidential — Internal Use Only
-
-Kivora Spec v2.1  |  Page 
-
