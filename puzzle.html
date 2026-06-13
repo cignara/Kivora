@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>🔢 Number Puzzle · Kivora Learning</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Baloo+2:wght@700;800&family=Fredoka:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root{--sky:#4A90E2;--sky-dk:#2E6FC4;--sky-lt:#E8F4F8;--yellow:#FFD700;--orange:#FF8C42;--green:#52C41A;--green-dk:#3A9A0E;--pink:#FF69B4;--charcoal:#2C3E50;--gray:#95A5A6;--white:#FFFFFF;--error:#E74C3C;--success:#27AE60}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EFF8FF 0%,#FFF8E7 50%,#F0FFF0 100%);min-height:100vh;color:var(--charcoal)}
+    a{text-decoration:none;color:inherit}
+    .navbar{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.97);backdrop-filter:blur(12px);border-bottom:1px solid rgba(0,0,0,.06);height:64px;display:flex;align-items:center;padding:0 24px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+    .nav-inner{max-width:1100px;margin:0 auto;width:100%;display:flex;align-items:center;justify-content:space-between}
+    .nav-logo{font-family:'Baloo 2',cursive;font-size:1.35rem;font-weight:800;color:var(--charcoal);display:flex;align-items:center;gap:8px}
+    .logo-icon{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,var(--sky),var(--pink));display:flex;align-items:center;justify-content:center;font-size:17px}
+    .nav-logo span{color:var(--sky)}
+    .nav-back{display:inline-flex;align-items:center;gap:6px;font-size:.875rem;font-weight:700;color:var(--gray);padding:8px 14px;border-radius:8px;transition:all .2s}
+    .nav-back:hover{color:var(--sky);background:var(--sky-lt)}
+    .page{max-width:900px;margin:0 auto;padding:28px 18px 60px}
+    .hdr{text-align:center;margin-bottom:22px}
+    .hdr h1{font-family:'Baloo 2',cursive;font-size:2rem;font-weight:800;margin-bottom:5px}
+    .hdr h1 span{color:var(--orange)}
+    .hdr p{color:var(--gray);font-size:.93rem;font-weight:600}
+    .section-lbl{font-family:'Fredoka',sans-serif;font-weight:600;font-size:.82rem;color:var(--gray);text-align:center;letter-spacing:.6px;text-transform:uppercase;margin-bottom:8px}
+    .lvl-row{display:flex;gap:7px;overflow-x:auto;padding:3px 2px 10px;-webkit-overflow-scrolling:touch}
+    .lvl-row::-webkit-scrollbar{height:3px}
+    .lvl-row::-webkit-scrollbar-thumb{background:var(--orange);border-radius:3px}
+    .ltab{flex-shrink:0;padding:8px 15px;border-radius:50px;border:2.5px solid #DDE5ED;background:white;font-family:'Fredoka',sans-serif;font-size:.9rem;font-weight:500;cursor:pointer;transition:all .2s;white-space:nowrap}
+    .ltab:hover:not(.on){border-color:var(--orange);color:var(--orange)}
+    .ltab.on{background:var(--orange);color:white;border-color:var(--orange);box-shadow:0 4px 14px rgba(255,140,66,.4)}
+    .stat-bar{display:flex;gap:14px;justify-content:center;align-items:center;margin-bottom:22px;flex-wrap:wrap}
+    .stat-pill{display:inline-flex;align-items:center;gap:7px;padding:9px 17px;border-radius:50px;background:white;box-shadow:0 2px 12px rgba(0,0,0,.08);font-family:'Fredoka',sans-serif;font-size:.92rem;font-weight:500}
+    .stat-pill .val{font-size:1.1rem;font-weight:700;color:var(--sky);min-width:32px;text-align:center}
+    .puzzle-area{background:white;border-radius:24px;box-shadow:0 4px 28px rgba(0,0,0,.10);padding:28px 22px}
+    .bank-lbl,.slots-lbl{font-family:'Fredoka',sans-serif;font-size:.88rem;font-weight:600;color:var(--gray);text-align:center;margin-bottom:12px;letter-spacing:.5px;text-transform:uppercase}
+    .tiles-bank{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;min-height:70px;padding:12px;background:#f5f8ff;border-radius:16px;margin-bottom:24px;border:2px dashed #D4E5F7}
+    .slots-row{display:flex;flex-wrap:wrap;gap:9px;justify-content:center}
+    .tile{width:58px;height:58px;border-radius:14px;background:linear-gradient(135deg,var(--sky),var(--sky-dk));color:white;font-family:'Baloo 2',cursive;font-size:1.45rem;font-weight:800;display:flex;align-items:center;justify-content:center;cursor:grab;user-select:none;box-shadow:0 4px 14px rgba(74,144,226,.35);transition:transform .15s,box-shadow .15s,opacity .2s;touch-action:none}
+    .tile:hover{transform:translateY(-3px) scale(1.06);box-shadow:0 8px 22px rgba(74,144,226,.45)}
+    .tile:active,.tile.dragging{opacity:.6;cursor:grabbing;transform:scale(1.1)}
+    .tile.letter{background:linear-gradient(135deg,var(--pink),#e0408a)}
+    .tile.word{background:linear-gradient(135deg,var(--purple),#7d3c98);font-size:.88rem;padding:4px}
+    .tile.symbol{background:linear-gradient(135deg,var(--green),var(--green-dk))}
+    .tile.month{background:linear-gradient(135deg,#f39c12,#d68910);font-size:.82rem}
+    .slot{width:58px;height:58px;border-radius:14px;background:#f5f8ff;border:2.5px dashed #b0c8e8;display:flex;align-items:center;justify-content:center;font-family:'Baloo 2',cursive;font-size:.9rem;font-weight:700;color:#b0c8e8;transition:all .2s;position:relative}
+    .slot.over{border-color:var(--sky);background:var(--sky-lt);transform:scale(1.05)}
+    .slot.correct{border:2.5px solid var(--success)!important;background:#f0fff4!important}
+    .slot.wrong{animation:shake .4s ease}
+    .slot .hint{font-size:.62rem;position:absolute;bottom:3px;right:5px;opacity:.5;font-family:'Nunito',sans-serif}
+    @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+    @keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.25)}100%{transform:scale(1)}}
+    .pop{animation:pop .3s ease}
+    .btn-row{display:flex;gap:10px;justify-content:center;margin-top:24px;flex-wrap:wrap}
+    .btn{padding:12px 22px;border-radius:50px;border:none;font-family:'Fredoka',sans-serif;font-size:.95rem;font-weight:500;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:all .2s}
+    .btn.primary{background:var(--orange);color:white;box-shadow:0 4px 14px rgba(255,140,66,.4)}
+    .btn.primary:hover{background:#e67e2e;transform:translateY(-2px)}
+    .btn.secondary{background:#f0f4f8;color:var(--charcoal)}
+    .btn.secondary:hover{background:#e2e8ef}
+    .btn.green{background:var(--green);color:white;box-shadow:0 4px 12px rgba(82,196,26,.3)}
+    .btn.green:hover{background:var(--green-dk);transform:translateY(-2px)}
+    .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:200;align-items:center;justify-content:center}
+    .overlay.show{display:flex}
+    .win-card{background:white;border-radius:28px;padding:38px 32px;text-align:center;max-width:400px;width:90%;box-shadow:0 16px 60px rgba(0,0,0,.2);animation:popIn .4s cubic-bezier(.34,1.56,.64,1)}
+    @keyframes popIn{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:scale(1)}}
+    .win-emoji{font-size:3.8rem;margin-bottom:10px;display:block}
+    .win-title{font-family:'Baloo 2',cursive;font-size:1.8rem;font-weight:800;margin-bottom:7px}
+    .win-msg{color:var(--gray);font-size:.93rem;font-weight:600;margin-bottom:20px}
+    .stars{font-size:1.85rem;margin-bottom:20px;letter-spacing:4px}
+    #confetti{position:fixed;inset:0;pointer-events:none;z-index:300}
+    .cp{position:absolute;width:8px;height:8px;border-radius:2px;animation:fall linear forwards}
+    @keyframes fall{0%{transform:translateY(-20px) rotate(0deg);opacity:1}100%{transform:translateY(110vh) rotate(720deg);opacity:0}}
+    @media(max-width:580px){.tile,.slot{width:48px;height:48px;font-size:1.2rem;border-radius:12px}.tile.word{font-size:.75rem}.tile.month{font-size:.7rem}.puzzle-area{padding:18px 12px}}
+  </style>
+</head>
+<body>
+<nav class="navbar"><div class="nav-inner">
+  <a class="nav-logo" href="index.html"><span class="logo-icon">🎓</span>Kivora<span>Learning</span></a>
+  <a class="nav-back" href="index.html">← Home</a>
+</div></nav>
+<div class="page">
+  <div class="hdr">
+    <h1>🔢 <span>Sequencing</span> Puzzle!</h1>
+    <p>Drag each tile into the right slot — 10 levels, 100 tiles total! 🧩</p>
+  </div>
+  <div class="section-lbl">Choose a Level — scroll to see all 10</div>
+  <div class="lvl-row" id="lvlRow">
+    <button class="ltab on" onclick="loadLevel(this,'n1')">🔢 1–10</button>
+    <button class="ltab"    onclick="loadLevel(this,'n2')">🔢 11–20</button>
+    <button class="ltab"    onclick="loadLevel(this,'n3')">🔢 21–30</button>
+    <button class="ltab"    onclick="loadLevel(this,'ev')">⏭ Even 2–20</button>
+    <button class="ltab"    onclick="loadLevel(this,'sk')">✖ Skip ×5</button>
+    <button class="ltab"    onclick="loadLevel(this,'la')">🔤 A–J</button>
+    <button class="ltab"    onclick="loadLevel(this,'lb')">🔤 K–T</button>
+    <button class="ltab"    onclick="loadLevel(this,'mo')">📅 Months</button>
+    <button class="ltab"    onclick="loadLevel(this,'rb')">🌈 Rainbow</button>
+    <button class="ltab"    onclick="loadLevel(this,'nw')">📝 NumWords</button>
+  </div>
+  <div class="stat-bar">
+    <div class="stat-pill">⏱ Time    <span class="val" id="timer">0:00</span></div>
+    <div class="stat-pill">✅ Placed  <span class="val" id="counter">0/10</span></div>
+    <div class="stat-pill">❌ Misses  <span class="val" id="mistakes">0</span></div>
+  </div>
+  <div class="puzzle-area">
+    <div class="bank-lbl">Drag these tiles into the correct slots ⬇</div>
+    <div class="tiles-bank" id="tilesBank"></div>
+    <div class="slots-lbl">Slots — drop each in its position</div>
+    <div class="slots-row"  id="slotsRow"></div>
+  </div>
+  <div class="btn-row">
+    <button class="btn primary"   onclick="shuffleRestart()">🔀 Shuffle</button>
+    <button class="btn secondary" onclick="showHint()">💡 Hint</button>
+    <button class="btn green"     onclick="nextLevel()">Next Level ➡</button>
+  </div>
+</div>
+<div class="overlay" id="winOverlay">
+  <div class="win-card">
+    <span class="win-emoji" id="winEmoji">🏆</span>
+    <div class="win-title"  id="winTitle">Amazing!</div>
+    <div class="stars"      id="winStars">⭐⭐⭐</div>
+    <div class="win-msg"    id="winMsg">Puzzle complete!</div>
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+      <button class="btn primary" onclick="closeWin();shuffleRestart()">🔀 Replay</button>
+      <button class="btn green"   onclick="closeWin();nextLevel()">Next ➡</button>
+    </div>
+  </div>
+</div>
+<div id="confetti"></div>
+<script>
+/* ═══════════════════════════════════════════════
+   10 LEVELS × 10 TILES = 100 PUZZLE CASES
+═══════════════════════════════════════════════ */
+const LEVELS={
+  n1:{label:'🔢 1–10',hint:'Count from 1 to 10!',cls:'',
+    items:[1,2,3,4,5,6,7,8,9,10].map((n,i)=>({v:i+1,l:String(n)}))},
+  n2:{label:'🔢 11–20',hint:'Count from 11 to 20!',cls:'',
+    items:[11,12,13,14,15,16,17,18,19,20].map((n,i)=>({v:i+1,l:String(n)}))},
+  n3:{label:'🔢 21–30',hint:'Count from 21 to 30!',cls:'',
+    items:[21,22,23,24,25,26,27,28,29,30].map((n,i)=>({v:i+1,l:String(n)}))},
+  ev:{label:'⏭ Even 2–20',hint:'Even numbers! Skip count by 2: 2, 4, 6…',cls:'',
+    items:[2,4,6,8,10,12,14,16,18,20].map((n,i)=>({v:i+1,l:String(n)}))},
+  sk:{label:'✖ Count by 5s',hint:'Count by 5! 5, 10, 15, 20…',cls:'',
+    items:[5,10,15,20,25,30,35,40,45,50].map((n,i)=>({v:i+1,l:String(n)}))},
+  la:{label:'🔤 A–J',hint:'Alphabet! A, B, C…',cls:'letter',
+    items:'ABCDEFGHIJ'.split('').map((c,i)=>({v:i+1,l:c}))},
+  lb:{label:'🔤 K–T',hint:'Alphabet! K, L, M…',cls:'letter',
+    items:'KLMNOPQRST'.split('').map((c,i)=>({v:i+1,l:c}))},
+  mo:{label:'📅 Months',hint:'January is first, then Feb, Mar…',cls:'month',
+    items:['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT'].map((m,i)=>({v:i+1,l:m}))},
+  rb:{label:'🌈 Rainbow',hint:'Rainbow order: Red, Orange, Yellow, Green, Blue…',cls:'symbol',
+    items:['🔴','🟠','🟡','🟢','🔵','🟣','⚫','⚪','🟤','🩷'].map((c,i)=>({v:i+1,l:c}))},
+  nw:{label:'📝 Number Words',hint:'ONE comes first, then TWO, THREE…',cls:'word',
+    items:['ONE','TWO','THREE','FOUR','FIVE','SIX','SEVEN','EIGHT','NINE','TEN'].map((w,i)=>({v:i+1,l:w}))},
+};
+const LVL_ORDER=['n1','n2','n3','ev','sk','la','lb','mo','rb','nw'];
+let curLvl='n1',done=0,misses=0,timerSec=0,timerInt=null,started=false,dragged=null;
+let touchOffX=0,touchOffY=0,ghost=null;
+
+function loadLevel(btn,lvl){
+  document.querySelectorAll('.ltab').forEach(t=>t.classList.remove('on'));
+  if(btn)btn.classList.add('on');
+  curLvl=lvl;done=0;misses=0;timerSec=0;started=false;
+  clearInterval(timerInt);updateStats();buildPuzzle();
+}
+function buildPuzzle(){
+  const{items,cls}=LEVELS[curLvl];
+  const shuffled=[...items].sort(()=>Math.random()-.5);
+  const bank=document.getElementById('tilesBank');bank.innerHTML='';
+  shuffled.forEach(item=>{
+    const t=document.createElement('div');t.className='tile '+cls;t.textContent=item.l;t.dataset.val=item.v;t.draggable=true;
+    addDrag(t);addTouch(t);bank.appendChild(t);
+  });
+  const row=document.getElementById('slotsRow');row.innerHTML='';
+  items.forEach(item=>{
+    const s=document.createElement('div');s.className='slot';s.dataset.pos=item.v;
+    s.innerHTML=`<span class="hint">${item.v}</span>`;
+    addDrop(s);row.appendChild(s);
+  });
+}
+function addDrag(tile){
+  tile.addEventListener('dragstart',e=>{dragged=tile;tile.classList.add('dragging');e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain',tile.dataset.val);});
+  tile.addEventListener('dragend',()=>tile.classList.remove('dragging'));
+}
+function addDrop(slot){
+  slot.addEventListener('dragover',e=>{e.preventDefault();slot.classList.add('over');});
+  slot.addEventListener('dragleave',()=>slot.classList.remove('over'));
+  slot.addEventListener('drop',e=>{e.preventDefault();slot.classList.remove('over');if(!dragged||slot.classList.contains('correct'))return;handleDrop(dragged,slot);});
+}
+function addTouch(tile){
+  tile.addEventListener('touchstart',e=>{e.preventDefault();const t=e.touches[0],r=tile.getBoundingClientRect();touchOffX=t.clientX-r.left;touchOffY=t.clientY-r.top;dragged=tile;ghost=tile.cloneNode(true);ghost.style.cssText=`position:fixed;z-index:999;opacity:.85;pointer-events:none;width:${r.width}px;height:${r.height}px;`;document.body.appendChild(ghost);moveG(t.clientX,t.clientY);},{passive:false});
+  tile.addEventListener('touchmove',e=>{e.preventDefault();const t=e.touches[0];moveG(t.clientX,t.clientY);},{passive:false});
+  tile.addEventListener('touchend',e=>{e.preventDefault();if(ghost){ghost.remove();ghost=null;}const t=e.changedTouches[0];const el=document.elementFromPoint(t.clientX,t.clientY);const slot=el?el.closest('.slot'):null;if(slot&&dragged&&!slot.classList.contains('correct'))handleDrop(dragged,slot);dragged=null;},{passive:false});
+}
+function moveG(cx,cy){if(ghost){ghost.style.left=(cx-touchOffX)+'px';ghost.style.top=(cy-touchOffY)+'px';}}
+function handleDrop(tile,slot){
+  if(!started){started=true;startTimer();}
+  if(parseInt(tile.dataset.val)===parseInt(slot.dataset.pos)){
+    slot.innerHTML='';const p=tile.cloneNode(true);p.draggable=false;p.style.cursor='default';p.classList.remove('dragging');slot.appendChild(p);slot.classList.add('correct','pop');tile.remove();done++;updateStats();if(done===LEVELS[curLvl].items.length)setTimeout(showWin,400);
+  } else {
+    misses++;updateStats();slot.classList.add('wrong');setTimeout(()=>slot.classList.remove('wrong'),450);
+    tile.classList.add('wrong');setTimeout(()=>tile.classList.remove('wrong'),450);
+  }
+}
+function updateStats(){document.getElementById('counter').textContent=done+'\/'+LEVELS[curLvl].items.length;document.getElementById('mistakes').textContent=misses;}
+function startTimer(){timerInt=setInterval(()=>{timerSec++;document.getElementById('timer').textContent=Math.floor(timerSec/60)+':'+(timerSec%60).toString().padStart(2,'0');},1000);}
+function showWin(){
+  clearInterval(timerInt);const t=document.getElementById('timer').textContent;
+  const stars=misses===0?'⭐⭐⭐':misses<=3?'⭐⭐':'⭐';
+  const emoji=misses===0?'🏆':misses<=3?'🌟':'💪';
+  const title=misses===0?'Perfect!':misses<=3?'Great Job!':'Well Done!';
+  document.getElementById('winEmoji').textContent=emoji;document.getElementById('winTitle').textContent=title;
+  document.getElementById('winStars').textContent=stars;document.getElementById('winMsg').textContent=`Finished in ${t} with ${misses} mistake${misses===1?'':'s'}!`;
+  document.getElementById('winOverlay').classList.add('show');launchConfetti();
+}
+function closeWin(){document.getElementById('winOverlay').classList.remove('show');}
+function showHint(){alert('💡 '+LEVELS[curLvl].hint);}
+function shuffleRestart(){loadLevel(null,curLvl);}
+function nextLevel(){const i=LVL_ORDER.indexOf(curLvl);const n=LVL_ORDER[(i+1)%LVL_ORDER.length];loadLevel(document.querySelectorAll('.ltab')[LVL_ORDER.indexOf(n)],n);}
+function launchConfetti(){const w=document.getElementById('confetti'),cols=['#4A90E2','#FFD700','#FF8C42','#52C41A','#FF69B4','#9B59B6'];w.innerHTML='';for(let i=0;i<70;i++){const el=document.createElement('div');el.className='cp';el.style.cssText=`left:${Math.random()*100}%;top:-10px;background:${cols[i%cols.length]};border-radius:${Math.random()>.5?'50%':'2px'};width:${6+Math.random()*6}px;height:${6+Math.random()*6}px;animation-duration:${1.2+Math.random()*1.6}s;animation-delay:${Math.random()*0.6}s;`;w.appendChild(el);}setTimeout(()=>{w.innerHTML='';},3200);}
+loadLevel(null,'n1');
+</script>
+</body>
+</html>

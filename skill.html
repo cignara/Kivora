@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Counting 1–10 · Kivora Learning</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sky-blue:#4A90E2; --sunny-yellow:#FFD700; --warm-orange:#FF8C42;
+  --fresh-green:#52C41A; --soft-pink:#FF69B4;
+  --light-blue:#E8F4F8; --light-yellow:#FFFACD; --light-orange:#FFE4D6;
+  --light-green:#F0FFF0; --light-pink:#FFE4F0;
+  --dark:#2C3E50; --gray:#95A5A6; --light-gray:#ECF0F1; --white:#FFFFFF;
+  --success:#27AE60; --error:#E74C3C;
+  --r20:20px; --r50:50px;
+  --shadow:0 8px 30px rgba(74,144,226,0.13);
+  --shadow-h:0 16px 40px rgba(74,144,226,0.22);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Nunito',sans-serif;color:var(--dark);background:var(--light-gray);min-height:100vh}
+
+/* NAV */
+nav{background:var(--white);box-shadow:0 2px 16px rgba(44,62,80,0.08);display:flex;align-items:center;justify-content:space-between;padding:0 5vw;height:64px;position:sticky;top:0;z-index:100}
+.nav-logo{font-family:'Baloo 2',cursive;font-size:1.5rem;font-weight:800;color:var(--sky-blue);text-decoration:none;display:flex;align-items:center;gap:8px}
+.nav-logo .dot{color:var(--warm-orange)}
+.breadcrumb{display:flex;align-items:center;gap:.5rem;font-size:.85rem;font-weight:700;color:var(--gray)}
+.breadcrumb a{color:var(--sky-blue);text-decoration:none}
+.breadcrumb span{color:var(--gray)}
+.nav-right{display:flex;align-items:center;gap:1rem}
+.avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--sky-blue),var(--soft-pink));display:flex;align-items:center;justify-content:center;font-size:1.1rem;cursor:pointer}
+
+/* LAYOUT */
+.page-wrap{max-width:1100px;margin:0 auto;padding:2rem 2vw 4rem}
+
+/* SKILL HEADER CARD */
+.skill-header{background:var(--white);border-radius:var(--r20);padding:2rem 2.5rem;box-shadow:var(--shadow);margin-bottom:1.5rem;display:grid;grid-template-columns:1fr auto;gap:1.5rem;align-items:start}
+.skill-header-left{}
+.skill-back{display:inline-flex;align-items:center;gap:.4rem;font-size:.82rem;font-weight:800;color:var(--sky-blue);text-decoration:none;margin-bottom:1rem;transition:gap .2s}
+.skill-back:hover{gap:.7rem}
+.skill-title{font-family:'Baloo 2',cursive;font-size:2rem;font-weight:800;color:var(--dark);margin-bottom:.6rem}
+.skill-meta{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1.2rem}
+.meta-badge{display:inline-flex;align-items:center;gap:.35rem;background:var(--light-blue);color:var(--sky-blue);padding:.3rem .85rem;border-radius:50px;font-size:.8rem;font-weight:800}
+.meta-badge.orange{background:var(--light-orange);color:var(--warm-orange)}
+.meta-badge.green{background:var(--light-green);color:var(--fresh-green)}
+.progress-section{}
+.progress-label{display:flex;justify-content:space-between;font-size:.82rem;font-weight:700;margin-bottom:.5rem;color:var(--dark)}
+.progress-bar-wrap{background:var(--light-gray);border-radius:50px;height:12px;overflow:hidden;margin-bottom:.5rem}
+.progress-bar-fill{height:100%;border-radius:50px;background:linear-gradient(90deg,var(--sky-blue),var(--soft-pink));width:40%;transition:width 1s ease}
+.progress-sub{font-size:.78rem;color:var(--gray);font-weight:600}
+.skill-header-right{text-align:center}
+.skill-icon-big{font-size:5rem;animation:bounce 2s ease-in-out infinite}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.practice-count{font-size:.8rem;font-weight:700;color:var(--gray);margin-top:.4rem}
+
+/* TABS */
+.tabs-wrap{background:var(--white);border-radius:var(--r20);padding:1.5rem 2.5rem 0;box-shadow:var(--shadow);margin-bottom:1.5rem}
+.tab-list{display:flex;gap:.3rem;border-bottom:2px solid var(--light-gray);padding-bottom:0}
+.tab-btn{font-family:'Nunito',sans-serif;font-weight:800;font-size:.92rem;padding:.75rem 1.5rem;border:none;background:transparent;color:var(--gray);cursor:pointer;border-radius:12px 12px 0 0;display:flex;align-items:center;gap:.5rem;transition:color .2s,background .2s;position:relative;bottom:-2px}
+.tab-btn.active{color:var(--sky-blue);background:var(--light-blue);border-bottom:3px solid var(--sky-blue)}
+.tab-btn:hover:not(.active){color:var(--dark);background:var(--light-gray)}
+
+/* TAB PANELS */
+.tab-panel{display:none;padding:2rem 0 2rem}
+.tab-panel.active{display:block}
+
+/* ─── LEARN TAB ─── */
+.learn-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+.learn-card{background:var(--light-blue);border-radius:var(--r20);padding:1.8rem;position:relative;overflow:hidden}
+.learn-card.full{grid-column:1/-1}
+.learn-card-label{font-size:.72rem;font-weight:900;text-transform:uppercase;letter-spacing:.1em;color:var(--sky-blue);margin-bottom:.8rem;display:flex;align-items:center;gap:.4rem}
+.video-placeholder{background:linear-gradient(135deg,var(--sky-blue) 0%,#2E6DB4 100%);border-radius:16px;height:220px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.8rem;cursor:pointer;position:relative;overflow:hidden;transition:transform .2s}
+.video-placeholder:hover{transform:scale(1.02)}
+.video-play{width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,0.25);display:flex;align-items:center;justify-content:center;font-size:1.8rem;border:3px solid rgba(255,255,255,0.6);transition:transform .2s}
+.video-placeholder:hover .video-play{transform:scale(1.1)}
+.video-title-text{color:var(--white);font-weight:800;font-size:1rem}
+.video-dur-text{color:rgba(255,255,255,0.7);font-size:.82rem}
+
+/* Guided practice counting */
+.guided-label{font-weight:700;font-size:.95rem;margin-bottom:1.2rem;color:var(--dark)}
+.count-objects{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.2rem;justify-content:center}
+.count-obj{font-size:2.4rem;cursor:pointer;transition:transform .2s;display:inline-block}
+.count-obj.counted{animation:pop .3s ease}
+@keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.4)}100%{transform:scale(1)}}
+.count-input-row{display:flex;align-items:center;gap:.8rem;margin-bottom:.8rem}
+.count-question{font-weight:700;font-size:1rem;color:var(--dark)}
+.count-input{width:64px;height:44px;border-radius:12px;border:2px solid var(--sky-blue);text-align:center;font-family:'Baloo 2',cursive;font-size:1.4rem;font-weight:800;color:var(--sky-blue);outline:none;transition:border-color .2s}
+.count-input:focus{border-color:var(--warm-orange)}
+.btn-check{background:var(--sky-blue);color:var(--white);border:none;padding:.6rem 1.4rem;border-radius:50px;font-family:'Nunito',sans-serif;font-weight:800;font-size:.9rem;cursor:pointer;transition:transform .2s,box-shadow .2s;box-shadow:0 4px 14px rgba(74,144,226,0.3)}
+.btn-check:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(74,144,226,0.4)}
+.feedback{font-weight:800;font-size:1rem;min-height:1.5rem}
+.feedback.correct{color:var(--success)}
+.feedback.wrong{color:var(--error)}
+
+/* Number explanation */
+.number-row{display:flex;gap:.5rem;flex-wrap:wrap;justify-content:center;margin-top:.8rem}
+.num-chip{width:44px;height:44px;border-radius:12px;background:var(--sky-blue);color:var(--white);display:flex;align-items:center;justify-content:center;font-family:'Baloo 2',cursive;font-weight:800;font-size:1.3rem;cursor:pointer;transition:transform .2s,background .2s;animation:popIn .4s ease both}
+.num-chip:hover{transform:scale(1.15);background:var(--warm-orange)}
+@keyframes popIn{from{opacity:0;transform:scale(0.5)}to{opacity:1;transform:scale(1)}}
+.num-chip:nth-child(1){animation-delay:.05s}.num-chip:nth-child(2){animation-delay:.1s}.num-chip:nth-child(3){animation-delay:.15s}.num-chip:nth-child(4){animation-delay:.2s}.num-chip:nth-child(5){animation-delay:.25s}.num-chip:nth-child(6){animation-delay:.3s}.num-chip:nth-child(7){animation-delay:.35s}.num-chip:nth-child(8){animation-delay:.4s}.num-chip:nth-child(9){animation-delay:.45s}.num-chip:nth-child(10){animation-delay:.5s}
+.num-say{margin-top:.8rem;text-align:center;font-family:'Baloo 2',cursive;font-size:1.5rem;font-weight:800;color:var(--warm-orange);min-height:2rem}
+.explanation-text{font-size:.95rem;font-weight:600;line-height:1.7;color:var(--dark)}
+.btn-continue{display:inline-flex;align-items:center;gap:.5rem;background:var(--fresh-green);color:var(--white);border:none;padding:.7rem 1.8rem;border-radius:50px;font-family:'Nunito',sans-serif;font-weight:800;font-size:.95rem;cursor:pointer;margin-top:1.2rem;box-shadow:0 4px 14px rgba(82,196,26,0.3);transition:transform .2s}
+.btn-continue:hover{transform:translateY(-2px)}
+
+/* ─── PRACTICE TAB ─── */
+.practice-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem}
+.question-counter{font-size:.85rem;font-weight:800;color:var(--gray)}
+.question-progress{display:flex;gap:.4rem}
+.q-dot{width:28px;height:8px;border-radius:50px;background:var(--light-gray);transition:background .3s}
+.q-dot.done{background:var(--success)}
+.q-dot.active{background:var(--sky-blue)}
+
+.question-card{background:var(--light-yellow);border-radius:var(--r20);padding:2.5rem;text-align:center;margin-bottom:1.5rem;box-shadow:var(--shadow)}
+.question-objects{display:flex;justify-content:center;gap:.5rem;flex-wrap:wrap;margin-bottom:1.5rem;min-height:80px;align-items:center}
+.q-obj{font-size:3rem;animation:popIn .3s ease both}
+.question-text{font-family:'Baloo 2',cursive;font-size:1.4rem;font-weight:800;color:var(--dark);margin-bottom:1.5rem}
+.answer-options{display:grid;grid-template-columns:repeat(4,1fr);gap:.8rem;max-width:500px;margin:0 auto}
+.option-btn{font-family:'Baloo 2',cursive;font-size:1.6rem;font-weight:800;padding:1rem;border-radius:16px;border:3px solid var(--light-gray);background:var(--white);cursor:pointer;transition:all .2s;box-shadow:0 3px 10px rgba(0,0,0,0.06)}
+.option-btn:hover:not(:disabled){border-color:var(--sky-blue);background:var(--light-blue);transform:translateY(-3px)}
+.option-btn.correct-ans{border-color:var(--success);background:var(--light-green);color:var(--success)}
+.option-btn.wrong-ans{border-color:var(--error);background:#fde8e8;color:var(--error)}
+.practice-feedback{text-align:center;font-family:'Baloo 2',cursive;font-size:1.3rem;font-weight:800;min-height:2.5rem;margin-bottom:.5rem}
+.practice-feedback.correct{color:var(--success)}
+.practice-feedback.wrong{color:var(--error)}
+.btn-next{display:block;margin:0 auto;background:var(--sky-blue);color:var(--white);border:none;padding:.75rem 2.5rem;border-radius:50px;font-family:'Nunito',sans-serif;font-weight:800;font-size:1rem;cursor:pointer;box-shadow:0 4px 14px rgba(74,144,226,0.3);transition:transform .2s}
+.btn-next:hover{transform:translateY(-2px)}
+
+/* Results */
+.results-card{background:var(--white);border-radius:var(--r20);padding:3rem 2rem;text-align:center;box-shadow:var(--shadow)}
+.results-emoji{font-size:5rem;margin-bottom:1rem;animation:bounce 1.5s ease-in-out infinite}
+.results-title{font-family:'Baloo 2',cursive;font-size:2rem;font-weight:800;color:var(--dark);margin-bottom:.5rem}
+.results-score{font-size:3.5rem;font-weight:900;color:var(--sky-blue);margin-bottom.5rem}
+.results-msg{font-size:1rem;color:var(--gray);font-weight:600;margin-bottom:2rem}
+.results-btns{display:flex;justify-content:center;gap:1rem}
+.btn-retry{background:var(--light-blue);color:var(--sky-blue);border:2px solid var(--sky-blue);padding:.7rem 1.8rem;border-radius:50px;font-family:'Nunito',sans-serif;font-weight:800;font-size:.95rem;cursor:pointer;transition:all .2s}
+.btn-retry:hover{background:var(--sky-blue);color:var(--white)}
+.btn-next-skill{background:var(--warm-orange);color:var(--white);border:none;padding:.7rem 1.8rem;border-radius:50px;font-family:'Nunito',sans-serif;font-weight:800;font-size:.95rem;cursor:pointer;box-shadow:0 4px 14px rgba(255,140,66,0.3);transition:transform .2s}
+.btn-next-skill:hover{transform:translateY(-2px)}
+
+/* ─── GAMES TAB ─── */
+.games-intro{font-family:'Baloo 2',cursive;font-size:1.3rem;font-weight:800;color:var(--dark);margin-bottom:1.5rem}
+.games-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem}
+.game-card{background:var(--white);border-radius:var(--r20);overflow:hidden;box-shadow:var(--shadow);cursor:pointer;transition:transform .2s,box-shadow .2s}
+.game-card:hover{transform:translateY(-5px);box-shadow:var(--shadow-h)}
+.game-thumb{height:140px;display:flex;align-items:center;justify-content:center;font-size:4rem;position:relative}
+.game-thumb.g1{background:linear-gradient(135deg,#4A90E2 0%,#74b5f7 100%)}
+.game-thumb.g2{background:linear-gradient(135deg,#FFD700 0%,#ffe066 100%)}
+.game-thumb.g3{background:linear-gradient(135deg,#52C41A 0%,#86e84a 100%)}
+.game-thumb.g4{background:linear-gradient(135deg,#FF8C42 0%,#ffb87a 100%)}
+.game-info{padding:1.2rem}
+.game-name{font-family:'Baloo 2',cursive;font-weight:800;font-size:1.05rem;margin-bottom:.4rem}
+.game-meta{display:flex;gap:.6rem;margin-bottom:.8rem}
+.game-tag{font-size:.74rem;font-weight:700;background:var(--light-blue);color:var(--sky-blue);padding:.2rem .6rem;border-radius:50px}
+.btn-play-game{width:100%;background:var(--sky-blue);color:var(--white);border:none;padding:.6rem;border-radius:12px;font-family:'Nunito',sans-serif;font-weight:800;font-size:.9rem;cursor:pointer;transition:background .2s}
+.btn-play-game:hover{background:#2E6DB4}
+
+/* Mini Number Game */
+.mini-game{background:var(--light-yellow);border-radius:var(--r20);padding:2rem;margin-top:1.5rem;text-align:center;box-shadow:var(--shadow)}
+.mini-game-title{font-family:'Baloo 2',cursive;font-size:1.2rem;font-weight:800;margin-bottom:1rem;color:var(--dark)}
+.mini-game-display{font-size:5rem;margin-bottom:1rem;min-height:80px;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:.3rem}
+.mini-game-question{font-family:'Baloo 2',cursive;font-size:1.1rem;font-weight:800;color:var(--dark);margin-bottom:1rem}
+.mini-options{display:flex;justify-content:center;gap:1rem;flex-wrap:wrap}
+.mini-opt{font-family:'Baloo 2',cursive;font-size:1.8rem;font-weight:800;width:68px;height:68px;border-radius:16px;border:3px solid var(--sunny-yellow);background:var(--white);cursor:pointer;transition:all .2s}
+.mini-opt:hover{transform:scale(1.1);border-color:var(--warm-orange)}
+.mini-opt.correct-ans{background:var(--light-green);border-color:var(--fresh-green)}
+.mini-opt.wrong-ans{background:#fde8e8;border-color:var(--error)}
+.mini-score{font-weight:800;font-size:.9rem;color:var(--gray);margin-top:1rem}
+.mini-feedback{font-family:'Baloo 2',cursive;font-size:1.3rem;font-weight:800;min-height:2rem;margin:.5rem 0}
+.mini-feedback.correct{color:var(--success)}
+.mini-feedback.wrong{color:var(--error)}
+
+/* ─── PRINTABLES TAB ─── */
+.printables-intro{font-size:.95rem;font-weight:600;color:var(--gray);margin-bottom:1.5rem}
+.printables-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem}
+.print-card{background:var(--white);border-radius:var(--r20);overflow:hidden;box-shadow:var(--shadow);transition:transform .2s,box-shadow .2s}
+.print-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-h)}
+.print-thumb{height:160px;display:flex;align-items:center;justify-content:center;position:relative}
+.print-thumb.p1{background:linear-gradient(135deg,#FFE4D6 0%,#ffc5a8 100%)}
+.print-thumb.p2{background:linear-gradient(135deg,#E8F4F8 0%,#c8e6f8 100%)}
+.print-thumb.p3{background:linear-gradient(135deg,#F0FFF0 0%,#c8f5c8 100%)}
+.print-thumb.p4{background:linear-gradient(135deg,#FFFACD 0%,#fff0a0 100%)}
+.print-thumb.p5{background:linear-gradient(135deg,#FFE4F0 0%,#ffbbd8 100%)}
+.print-thumb.p6{background:linear-gradient(135deg,#E8F4F8 0%,#b0d8f0 100%)}
+.print-preview{font-size:4.5rem}
+.print-badge{position:absolute;top:10px;right:10px;background:var(--fresh-green);color:var(--white);font-size:.7rem;font-weight:800;padding:.2rem .5rem;border-radius:50px}
+.print-info{padding:1.1rem}
+.print-name{font-weight:800;font-size:.92rem;margin-bottom:.3rem}
+.print-theme{font-size:.78rem;color:var(--gray);font-weight:600;margin-bottom:.8rem}
+.btn-download{width:100%;background:var(--warm-orange);color:var(--white);border:none;padding:.55rem;border-radius:12px;font-family:'Nunito',sans-serif;font-weight:800;font-size:.85rem;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.4rem;transition:background .2s}
+.btn-download:hover{background:#e07730}
+
+/* Related skills */
+.related-section{background:var(--white);border-radius:var(--r20);padding:1.8rem 2.5rem;box-shadow:var(--shadow);margin-top:1.5rem}
+.related-title{font-family:'Baloo 2',cursive;font-size:1.1rem;font-weight:800;margin-bottom:1.2rem;color:var(--dark)}
+.related-grid{display:flex;gap:1rem;flex-wrap:wrap}
+.related-card{background:var(--light-blue);border-radius:14px;padding:.8rem 1.2rem;display:flex;align-items:center;gap:.7rem;cursor:pointer;transition:background .2s;text-decoration:none;flex:0 0 auto}
+.related-card:hover{background:#cde4f8}
+.related-emoji{font-size:1.5rem}
+.related-info{display:flex;flex-direction:column}
+.related-name{font-weight:800;font-size:.85rem;color:var(--dark)}
+.related-grade{font-size:.74rem;color:var(--gray);font-weight:600}
+
+/* Confetti */
+.confetti-wrap{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:999;display:none}
+.confetti-wrap.show{display:block}
+.confetti-piece{position:absolute;width:10px;height:10px;border-radius:2px;animation:confettiFall 2.5s ease-in forwards}
+@keyframes confettiFall{0%{transform:translateY(-10px) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
+
+/* Responsive */
+@media(max-width:700px){
+  .learn-grid,.games-grid,.printables-grid,.answer-options{grid-template-columns:1fr}
+  .skill-header{grid-template-columns:1fr}
+  .skill-header-right{display:none}
+  .answer-options{grid-template-columns:repeat(2,1fr)}
+}
+
+    #topicTabsWrap .tab-btn {
+      padding: 7px 13px; border-radius: 50px;
+      border: 2px solid #DDE5ED; background: white;
+      font-family: 'Fredoka', sans-serif; font-size: .82rem;
+      font-weight: 500; cursor: pointer; transition: all .2s;
+    }
+    #topicTabsWrap .tab-btn:hover:not(.active) { border-color: var(--sky-blue); color: var(--sky-blue); }
+    #topicTabsWrap .tab-btn.active { background: var(--sky-blue); color: white; border-color: var(--sky-blue); box-shadow: 0 3px 10px rgba(74,144,226,.3); }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="kivora-homepage.html">🦉 Kivora<span class="dot">.</span></a>
+  <div class="breadcrumb">
+    <a href="#">Pre-K</a>
+    <span>›</span>
+    <a href="#">Math</a>
+    <span>›</span>
+    <span>Counting 1–10</span>
+  </div>
+  <div class="nav-right">
+    <div class="avatar">👧</div>
+  </div>
+</nav>
+
+<!-- CONFETTI -->
+<div class="confetti-wrap" id="confetti"></div>
+
+<div class="page-wrap">
+
+  <!-- SKILL HEADER -->
+  <div class="skill-header">
+    <div class="skill-header-left">
+      <a class="skill-back" href="index.html">← Back to Pre-K Math</a>
+      <h1 class="skill-title">Counting 1–10</h1>
+      <div class="skill-meta">
+        <span class="meta-badge">🎒 Pre-K</span>
+        <span class="meta-badge">⏱ 15 min</span>
+        <span class="meta-badge orange">⭐ Easy</span>
+        <span class="meta-badge green">🔢 Math</span>
+      </div>
+      <div class="progress-section">
+        <div class="progress-label"><span>Your Progress</span><span id="progress-pct">40% Complete</span></div>
+        <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progress-bar"></div></div>
+        <div class="progress-sub">Practiced 5 times · Last practiced: Today</div>
+      </div>
+    </div>
+    <div class="skill-header-right">
+      <div class="skill-icon-big">🔢</div>
+      <div class="practice-count">5 sessions completed</div>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs-wrap">
+    <div class="tab-list">
+      <button class="tab-btn active" onclick="switchTab('learn',this)">📚 Learn</button>
+      <button class="tab-btn" onclick="switchTab('practice',this)">✏️ Practice</button>
+      <button class="tab-btn" onclick="switchTab('games',this)">🎮 Games</button>
+      <button class="tab-btn" onclick="switchTab('printables',this)">🖨️ Printables</button>
+    </div>
+
+    <!-- ══ LEARN TAB ══ -->
+    <div class="tab-panel active" id="tab-learn">
+      <div class="learn-grid">
+
+        <!-- Video lesson -->
+        <div class="learn-card">
+          <div class="learn-card-label">📹 VIDEO LESSON · 3 min</div>
+          <div class="video-placeholder" onclick="alert('Video player would launch here!')">
+            <div class="video-play">▶</div>
+            <div class="video-title-text">Counting 1–10 Adventure</div>
+            <div class="video-dur-text">3:20 min · Pre-K</div>
+          </div>
+        </div>
+
+        <!-- Guided practice -->
+        <div class="learn-card" style="background:var(--light-pink)">
+          <div class="learn-card-label" style="color:var(--soft-pink)">🖐 GUIDED PRACTICE</div>
+          <div class="guided-label">Let's count together! Tap each star as you count it:</div>
+          <div class="count-objects" id="guide-objects">
+            <span class="count-obj" onclick="countMe(this)">⭐</span>
+            <span class="count-obj" onclick="countMe(this)">⭐</span>
+            <span class="count-obj" onclick="countMe(this)">⭐</span>
+            <span class="count-obj" onclick="countMe(this)">⭐</span>
+            <span class="count-obj" onclick="countMe(this)">⭐</span>
+            <span class="count-obj" onclick="countMe(this)">⭐</span>
+            <span class="count-obj" onclick="countMe(this)">⭐</span>
+          </div>
+          <div class="count-input-row">
+            <span class="count-question">How many stars? </span>
+            <input class="count-input" id="count-answer" type="number" min="1" max="20" placeholder="?">
+            <button class="btn-check" onclick="checkCount()">Check ✓</button>
+          </div>
+          <div class="feedback" id="count-feedback"></div>
+        </div>
+
+        <!-- Number explanation -->
+        <div class="learn-card full" style="background:var(--light-green)">
+          <div class="learn-card-label" style="color:var(--fresh-green)">💡 EXPLANATION</div>
+          <p class="explanation-text">Counting is saying numbers in order. We use counting to know <strong>how many objects</strong> we have.<br><br>Let's learn the numbers 1–10 — tap a number to hear it!</p>
+          <div class="number-row">
+            <div class="num-chip" onclick="sayNumber(1)">1</div>
+            <div class="num-chip" onclick="sayNumber(2)">2</div>
+            <div class="num-chip" onclick="sayNumber(3)">3</div>
+            <div class="num-chip" onclick="sayNumber(4)">4</div>
+            <div class="num-chip" onclick="sayNumber(5)">5</div>
+            <div class="num-chip" onclick="sayNumber(6)">6</div>
+            <div class="num-chip" onclick="sayNumber(7)">7</div>
+            <div class="num-chip" onclick="sayNumber(8)">8</div>
+            <div class="num-chip" onclick="sayNumber(9)">9</div>
+            <div class="num-chip" onclick="sayNumber(10)" style="background:var(--warm-orange)">10</div>
+          </div>
+          <div class="num-say" id="num-say"></div>
+          <button class="btn-continue" onclick="switchTabByName('practice')">Continue to Practice →</button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ══ PRACTICE TAB ══ -->
+    <div class="tab-panel" id="tab-practice">
+      
+    <!-- ── TOPIC FILTER TABS (100 questions) ── -->
+    <div id="topicTabsWrap" style="display:flex;gap:7px;flex-wrap:wrap;justify-content:center;margin-bottom:16px">
+      <button class="tab-btn active" id="tab-all"      onclick="setTopic(this,'all')">📚 All Topics</button>
+      <button class="tab-btn"        id="tab-count1"   onclick="setTopic(this,'count1')">🔢 Count 1–10</button>
+      <button class="tab-btn"        id="tab-count2"   onclick="setTopic(this,'count2')">🔢 Count 11–20</button>
+      <button class="tab-btn"        id="tab-add"      onclick="setTopic(this,'add')">➕ Addition</button>
+      <button class="tab-btn"        id="tab-sub"      onclick="setTopic(this,'sub')">➖ Subtraction</button>
+      <button class="tab-btn"        id="tab-shapes"   onclick="setTopic(this,'shapes')">🔷 Shapes</button>
+      <button class="tab-btn"        id="tab-patterns" onclick="setTopic(this,'patterns')">🔄 Patterns</button>
+    </div>
+    <div id="bankProgress" style="text-align:center;font-family:'Fredoka',sans-serif;font-size:.85rem;color:#95A5A6;margin-bottom:8px">
+      Showing <span id="bankShown">5</span> of <span id="bankTotal">100</span> questions
+    </div>
+    <div id="practice-area">
+        <div class="practice-header">
+          <div class="question-counter">Question <span id="q-num">1</span> of 5</div>
+          <div class="question-progress" id="q-progress">
+            <div class="q-dot active"></div>
+            <div class="q-dot"></div>
+            <div class="q-dot"></div>
+            <div class="q-dot"></div>
+            <div class="q-dot"></div>
+          </div>
+        </div>
+        <div class="question-card">
+          <div class="question-objects" id="q-objects"></div>
+          <div class="question-text" id="q-text">How many objects are there?</div>
+          <div class="answer-options" id="q-options"></div>
+        </div>
+        <div class="practice-feedback" id="practice-feedback"></div>
+        <button class="btn-next" id="btn-next" style="display:none" onclick="nextQuestion()">Next Question →</button>
+      </div>
+      <div id="results-area" style="display:none">
+        <div class="results-card">
+          <div class="results-emoji" id="results-emoji">🌟</div>
+          <div class="results-title" id="results-title">Amazing Work!</div>
+          <div class="results-score" id="results-score">5/5</div>
+          <div class="results-msg" id="results-msg">You got all 5 questions right! Great job!</div>
+          <div class="results-btns">
+            <button class="btn-retry" onclick="restartPractice()">🔄 Try Again</button>
+            <button class="btn-next-skill" onclick="switchTabByName('games')">Play Games 🎮</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ GAMES TAB ══ -->
+    <div class="tab-panel" id="tab-games">
+      <div class="games-intro">Practice with Games! 🎯</div>
+      <div class="games-grid">
+        <div class="game-card">
+          <div class="game-thumb g1">🚀</div>
+          <div class="game-info">
+            <div class="game-name">Counting Adventure</div>
+            <div class="game-meta">
+              <span class="game-tag">⏱ 10 min</span>
+              <span class="game-tag">⭐ Easy</span>
+            </div>
+            <button class="btn-play-game" onclick="launchMiniGame()">▶ Play Game</button>
+          </div>
+        </div>
+        <div class="game-card">
+          <div class="game-thumb g2">💥</div>
+          <div class="game-info">
+            <div class="game-name">Number Blast</div>
+            <div class="game-meta">
+              <span class="game-tag">⏱ 5 min</span>
+              <span class="game-tag">⭐ Easy</span>
+            </div>
+            <button class="btn-play-game" onclick="launchMiniGame()">▶ Play Game</button>
+          </div>
+        </div>
+        <div class="game-card">
+          <div class="game-thumb g3">🐸</div>
+          <div class="game-info">
+            <div class="game-name">Frog Jump Count</div>
+            <div class="game-meta">
+              <span class="game-tag">⏱ 8 min</span>
+              <span class="game-tag">⭐⭐ Medium</span>
+            </div>
+            <button class="btn-play-game" onclick="launchMiniGame()">▶ Play Game</button>
+          </div>
+        </div>
+        <div class="game-card">
+          <div class="game-thumb g4">🍎</div>
+          <div class="game-info">
+            <div class="game-name">Apple Picker</div>
+            <div class="game-meta">
+              <span class="game-tag">⏱ 6 min</span>
+              <span class="game-tag">⭐ Easy</span>
+            </div>
+            <button class="btn-play-game" onclick="launchMiniGame()">▶ Play Game</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Inline mini-game -->
+      <div class="mini-game" id="mini-game" style="display:none">
+        <div class="mini-game-title">🎯 Quick Count! — How many?</div>
+        <div class="mini-game-display" id="mg-display"></div>
+        <div class="mini-game-question" id="mg-question">How many do you see?</div>
+        <div class="mini-feedback" id="mg-feedback"></div>
+        <div class="mini-options" id="mg-options"></div>
+        <div class="mini-score">Score: <span id="mg-score">0</span> 🌟</div>
+      </div>
+    </div>
+
+    <!-- ══ PRINTABLES TAB ══ -->
+    <div class="tab-panel" id="tab-printables">
+      <p class="printables-intro">Download & Print — free worksheets and colouring pages for Counting 1–10</p>
+      <div class="printables-grid">
+        <div class="print-card">
+          <div class="print-thumb p1">
+            <span class="print-preview">🦁</span>
+            <span class="print-badge">FREE</span>
+          </div>
+          <div class="print-info">
+            <div class="print-name">Animals Colouring Page</div>
+            <div class="print-theme">🎨 Animals Theme · Pre-K</div>
+            <button class="btn-download">⬇ Print / Download</button>
+          </div>
+        </div>
+        <div class="print-card">
+          <div class="print-thumb p2">
+            <span class="print-preview">🔷</span>
+            <span class="print-badge">FREE</span>
+          </div>
+          <div class="print-info">
+            <div class="print-name">Shapes & Numbers</div>
+            <div class="print-theme">📐 Shapes Theme · Pre-K</div>
+            <button class="btn-download">⬇ Print / Download</button>
+          </div>
+        </div>
+        <div class="print-card">
+          <div class="print-thumb p3">
+            <span class="print-preview">🌿</span>
+            <span class="print-badge">FREE</span>
+          </div>
+          <div class="print-info">
+            <div class="print-name">Nature Count Worksheet</div>
+            <div class="print-theme">🌱 Nature Theme · Pre-K</div>
+            <button class="btn-download">⬇ Print / Download</button>
+          </div>
+        </div>
+        <div class="print-card">
+          <div class="print-thumb p4">
+            <span class="print-preview">⭐</span>
+          </div>
+          <div class="print-info">
+            <div class="print-name">Count the Stars</div>
+            <div class="print-theme">🌟 Space Theme · Pre-K</div>
+            <button class="btn-download">⬇ Print / Download</button>
+          </div>
+        </div>
+        <div class="print-card">
+          <div class="print-thumb p5">
+            <span class="print-preview">🎂</span>
+          </div>
+          <div class="print-info">
+            <div class="print-name">Birthday Candles Count</div>
+            <div class="print-theme">🎉 Celebrations · Pre-K</div>
+            <button class="btn-download">⬇ Print / Download</button>
+          </div>
+        </div>
+        <div class="print-card">
+          <div class="print-thumb p6">
+            <span class="print-preview">🐟</span>
+          </div>
+          <div class="print-info">
+            <div class="print-name">Ocean Friends Count</div>
+            <div class="print-theme">🌊 Ocean Theme · Pre-K</div>
+            <button class="btn-download">⬇ Print / Download</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end tabs-wrap -->
+
+  <!-- RELATED SKILLS -->
+  <div class="related-section">
+    <div class="related-title">Related Skills</div>
+    <div class="related-grid">
+      <a class="related-card" href="#">
+        <span class="related-emoji">➕</span>
+        <div class="related-info"><span class="related-name">Addition (1–5)</span><span class="related-grade">Pre-K · Math</span></div>
+      </a>
+      <a class="related-card" href="#">
+        <span class="related-emoji">🔤</span>
+        <div class="related-info"><span class="related-name">Letter Recognition</span><span class="related-grade">Pre-K · Reading</span></div>
+      </a>
+      <a class="related-card" href="#">
+        <span class="related-emoji">📐</span>
+        <div class="related-info"><span class="related-name">Basic Shapes</span><span class="related-grade">Pre-K · Math</span></div>
+      </a>
+      <a class="related-card" href="#">
+        <span class="related-emoji">🔢</span>
+        <div class="related-info"><span class="related-name">Counting 11–20</span><span class="related-grade">Kindergarten · Math</span></div>
+      </a>
+      <a class="related-card" href="#">
+        <span class="related-emoji">🎨</span>
+        <div class="related-info"><span class="related-name">Colour by Number</span><span class="related-grade">Pre-K · Arts</span></div>
+      </a>
+    </div>
+  </div>
+
+</div><!-- end page-wrap -->
+
+<script>
+
+const QBANK=[
+  {t:'c1',q:'How many? 🍎🍎🍎',a:3,o:[1,2,3,4]},{t:'c1',q:'How many? 🌟🌟🌟🌟🌟',a:5,o:[3,4,5,6]},
+  {t:'c1',q:'How many? 🐶🐶',a:2,o:[1,2,3,4]},{t:'c1',q:'How many? 🎈🎈🎈🎈',a:4,o:[2,3,4,5]},
+  {t:'c1',q:'How many? 🍦🍦🍦🍦🍦🍦',a:6,o:[4,5,6,7]},{t:'c1',q:'How many? 🐸×7',a:7,o:[5,6,7,8]},
+  {t:'c1',q:'How many? 🌸×8',a:8,o:[6,7,8,9]},{t:'c1',q:'How many? 🦋×9',a:9,o:[7,8,9,10]},
+  {t:'c1',q:'How many? 🍕×10',a:10,o:[8,9,10,11]},{t:'c1',q:'How many? 🚀🚀🚀',a:3,o:[1,2,3,4]},
+  {t:'c1',q:'How many? 🐱🐱🐱🐱🐱',a:5,o:[3,4,5,6]},{t:'c1',q:'How many? 🌈',a:1,o:[1,2,3,4]},
+  {t:'c1',q:'How many? 🏠×6',a:6,o:[4,5,6,7]},{t:'c1',q:'How many? ⭐×7',a:7,o:[5,6,7,8]},
+  {t:'c1',q:'How many? 🍉🍉',a:2,o:[1,2,3,4]},{t:'c1',q:'How many? 🐠🐠🐠🐠',a:4,o:[2,3,4,5]},
+  {t:'c1',q:'How many? 🎃×8',a:8,o:[6,7,8,9]},{t:'c1',q:'How many? 🦁×9',a:9,o:[7,8,9,10]},
+  {t:'c1',q:'How many? 🌻×10',a:10,o:[8,9,10,11]},{t:'c1',q:'How many? 🍊×5',a:5,o:[3,4,5,6]},
+  {t:'c2',q:'Count: ⭐×11',a:11,o:[9,10,11,12]},{t:'c2',q:'Count: 🍎×12',a:12,o:[10,11,12,13]},
+  {t:'c2',q:'Count: 🎈×13',a:13,o:[11,12,13,14]},{t:'c2',q:'Count: 🌸×14',a:14,o:[12,13,14,15]},
+  {t:'c2',q:'Count: 🐶×15',a:15,o:[13,14,15,16]},{t:'c2',q:'Count: 🏠×16',a:16,o:[14,15,16,17]},
+  {t:'c2',q:'Count: 🚀×17',a:17,o:[15,16,17,18]},{t:'c2',q:'Count: 🐱×18',a:18,o:[16,17,18,19]},
+  {t:'c2',q:'Count: 🌈×19',a:19,o:[17,18,19,20]},{t:'c2',q:'Count: ⭐×20',a:20,o:[18,19,20,21]},
+  {t:'c2',q:'Count: 🍕×11',a:11,o:[9,10,11,12]},{t:'c2',q:'Count: 🦋×12',a:12,o:[10,11,12,13]},
+  {t:'c2',q:'Count: 🌻×13',a:13,o:[11,12,13,14]},{t:'c2',q:'Count: 🍊×14',a:14,o:[12,13,14,15]},
+  {t:'c2',q:'Count: 🐠×15',a:15,o:[13,14,15,16]},{t:'c2',q:'Count: 🎃×16',a:16,o:[14,15,16,17]},
+  {t:'c2',q:'Count: 🦁×17',a:17,o:[15,16,17,18]},{t:'c2',q:'Count: 🌟×18',a:18,o:[16,17,18,19]},
+  {t:'c2',q:'Count: 🍦×19',a:19,o:[17,18,19,20]},{t:'c2',q:'Count: 🐸×20',a:20,o:[18,19,20,21]},
+  {t:'add',q:'1 + 1 = ?',a:2,o:[1,2,3,4]},{t:'add',q:'1 + 2 = ?',a:3,o:[1,2,3,4]},
+  {t:'add',q:'2 + 2 = ?',a:4,o:[2,3,4,5]},{t:'add',q:'2 + 3 = ?',a:5,o:[3,4,5,6]},
+  {t:'add',q:'3 + 3 = ?',a:6,o:[4,5,6,7]},{t:'add',q:'3 + 4 = ?',a:7,o:[5,6,7,8]},
+  {t:'add',q:'4 + 4 = ?',a:8,o:[6,7,8,9]},{t:'add',q:'4 + 5 = ?',a:9,o:[7,8,9,10]},
+  {t:'add',q:'5 + 5 = ?',a:10,o:[8,9,10,11]},{t:'add',q:'1 + 3 = ?',a:4,o:[2,3,4,5]},
+  {t:'add',q:'2 + 4 = ?',a:6,o:[4,5,6,7]},{t:'add',q:'3 + 5 = ?',a:8,o:[6,7,8,9]},
+  {t:'add',q:'1 + 4 = ?',a:5,o:[3,4,5,6]},{t:'add',q:'2 + 5 = ?',a:7,o:[5,6,7,8]},
+  {t:'add',q:'1 + 5 = ?',a:6,o:[4,5,6,7]},{t:'add',q:'4 + 6 = ?',a:10,o:[8,9,10,11]},
+  {t:'add',q:'3 + 6 = ?',a:9,o:[7,8,9,10]},{t:'add',q:'2 + 6 = ?',a:8,o:[6,7,8,9]},
+  {t:'add',q:'1 + 6 = ?',a:7,o:[5,6,7,8]},{t:'add',q:'5 + 4 = ?',a:9,o:[7,8,9,10]},
+  {t:'sub',q:'5 - 1 = ?',a:4,o:[2,3,4,5]},{t:'sub',q:'5 - 2 = ?',a:3,o:[1,2,3,4]},
+  {t:'sub',q:'4 - 1 = ?',a:3,o:[1,2,3,4]},{t:'sub',q:'6 - 2 = ?',a:4,o:[2,3,4,5]},
+  {t:'sub',q:'6 - 3 = ?',a:3,o:[1,2,3,4]},{t:'sub',q:'7 - 2 = ?',a:5,o:[3,4,5,6]},
+  {t:'sub',q:'7 - 3 = ?',a:4,o:[2,3,4,5]},{t:'sub',q:'8 - 3 = ?',a:5,o:[3,4,5,6]},
+  {t:'sub',q:'8 - 4 = ?',a:4,o:[2,3,4,5]},{t:'sub',q:'9 - 4 = ?',a:5,o:[3,4,5,6]},
+  {t:'sub',q:'10 - 5 = ?',a:5,o:[3,4,5,6]},{t:'sub',q:'10 - 4 = ?',a:6,o:[4,5,6,7]},
+  {t:'sub',q:'10 - 3 = ?',a:7,o:[5,6,7,8]},{t:'sub',q:'10 - 2 = ?',a:8,o:[6,7,8,9]},
+  {t:'sub',q:'10 - 1 = ?',a:9,o:[7,8,9,10]},{t:'sub',q:'9 - 3 = ?',a:6,o:[4,5,6,7]},
+  {t:'sub',q:'9 - 2 = ?',a:7,o:[5,6,7,8]},{t:'sub',q:'8 - 5 = ?',a:3,o:[1,2,3,4]},
+  {t:'sub',q:'7 - 4 = ?',a:3,o:[1,2,3,4]},{t:'sub',q:'6 - 1 = ?',a:5,o:[3,4,5,6]},
+  {t:'shp',q:'Sides on a triangle?',a:3,o:[2,3,4,5]},{t:'shp',q:'Sides on a square?',a:4,o:[2,3,4,5]},
+  {t:'shp',q:'Sides on a rectangle?',a:4,o:[2,3,4,5]},{t:'shp',q:'Sides on a pentagon?',a:5,o:[4,5,6,7]},
+  {t:'shp',q:'Sides on a hexagon?',a:6,o:[4,5,6,7]},{t:'shp',q:'Corners on a triangle?',a:3,o:[2,3,4,5]},
+  {t:'shp',q:'Corners on a square?',a:4,o:[2,3,4,5]},{t:'shp',q:'Sides on a circle?',a:0,o:[0,1,2,4]},
+  {t:'shp',q:'Sides on a diamond?',a:4,o:[2,3,4,5]},{t:'shp',q:'Sides on an octagon?',a:8,o:[6,7,8,9]},
+  {t:'pat',q:'Bigger: 5 or 8?',a:8,o:[4,5,7,8]},{t:'pat',q:'Smaller: 3 or 7?',a:3,o:[2,3,6,7]},
+  {t:'pat',q:'After 9 comes?',a:10,o:[8,9,10,11]},{t:'pat',q:'Before 5 comes?',a:4,o:[3,4,5,6]},
+  {t:'pat',q:'More: 6 or 4?',a:6,o:[4,5,6,7]},{t:'pat',q:'2,4,6,8 next?',a:10,o:[8,9,10,12]},
+  {t:'pat',q:'5,10,15 next?',a:20,o:[18,19,20,25]},{t:'pat',q:'One more than 7?',a:8,o:[6,7,8,9]},
+  {t:'pat',q:'One less than 10?',a:9,o:[8,9,10,11]},{t:'pat',q:'3,6,9 next?',a:12,o:[10,11,12,13]}
+];
+
+function getFilteredQ(topic){return topic==='all'?[...QBANK]:QBANK.filter(q=>q.t===topic);}
+// ── TAB SWITCHING ──
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  btn.classList.add('active');
+  if (name === 'practice') initPractice();
+}
+function switchTabByName(name) {
+  const btns = document.querySelectorAll('.tab-btn');
+  const map = {learn:0, practice:1, games:2, printables:3};
+  switchTab(name, btns[map[name]]);
+}
+
+// ── LEARN TAB ──
+let countedStars = 0;
+function countMe(el) {
+  if (el.style.opacity === '0.4') return;
+  el.style.opacity = '0.4';
+  el.classList.add('counted');
+  countedStars++;
+  setTimeout(() => el.classList.remove('counted'), 300);
+}
+function checkCount() {
+  const val = parseInt(document.getElementById('count-answer').value);
+  const stars = document.querySelectorAll('#guide-objects .count-obj').length;
+  const fb = document.getElementById('count-feedback');
+  if (val === stars) {
+    fb.textContent = '🎉 Correct! There are ' + stars + ' stars!';
+    fb.className = 'feedback correct';
+    launchConfetti();
+  } else if (!val) {
+    fb.textContent = 'Try tapping the stars first, then type your answer!';
+    fb.className = 'feedback';
+  } else {
+    fb.textContent = '🔍 Not quite — try counting again carefully!';
+    fb.className = 'feedback wrong';
+    document.querySelectorAll('#guide-objects .count-obj').forEach(s => s.style.opacity = '1');
+    countedStars = 0;
+  }
+}
+
+const numWords = ['','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten'];
+function sayNumber(n) {
+  const display = document.getElementById('num-say');
+  display.textContent = numWords[n] + ' — ' + '🔵'.repeat(n);
+  display.style.animation = 'none';
+  void display.offsetWidth;
+  display.style.animation = 'popIn .3s ease';
+}
+
+// ── PRACTICE TAB ──
+const EMOJIS = ['🍎','🌟','🐱','🦋','🌸','🚗','🎈','🐸','🍕','🏀'];
+let questions=[], qIndex=0, score=0, answered=false;
+
+function makeQuestions() {
+  questions = [];
+  const usedNums = new Set();
+  while(questions.length < 5) {
+    const correct = Math.floor(Math.random()*8)+2;
+    if(usedNums.has(correct)) continue;
+    usedNums.add(correct);
+    const emoji = EMOJIS[Math.floor(Math.random()*EMOJIS.length)];
+    const opts = new Set([correct]);
+    while(opts.size < 4) opts.add(Math.max(1,correct+Math.floor(Math.random()*5)-2));
+    questions.push({correct, emoji, opts:[...opts].sort(()=>Math.random()-.5)});
+  }
+}
+
+function initPractice() {
+  // Build session from filtered bank (pick 5 random questions)
+  const bank = getFilteredBank ? getFilteredBank() : QUESTION_BANK;
+  const shuffled = [...bank].sort(() => Math.random() - 0.5);
+  sessionBank = shuffled.slice(0, 5);
+  
+  // Update progress display
+  const shown = document.getElementById('bankShown');
+  const total = document.getElementById('bankTotal');
+  if (shown) shown.textContent = '5';
+  if (total) total.textContent = (getFilteredBank ? getFilteredBank() : QUESTION_BANK).length;
+  
+  // Override the module-level questions array for legacy code
+  questions.length = 0;
+  sessionBank.forEach(q => questions.push(q));
+  
+  qIndex = 0; score = 0; answered = false;
+  document.getElementById('practice-area').style.display = 'block';
+  document.getElementById('results-area').style.display = 'none';
+  document.querySelectorAll('.q-dot').forEach((dot, i) => {
+    dot.className = 'q-dot' + (i === 0 ? ' active' : '');
+  });
+  renderQuestion();
+}
+  // options
+  const optWrap = document.getElementById('q-options');
+  optWrap.innerHTML='';
+  q.opts.forEach(o=>{
+    const b=document.createElement('button');
+    b.className='option-btn'; b.textContent=o;
+    b.onclick=()=>answerQ(b,o,q.correct);
+    optWrap.appendChild(b);
+  });
+  document.getElementById('practice-feedback').textContent='';
+  document.getElementById('practice-feedback').className='practice-feedback';
+  document.getElementById('btn-next').style.display='none';
+  answered=false;
+}
+
+function answerQ(btn, chosen, correct) {
+  if(answered) return;
+  answered=true;
+  const fb=document.getElementById('practice-feedback');
+  document.querySelectorAll('.option-btn').forEach(b=>b.disabled=true);
+  if(chosen===correct){
+    btn.classList.add('correct-ans');
+    fb.textContent='🎉 Correct! Great counting!';
+    fb.className='practice-feedback correct';
+    score++;
+    launchConfetti();
+  } else {
+    btn.classList.add('wrong-ans');
+    document.querySelectorAll('.option-btn').forEach(b=>{if(parseInt(b.textContent)===correct)b.classList.add('correct-ans');});
+    fb.textContent='🔍 Not quite! The answer was '+correct+'. Keep trying!';
+    fb.className='practice-feedback wrong';
+  }
+  document.getElementById('btn-next').style.display='block';
+}
+
+function nextQuestion() {
+  qIndex++;
+  if(qIndex>=5) showResults();
+  else renderQuestion();
+}
+
+function showResults() {
+  document.getElementById('practice-area').style.display='none';
+  document.getElementById('results-area').style.display='block';
+  const pct=Math.round((score/5)*100);
+  document.getElementById('results-score').textContent=score+'/5';
+  if(score===5){
+    document.getElementById('results-emoji').textContent='🏆';
+    document.getElementById('results-title').textContent='Perfect Score!';
+    document.getElementById('results-msg').textContent='You got all 5 right! You are a counting star! ⭐';
+    launchConfetti();
+  } else if(score>=3){
+    document.getElementById('results-emoji').textContent='🌟';
+    document.getElementById('results-title').textContent='Great Job!';
+    document.getElementById('results-msg').textContent='You got '+score+' out of 5. Keep practising!';
+  } else {
+    document.getElementById('results-emoji').textContent='💪';
+    document.getElementById('results-title').textContent='Keep Going!';
+    document.getElementById('results-msg').textContent='You got '+score+' out of 5. You are getting better!';
+  }
+  updateProgress(pct);
+}
+
+function restartPractice() { initPractice(); }
+
+function updateProgress(pct) {
+  const bar=document.getElementById('progress-bar');
+  const label=document.getElementById('progress-pct');
+  const newPct=Math.min(100,40+Math.round(pct*0.6));
+  bar.style.width=newPct+'%';
+  label.textContent=newPct+'% Complete';
+}
+
+// ── GAMES TAB ──
+let mgScore=0, mgAnswer=0;
+function launchMiniGame() {
+  document.getElementById('mini-game').style.display='block';
+  document.getElementById('mini-game').scrollIntoView({behavior:'smooth'});
+  mgScore=0; document.getElementById('mg-score').textContent=0;
+  nextMiniQ();
+}
+function nextMiniQ() {
+  mgAnswer=Math.floor(Math.random()*8)+2;
+  const emoji=EMOJIS[Math.floor(Math.random()*EMOJIS.length)];
+  const display=document.getElementById('mg-display');
+  display.innerHTML='';
+  for(let i=0;i<mgAnswer;i++){const s=document.createElement('span');s.textContent=emoji;s.style.fontSize='2.6rem';s.style.animationDelay=(i*0.04)+'s';s.className='q-obj';display.appendChild(s);}
+  document.getElementById('mg-feedback').textContent='';
+  document.getElementById('mg-feedback').className='mini-feedback';
+  const opts=new Set([mgAnswer]);
+  while(opts.size<4)opts.add(Math.max(1,mgAnswer+Math.floor(Math.random()*5)-2));
+  const optWrap=document.getElementById('mg-options');
+  optWrap.innerHTML='';
+  [...opts].sort(()=>Math.random()-.5).forEach(o=>{
+    const b=document.createElement('button');
+    b.className='mini-opt'; b.textContent=o;
+    b.onclick=()=>{
+      const fb=document.getElementById('mg-feedback');
+      document.querySelectorAll('.mini-opt').forEach(x=>x.disabled=true);
+      if(o===mgAnswer){
+        b.classList.add('correct-ans');
+        fb.textContent='🎉 Yes!'; fb.className='mini-feedback correct';
+        mgScore++; document.getElementById('mg-score').textContent=mgScore;
+        launchConfetti();
+      } else {
+        b.classList.add('wrong-ans');
+        document.querySelectorAll('.mini-opt').forEach(x=>{if(parseInt(x.textContent)===mgAnswer)x.classList.add('correct-ans');});
+        fb.textContent='❌ Almost!'; fb.className='mini-feedback wrong';
+      }
+      setTimeout(nextMiniQ,1400);
+    };
+    optWrap.appendChild(b);
+  });
+}
+
+// ── CONFETTI ──
+function launchConfetti() {
+  const wrap=document.getElementById('confetti');
+  wrap.innerHTML=''; wrap.classList.add('show');
+  const colors=['#4A90E2','#FFD700','#FF8C42','#52C41A','#FF69B4','#2C3E50'];
+  for(let i=0;i<60;i++){
+    const el=document.createElement('div');
+    el.className='confetti-piece';
+    el.style.cssText=`left:${Math.random()*100}%;top:-10px;background:${colors[i%colors.length]};transform:rotate(${Math.random()*360}deg);animation-duration:${1.5+Math.random()*1.5}s;animation-delay:${Math.random()*0.5}s`;
+    wrap.appendChild(el);
+  }
+  setTimeout(()=>{wrap.innerHTML='';wrap.classList.remove('show');},3000);
+}
+
+// Init
+window.addEventListener('load', () => {
+  document.getElementById('progress-bar').style.width = '40%';
+});
+</script>
+</body>
+</html>
