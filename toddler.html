@@ -1,0 +1,1137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no"/>
+<title>Kivi's Toddler World — Kivora</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --ai:#FF4E8B;--ai-l:#FFF0F5;--ai-d:#C0185A;
+  --mm:#7C3AED;--mm-l:#EDE9FF;--mm-d:#5A1FBE;
+  --ck:#FF6B35;--ck-l:#FFF3EE;--ck-d:#CC4A1A;
+  --sn:#0EA5E9;--sn-l:#E0F4FF;--sn-d:#0779B8;
+  --gold:#FFD93D;--green:#22C55E;
+  --bg:#FFFBF5;--ease:cubic-bezier(.4,0,.2,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);font-family:'Nunito',sans-serif;}
+button{border:none;cursor:pointer;font-family:'Nunito',sans-serif;touch-action:manipulation;user-select:none;}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important;}}
+#app{width:100%;height:100%;position:relative;overflow:hidden;max-width:600px;margin:0 auto;display:flex;flex-direction:column;}
+
+/* SCREENS */
+.screen{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;opacity:0;pointer-events:none;transform:scale(.97);transition:opacity .3s var(--ease),transform .3s var(--ease);overflow-y:auto;-webkit-overflow-scrolling:touch;}
+.screen.active{opacity:1;pointer-events:all;transform:scale(1);}
+
+/* HUB */
+#hub{background:linear-gradient(160deg,#FFF8E8 0%,#FFE8F5 40%,#E8F0FF 70%,#E8FFF0 100%);justify-content:flex-start;padding:16px 14px 24px;}
+.hub-top{width:100%;text-align:center;padding:10px 0 14px;}
+.hub-kivi{font-size:4.5rem;display:block;animation:kiviBounce 2.5s ease-in-out infinite alternate;filter:drop-shadow(0 4px 16px rgba(124,58,237,.25));}
+@keyframes kiviBounce{0%{transform:translateY(0) scale(1);}100%{transform:translateY(-12px) scale(1.06);}}
+.hub-title{font-family:'Baloo 2',cursive;font-size:clamp(1.7rem,6vw,2.3rem);font-weight:800;color:#1E293B;line-height:1.1;margin-bottom:3px;}
+.hub-sub{font-size:.85rem;font-weight:700;color:#64748B;margin-bottom:14px;}
+.hub-mute{display:inline-flex;align-items:center;gap:6px;background:white;border:2px solid #e2e8f0;border-radius:50px;padding:7px 18px;font-size:.8rem;font-weight:800;color:#475569;cursor:pointer;transition:all .2s;margin-bottom:6px;}
+.hub-mute:hover{border-color:var(--mm);color:var(--mm);}
+.world-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%;}
+.wc{border-radius:22px;padding:22px 12px 18px;text-align:center;cursor:pointer;border:3px solid transparent;transition:transform .2s,box-shadow .2s;user-select:none;}
+.wc:hover{transform:translateY(-5px);box-shadow:0 14px 36px rgba(0,0,0,.14);}
+.wc:active{transform:scale(.96);}
+.wc-icon{font-size:3rem;display:block;margin-bottom:8px;}
+.wc-name{font-family:'Baloo 2',cursive;font-weight:800;font-size:1rem;line-height:1.25;margin-bottom:3px;}
+.wc-count{font-size:.72rem;font-weight:700;opacity:.7;}
+.wc-ai{background:linear-gradient(135deg,#FFE4EE,#FFC8DE);border-color:var(--ai);color:var(--ai-d);}
+.wc-mm{background:linear-gradient(135deg,#EDE9FF,#D8CCFF);border-color:var(--mm);color:var(--mm-d);}
+.wc-ck{background:linear-gradient(135deg,#FFE8DC,#FFD0BC);border-color:var(--ck);color:var(--ck-d);}
+.wc-sn{background:linear-gradient(135deg,#DDF2FF,#BAE6FF);border-color:var(--sn);color:var(--sn-d);}
+.hub-foot{margin-top:16px;text-align:center;font-size:.72rem;font-weight:700;color:#94A3B8;}
+
+/* WORLD LIST */
+#world-list{justify-content:flex-start;padding:0;}
+.wl-hdr{width:100%;padding:14px 14px 10px;display:flex;align-items:center;gap:10px;flex-shrink:0;position:sticky;top:0;background:inherit;z-index:5;}
+.back{width:42px;height:42px;border-radius:50%;background:white;border:2px solid #e2e8f0;display:flex;align-items:center;justify-content:center;font-size:1.15rem;cursor:pointer;flex-shrink:0;transition:all .2s;}
+.back:hover{border-color:var(--mm);background:var(--mm-l);}
+.wl-title{font-family:'Baloo 2',cursive;font-weight:800;font-size:1.3rem;flex:1;color:#1E293B;}
+.mute-sm{width:36px;height:36px;border-radius:50%;background:white;border:2px solid #e2e8f0;display:flex;align-items:center;justify-content:center;font-size:.9rem;cursor:pointer;}
+.act-list{display:flex;flex-direction:column;gap:10px;padding:4px 14px 24px;width:100%;}
+.act-card{background:white;border-radius:18px;padding:14px 15px;display:flex;align-items:center;gap:13px;cursor:pointer;border:2.5px solid #f1f5f9;transition:all .22s;box-shadow:0 2px 8px rgba(0,0,0,.05);}
+.act-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.1);}
+.act-card:active{transform:scale(.97);}
+.act-card.done{border-color:var(--green);}
+.ac-icon{width:54px;height:54px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.8rem;flex-shrink:0;}
+.ac-body{flex:1;min-width:0;}
+.ac-title{font-family:'Baloo 2',cursive;font-weight:800;font-size:.92rem;color:#1E293B;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ac-meta{font-size:.7rem;font-weight:700;color:#94A3B8;margin-top:2px;}
+.ac-right{display:flex;align-items:center;gap:6px;flex-shrink:0;}
+.ac-xp{font-size:.7rem;font-weight:800;color:var(--gold);background:#FFFBEB;border:1px solid #FDE68A;border-radius:50px;padding:3px 8px;}
+.ac-done{font-size:1.2rem;}
+
+/* ACTIVITY PLAYER */
+#activity-play{background:var(--bg);justify-content:flex-start;}
+.ap-hdr{width:100%;display:flex;align-items:center;justify-content:space-between;padding:12px 14px 6px;flex-shrink:0;}
+.ap-back{width:40px;height:40px;border-radius:50%;background:white;border:2px solid #e2e8f0;display:flex;align-items:center;justify-content:center;font-size:1.05rem;cursor:pointer;transition:all .2s;}
+.ap-back:hover{border-color:var(--mm);}
+.ap-dots{display:flex;gap:5px;align-items:center;}
+.apdot{width:8px;height:8px;border-radius:50%;background:#e2e8f0;transition:all .3s;}
+.apdot.done{background:var(--green);}
+.apdot.cur{background:var(--mm);width:20px;border-radius:4px;}
+
+/* Kivi area */
+.kivi-row{width:100%;display:flex;align-items:flex-end;gap:10px;padding:4px 14px 6px;flex-shrink:0;}
+.kivi-emoji{font-size:2.5rem;flex-shrink:0;transition:transform .2s;}
+.kivi-emoji.talking{animation:kivTalk .45s ease-in-out infinite alternate;}
+@keyframes kivTalk{0%{transform:scale(1) rotate(-3deg);}100%{transform:scale(1.12) rotate(3deg);}}
+.kivi-col{flex:1;min-width:0;}
+.kivi-bubble{background:white;border-radius:16px 16px 16px 4px;padding:10px 14px;border:2px solid #e2e8f0;font-family:'Baloo 2',cursive;font-weight:800;font-size:clamp(.85rem,3.5vw,1rem);color:#1E293B;line-height:1.4;box-shadow:0 2px 10px rgba(0,0,0,.07);}
+.wave-row{display:flex;gap:2px;align-items:flex-end;height:14px;margin-top:4px;opacity:0;transition:opacity .25s;}
+.wave-row.on{opacity:1;}
+.wb{width:3px;background:var(--gold);border-radius:2px;animation:wvUp .65s ease-in-out infinite alternate;}
+.wb:nth-child(2){animation-delay:.12s;}.wb:nth-child(3){animation-delay:.24s;}
+@keyframes wvUp{0%{transform:scaleY(.25);}100%{transform:scaleY(1);}}
+
+/* Scene area */
+.scene-area{flex:1;width:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:6px 14px 0;gap:10px;min-height:180px;}
+.scene-top-emoji{font-size:2.8rem;text-align:center;line-height:1.3;}
+
+/* Tap choice */
+.choices{display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:wrap;width:100%;}
+.cbtn{border-radius:20px;border:4px solid #e2e8f0;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;min-width:85px;min-height:85px;padding:12px 10px;background:white;box-shadow:0 4px 14px rgba(0,0,0,.09);transition:all .18s;}
+.cbtn:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgba(0,0,0,.13);}
+.cbtn:active{transform:scale(.95);}
+.cbtn.correct{border-color:var(--green);background:#f0fdf4;animation:cpop .35s var(--ease);}
+.cbtn.wrong{border-color:#ef4444;background:#fff5f5;animation:cshake .35s ease;}
+.cbtn.reveal{border-color:var(--green);background:#f0fdf4;}
+@keyframes cpop{0%{transform:scale(1);}50%{transform:scale(1.1);}100%{transform:scale(1);}}
+@keyframes cshake{0%,100%{transform:translateX(0);}25%{transform:translateX(-7px);}75%{transform:translateX(7px);}}
+.cbtn-em{font-size:2.8rem;line-height:1;display:block;}
+.cbtn-lbl{font-family:'Baloo 2',cursive;font-weight:800;font-size:2rem;line-height:1;}
+.cbtn-sub{font-size:.7rem;font-weight:800;color:#64748B;}
+
+/* Count tap */
+.count-grid{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;align-items:center;}
+.citem{font-size:3rem;cursor:pointer;border:3px solid transparent;border-radius:16px;padding:8px;transition:all .15s;user-select:none;}
+.citem:active{transform:scale(.92);}
+.citem.tapped{border-color:var(--green);background:rgba(34,197,94,.1);transform:scale(1.1);}
+.count-num{font-family:'Baloo 2',cursive;font-weight:800;font-size:4rem;color:var(--mm);}
+
+/* Two group sort */
+.sort-wrap{width:100%;display:flex;flex-direction:column;gap:10px;}
+.sort-items-row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;}
+.sitem{font-size:2.5rem;background:white;border:3px solid #e2e8f0;border-radius:14px;padding:10px;cursor:pointer;transition:all .2s;user-select:none;}
+.sitem:hover{transform:translateY(-2px);}
+.sitem:active{transform:scale(.92);}
+.sitem.selected{border-color:var(--mm);background:var(--mm-l);transform:scale(1.08);}
+.sitem.placed{opacity:.3;pointer-events:none;}
+.sort-buckets{display:flex;gap:10px;}
+.bucket{flex:1;border-radius:18px;border:3px dashed;padding:12px 8px;text-align:center;cursor:pointer;transition:all .2s;min-height:80px;}
+.bucket:hover{transform:scale(1.03);}
+.bucket.highlight{transform:scale(1.05);}
+.bucket.wrong-flash{animation:bshake .35s ease;}
+@keyframes bshake{0%,100%{transform:translateX(0);}30%{transform:translateX(-6px);}70%{transform:translateX(6px);}}
+.bucket-lbl{font-family:'Baloo 2',cursive;font-weight:800;font-size:.85rem;margin-bottom:6px;}
+.bucket-items{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;font-size:1.6rem;min-height:28px;}
+.sort-hint{font-family:'Baloo 2',cursive;font-weight:700;font-size:.82rem;color:#64748B;text-align:center;min-height:20px;}
+
+/* Song */
+.song-wrap{text-align:center;width:100%;}
+.song-kivi{font-size:5rem;display:block;animation:songDance .55s ease-in-out infinite alternate;}
+@keyframes songDance{0%{transform:scale(1) rotate(-7deg) translateY(0);}100%{transform:scale(1.1) rotate(7deg) translateY(-10px);}}
+.song-lines{margin:10px 0;}
+.song-line{font-family:'Baloo 2',cursive;font-weight:800;font-size:clamp(1rem,4vw,1.35rem);color:#1E293B;line-height:1.5;transition:all .3s;}
+.song-line.active{color:var(--mm);font-size:clamp(1.1rem,4.5vw,1.5rem);}
+.song-play-btn{background:linear-gradient(135deg,var(--gold),var(--ck));color:#1E293B;font-family:'Baloo 2',cursive;font-weight:800;font-size:1rem;padding:13px 32px;border-radius:50px;box-shadow:0 6px 20px rgba(255,180,0,.35);transition:transform .2s;margin-top:8px;display:inline-block;}
+.song-play-btn:hover{transform:scale(1.05);}
+.song-play-btn:active{transform:scale(.97);}
+
+/* Story */
+.story-wrap{text-align:center;width:100%;padding:0 4px;}
+.story-em{font-size:4.5rem;display:block;animation:kiviBounce 3s ease-in-out infinite alternate;margin-bottom:8px;}
+.story-txt{font-family:'Baloo 2',cursive;font-weight:700;font-size:clamp(1rem,4vw,1.2rem);color:#1E293B;line-height:1.55;margin-bottom:14px;}
+.story-nxt{background:linear-gradient(135deg,var(--sn),#0284c7);color:white;font-family:'Baloo 2',cursive;font-weight:800;font-size:.95rem;padding:13px 28px;border-radius:50px;box-shadow:0 6px 18px rgba(14,165,233,.3);transition:transform .2s;}
+.story-nxt:hover{transform:translateY(-2px);}
+
+/* Next bar */
+.next-bar{width:100%;padding:8px 14px 16px;flex-shrink:0;}
+.next-btn{width:100%;padding:15px;border-radius:50px;font-family:'Baloo 2',cursive;font-weight:800;font-size:1.05rem;color:white;background:linear-gradient(135deg,var(--mm),#4F46E5);box-shadow:0 6px 22px rgba(124,58,237,.35);transition:all .2s;display:none;}
+.next-btn.show{display:block;}
+.next-btn:hover{transform:translateY(-2px);}
+
+/* CELEBRATE */
+#celebrate{background:linear-gradient(160deg,#1a0a3e,#2d1259,#0a2414);align-items:center;justify-content:center;text-align:center;padding:24px;}
+.cel-kivi{font-size:5.5rem;display:block;animation:celdance .5s ease-in-out infinite alternate;margin-bottom:8px;}
+@keyframes celdance{0%{transform:scale(1) rotate(-8deg);}100%{transform:scale(1.12) rotate(8deg) translateY(-10px);}}
+.cel-badge{display:inline-block;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);border-radius:50px;padding:5px 16px;font-size:.7rem;font-weight:800;color:rgba(255,255,255,.85);letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px;}
+.cel-title{font-family:'Baloo 2',cursive;font-weight:800;font-size:clamp(1.7rem,7vw,2.4rem);color:white;line-height:1.15;margin-bottom:5px;text-shadow:0 2px 16px rgba(0,0,0,.4);}
+.cel-sub{font-size:.88rem;color:rgba(255,255,255,.7);font-weight:700;margin-bottom:18px;}
+.cel-stars{display:flex;justify-content:center;gap:12px;margin-bottom:18px;}
+.celstar{font-size:3rem;animation:starpop .4s var(--ease) var(--del,.1s) both;}
+@keyframes starpop{0%{transform:scale(0) rotate(-20deg);opacity:0;}70%{transform:scale(1.25) rotate(5deg);}100%{transform:scale(1);opacity:1;}}
+.cel-coins{display:flex;gap:12px;justify-content:center;margin-bottom:22px;}
+.cel-coin{background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.2);border-radius:14px;padding:12px 18px;text-align:center;}
+.cel-val{font-family:'Baloo 2',cursive;font-weight:800;font-size:1.6rem;display:block;margin-bottom:2px;}
+.cel-val.xp{color:var(--gold);}.cel-val.co{color:var(--ck);}
+.cel-lbl{font-size:.7rem;font-weight:700;color:rgba(255,255,255,.55);}
+.cel-btns{display:flex;flex-direction:column;gap:10px;width:100%;max-width:300px;}
+.cbtn-g{padding:15px;border-radius:50px;background:linear-gradient(135deg,var(--gold),var(--ck));color:#1E293B;font-family:'Baloo 2',cursive;font-weight:800;font-size:1rem;box-shadow:0 6px 22px rgba(255,180,0,.4);transition:transform .2s;}
+.cbtn-g:hover{transform:translateY(-2px);}
+.cbtn-s{padding:13px;border-radius:50px;background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.25);color:white;font-family:'Baloo 2',cursive;font-weight:800;font-size:.9rem;}
+.cbtn-s:hover{background:rgba(255,255,255,.18);}
+/* Particles */
+.cf{position:fixed;pointer-events:none;z-index:99;border-radius:2px;animation:cffall var(--d,3s) linear var(--del,0s) both;}
+@keyframes cffall{0%{transform:translateY(-20px) rotate(0);opacity:1;}100%{transform:translateY(110vh) rotate(var(--r,360deg));opacity:0;}}
+.spk{position:fixed;pointer-events:none;z-index:98;font-size:1.3rem;animation:spkfly var(--d,.8s) var(--ease) both;}
+@keyframes spkfly{0%{opacity:1;transform:translate(0,0) scale(1);}100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(.1);}}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- HUB -->
+<div id="hub" class="screen active">
+  <div class="hub-top">
+    <span class="hub-kivi">&#x1F98A;</span>
+    <h1 class="hub-title">Kivi&#x2019;s Toddler World</h1>
+    <p class="hub-sub">Ages 2&#x2013;3 &bull; Tap a world to explore!</p>
+    <button class="hub-mute" id="hubMute" onclick="toggleMute()">&#x1F50A; Kivi is speaking</button>
+  </div>
+  <div class="world-grid">
+    <div class="wc wc-ai" onclick="openWorld('ai')" role="button" tabindex="0">
+      <span class="wc-icon">&#x1F3DD;&#xFE0F;</span>
+      <div class="wc-name">Alphabet Island</div>
+      <div class="wc-count">15 activities</div>
+    </div>
+    <div class="wc wc-mm" onclick="openWorld('mm')" role="button" tabindex="0">
+      <span class="wc-icon">&#x26F0;&#xFE0F;</span>
+      <div class="wc-name">Math Mountain</div>
+      <div class="wc-count">10 activities</div>
+    </div>
+    <div class="wc wc-ck" onclick="openWorld('ck')" role="button" tabindex="0">
+      <span class="wc-icon">&#x1F3A8;</span>
+      <div class="wc-name">Creativity Kingdom</div>
+      <div class="wc-count">10 activities</div>
+    </div>
+    <div class="wc wc-sn" onclick="openWorld('sn')" role="button" tabindex="0">
+      <span class="wc-icon">&#x2764;&#xFE0F;</span>
+      <div class="wc-name">Kivi&#x2019;s Stories</div>
+      <div class="wc-count">10 social stories</div>
+    </div>
+  </div>
+  <div class="hub-foot">&#x2B50; Earn stars &amp; coins &bull; &#x1F50A; Kivi reads everything aloud &bull; &#x1F512; Child-safe</div>
+</div>
+
+<!-- WORLD LIST -->
+<div id="world-list" class="screen">
+  <div class="wl-hdr">
+    <button class="back" onclick="showScreen('hub')" aria-label="Back to home">&#x2190;</button>
+    <div class="wl-title" id="wlTitle">Activities</div>
+    <button class="mute-sm" id="listMute" onclick="toggleMute()" aria-label="Toggle voice">&#x1F50A;</button>
+  </div>
+  <div class="act-list" id="actList"></div>
+</div>
+
+<!-- ACTIVITY PLAYER -->
+<div id="activity-play" class="screen">
+  <div class="ap-hdr">
+    <button class="ap-back" onclick="exitActivity()" aria-label="Back">&#x2190;</button>
+    <div class="ap-dots" id="apDots"></div>
+    <button class="mute-sm" id="playMute" onclick="toggleMute()" aria-label="Toggle voice">&#x1F50A;</button>
+  </div>
+  <div class="kivi-row">
+    <div class="kivi-emoji" id="kiviEm">&#x1F98A;</div>
+    <div class="kivi-col">
+      <div class="kivi-bubble" id="kiviBubble">Let us learn together!</div>
+      <div class="wave-row" id="waveRow"><div class="wb"></div><div class="wb"></div><div class="wb"></div></div>
+    </div>
+  </div>
+  <div class="scene-area" id="sceneArea"></div>
+  <div class="next-bar">
+    <button class="next-btn" id="nextBtn" onclick="nextScene()">Next &#x2192;</button>
+  </div>
+</div>
+
+<!-- CELEBRATE -->
+<div id="celebrate" class="screen">
+  <div id="cfCont" style="position:fixed;inset:0;pointer-events:none;z-index:90;overflow:hidden;"></div>
+  <span class="cel-kivi">&#x1F98A;</span>
+  <div class="cel-badge">&#x2B50; Activity Complete!</div>
+  <div class="cel-title" id="celTitle">Amazing!</div>
+  <div class="cel-sub" id="celSub">You finished an activity!</div>
+  <div class="cel-stars">
+    <span class="celstar" style="--del:.1s">&#x2B50;</span>
+    <span class="celstar" style="--del:.3s">&#x2B50;</span>
+    <span class="celstar" style="--del:.5s">&#x2B50;</span>
+  </div>
+  <div class="cel-coins">
+    <div class="cel-coin"><span class="cel-val xp" id="celXP">5</span><span class="cel-lbl">XP Stars</span></div>
+    <div class="cel-coin"><span class="cel-val co" id="celCoins">3</span><span class="cel-lbl">Coins</span></div>
+  </div>
+  <div class="cel-btns">
+    <button class="cbtn-g" onclick="goNext()">Next Activity &#x1F680;</button>
+    <button class="cbtn-s" onclick="openWorld(S.world)">Back to Activities</button>
+    <button class="cbtn-s" onclick="showScreen('hub')">&#x1F3E0; Back to Kivi&#x2019;s World</button>
+  </div>
+</div>
+
+</div><!-- #app -->
+<script>
+/* ── VOICE ENGINE ────────────────────────────────────────────────── */
+const Voice=(()=>{
+  const sy=window.speechSynthesis;
+  let voice=null,muted=false,safeT=null;
+  const pick=()=>{
+    const vs=sy.getVoices();if(!vs.length)return;
+    voice=vs.find(v=>v.name==='Samantha')||vs.find(v=>v.name==='Google US English')||
+          vs.find(v=>/Aria|Zira/i.test(v.name))||vs.find(v=>v.lang.startsWith('en-US'))||
+          vs.find(v=>v.lang.startsWith('en'))||vs[0];
+  };
+  pick();
+  if(typeof sy.onvoiceschanged!=='undefined')sy.onvoiceschanged=pick;
+  function setUI(on){
+    const ke=document.getElementById('kiviEm');if(ke)ke.classList.toggle('talking',on);
+    const wr=document.getElementById('waveRow');if(wr)wr.classList.toggle('on',on);
+  }
+  function stop(){sy.cancel();clearTimeout(safeT);setUI(false);}
+  function say(txt,opts){
+    opts=opts||{};
+    if(muted||!txt){if(opts.done)opts.done();return;}
+    stop();
+    const u=new SpeechSynthesisUtterance(txt);
+    u.rate=opts.rate||0.84;u.pitch=opts.pitch||1.12;u.volume=1;
+    if(voice)u.voice=voice;
+    let done=false;
+    const fin=()=>{if(done)return;done=true;clearTimeout(safeT);setUI(false);if(opts.done)opts.done();};
+    u.onstart=()=>setUI(true);u.onend=fin;u.onerror=fin;
+    safeT=setTimeout(fin,Math.max(3000,txt.length*90));
+    sy.speak(u);
+  }
+  return{say,stop,setMuted:function(v){muted=v;if(v)stop();},isMuted:function(){return muted;}};
+})();
+
+let gMuted=false;
+function toggleMute(){
+  gMuted=!gMuted;Voice.setMuted(gMuted);
+  const icon=gMuted?'&#x1F507;':'&#x1F50A;';
+  const lbl=gMuted?' Kivi is silent':' Kivi is speaking';
+  document.getElementById('hubMute').innerHTML=icon+lbl;
+  ['listMute','playMute'].forEach(id=>{const e=document.getElementById(id);if(e)e.innerHTML=icon;});
+}
+
+/* ── STATE ────────────────────────────────────────────────────────── */
+const S={world:'ai',actId:null,sceneIdx:0,answered:false,
+  countTapped:new Set(),selectedSort:-1,sortPlacements:{},
+  storyPage:0,done:new Set(),totalXP:0,totalCoins:0};
+
+/* ── SCREENS ──────────────────────────────────────────────────────── */
+function showScreen(id){
+  Voice.stop();
+  document.querySelectorAll('.screen.active').forEach(el=>el.classList.remove('active'));
+  const t=document.getElementById(id);
+  if(t){t.classList.add('active');if(t.scrollTo)t.scrollTo(0,0);}
+}
+
+</script>
+<script>
+/* ── ACTIVITY DATA ────────────────────────────────────────────────── */
+const ACTS = {
+  "AI-T-001": {
+    id:"AI-T-001",
+    title:"Tap the Letter A",
+    emoji:"🅰️",
+    bg:"#FFE4EE",
+    xp:5,
+    coins:3,
+    scenes:[{type:"tap-choice",prompt:"Can you find the letter A? Tap it!",kiviLoad:"Look carefully! Find the big letter A and tap it!",kiviOk:"YES! That is the letter A! A is the very first letter of the alphabet! Amazing!",kiviNo:"That is not A! The letter A has a pointed top and a line across the middle. Find A!",opts:[{text:"A",correct:true,color:"#FF4E8B",sub:null,isEmoji:false},{text:"B",correct:false,color:"#0EA5E9",sub:null,isEmoji:false},{text:"D",correct:false,color:"#22C55E",sub:null,isEmoji:false}]},{type:"tap-choice",prompt:"Find A again! Which one is A?",kiviLoad:"Great! Can you find A one more time? You are so clever!",kiviOk:"A again! You found A twice! You are a letter superstar!",kiviNo:"Look for the letter that looks like a mountain with a line across! That is A!",opts:[{text:"C",correct:false,color:"#22C55E",sub:null,isEmoji:false},{text:"A",correct:true,color:"#FF4E8B",sub:null,isEmoji:false},{text:"E",correct:false,color:"#FFD93D",sub:null,isEmoji:false}]},{type:"song",prompt:"Sing the A song with Kivi!",kiviLoad:"Now let us celebrate! A is for Apple! Sing along with Kivi!",kiviOk:"Wonderful singing! A is for Apple! You know the letter A!",lines:["A  is  for  Apple,","A  A  A!","Apples are yummy,","A  A  A! 🍎"]}]
+  },
+  "AI-T-002": {
+    id:"AI-T-002",
+    title:"A is for Apple — Find It!",
+    emoji:"🍎",
+    bg:"#FFE4EE",
+    xp:5,
+    coins:3,
+    scenes:[{type:"tap-choice",prompt:"A is for Apple! Tap the apple!",kiviLoad:"A is for Apple! Can you find the apple? Tap it!",kiviOk:"Yes! A is for Apple! You found it!",kiviNo:"That is not an apple! Find the round red fruit! That is the apple!",opts:[{text:"🍎",correct:true,color:"#e2e8f0",sub:"Apple!",isEmoji:true},{text:"🐶",correct:false,color:"#e2e8f0",sub:"Dog",isEmoji:true},{text:"🚂",correct:false,color:"#e2e8f0",sub:"Train",isEmoji:true}]},{type:"tap-choice",prompt:"Find the apple again!",kiviLoad:"Apple starts with the letter A! Can you find it again?",kiviOk:"Apple! A is for Apple! Brilliant!",kiviNo:"The apple is round and red! Find it!",opts:[{text:"🍌",correct:false,color:"#e2e8f0",sub:"Banana",isEmoji:true},{text:"🍎",correct:true,color:"#e2e8f0",sub:"Apple!",isEmoji:true},{text:"🐱",correct:false,color:"#e2e8f0",sub:"Cat",isEmoji:true}]},{type:"song",prompt:"Sing along with Kivi!",kiviLoad:"Great! Now let us sing! A is for Apple, A A A!",kiviOk:"Wonderful singing! A is for Apple!",lines:["A  is  for  Apple,","A  A  A!","Apples are yummy,","A  A  A! 🍎"]}]
+  },
+  "AI-T-003": {
+    id:"AI-T-003",
+    title:"Hello Letter B!",
+    emoji:"🅱️",
+    bg:"#FFE4EE",
+    xp:5,
+    coins:3,
+    scenes:[{type:"tap-choice",prompt:"Find the letter B! Tap it!",kiviLoad:"Hello! This is the letter B! B makes a buh sound! Find B and tap it!",kiviOk:"B! You found B! B makes a buh buh sound like Bear!",kiviNo:"B has a straight line and two bumps on the right side! Find B!",opts:[{text:"B",correct:true,color:"#FF4E8B",sub:null,isEmoji:false},{text:"D",correct:false,color:"#0EA5E9",sub:null,isEmoji:false},{text:"P",correct:false,color:"#22C55E",sub:null,isEmoji:false}]},{type:"tap-choice",prompt:"B is for Bear! Find the bear!",kiviLoad:"B is for Bear! Buh buh Bear! Find the bear and tap it!",kiviOk:"Bear! B is for Bear! Buh buh Bear!",kiviNo:"The bear is big and brown! Buh buh Bear! Find it!",opts:[{text:"🐻",correct:true,color:"#e2e8f0",sub:"Bear!",isEmoji:true},{text:"🦁",correct:false,color:"#e2e8f0",sub:"Lion",isEmoji:true},{text:"🐸",correct:false,color:"#e2e8f0",sub:"Frog",isEmoji:true}]},{type:"tap-choice",prompt:"B or D? Tap the B!",kiviLoad:"B or D? They look similar! Remember B has bumps on the RIGHT side! Tap B!",kiviOk:"YES! B has bumps pointing right! D has a bump pointing left! You are so clever!",kiviNo:"Remember! B has bumps pointing to the RIGHT side! Look carefully! Try again!",opts:[{text:"D",correct:false,color:"#0EA5E9",sub:null,isEmoji:false},{text:"B",correct:true,color:"#FF4E8B",sub:null,isEmoji:false},{text:"P",correct:false,color:"#22C55E",sub:null,isEmoji:false}]}]
+  },
+  "AI-T-004": {
+    id:"AI-T-004",
+    title:"B is for Butterfly — Tap!",
+    emoji:"🦋",
+    bg:"#FFE4EE",
+    xp:5,
+    coins:3,
+    scenes:[{type:"tap-choice",prompt:"B is for Butterfly! Tap the butterfly!",kiviLoad:"B is for Beautiful Butterfly! Can you find the butterfly? Tap it!",kiviOk:"Butterfly! B is for Butterfly! Beautiful!",kiviNo:"A butterfly has pretty wings and flies through flowers! Find the butterfly!",opts:[{text:"🦋",correct:true,color:"#e2e8f0",sub:"Butterfly!",isEmoji:true},{text:"🐟",correct:false,color:"#e2e8f0",sub:"Fish",isEmoji:true},{text:"🐢",correct:false,color:"#e2e8f0",sub:"Turtle",isEmoji:true}]},{type:"count-tap",prompt:"Tap ALL the butterflies!",kiviLoad:"How many butterflies can you see? Tap every single butterfly!",kiviOk:"You found all the butterflies! Amazing counting!",items:["🦋","🦋","🐝","🦋","🐞","🦋"]},{type:"tap-choice",prompt:"What starts with B?",kiviLoad:"What starts with the buh sound? B is for... buh buh...?",kiviOk:"Butterfly starts with B! Buh buh Butterfly! Brilliant!",kiviNo:"Listen! Buh buh... Butterfly! That starts with B! Find the butterfly!",opts:[{text:"🍎",correct:false,color:"#e2e8f0",sub:"Apple",isEmoji:true},{text:"🦋",correct:true,color:"#e2e8f0",sub:"Butterfly!",isEmoji:true},{text:"🚂",correct:false,color:"#e2e8f0",sub:"Train",isEmoji:true}]}]
+  },
+  "AI-T-005": {
+    id:"AI-T-005",
+    title:"Find the Big Letter C",
+    emoji:"©️",
+    bg:"#FFE4EE",
+    xp:5,
+    coins:3,
+    scenes:[{type:"tap-choice",prompt:"Find the letter C! Tap it!",kiviLoad:"C is next! C makes a kuh sound! Find C and tap it!",kiviOk:"C! You found C! C is a curved letter, like a half moon!",kiviNo:"C looks like a half circle open on the right! Find C!",opts:[{text:"C",correct:true,color:"#FF4E8B",sub:null,isEmoji:false},{text:"G",correct:false,color:"#0EA5E9",sub:null,isEmoji:false},{text:"O",correct:false,color:"#22C55E",sub:null,isEmoji:false}]},{type:"tap-choice",prompt:"C is for Cat! Find the cat!",kiviLoad:"C is for Cat! Kuh kuh Cat! Find the cat and tap it!",kiviOk:"Cat! C is for Cat! Kuh kuh Cat!",kiviNo:"A cat says Meow! Find the fluffy cat!",opts:[{text:"🐱",correct:true,color:"#e2e8f0",sub:"Cat!",isEmoji:true},{text:"🐶",correct:false,color:"#e2e8f0",sub:"Dog",isEmoji:true},{text:"🐭",correct:false,color:"#e2e8f0",sub:"Mouse",isEmoji:true}]},{type:"tap-choice",prompt:"What starts with C?",kiviLoad:"Kuh kuh... what starts with C? Kuh kuh...?",kiviOk:"Cake! Kuh kuh Cake starts with C! Delicious!",kiviNo:"Kuh kuh... Cake starts with C! Find the cake!",opts:[{text:"🍌",correct:false,color:"#e2e8f0",sub:"Banana",isEmoji:true},{text:"🦆",correct:false,color:"#e2e8f0",sub:"Duck",isEmoji:true},{text:"🎂",correct:true,color:"#e2e8f0",sub:"Cake!",isEmoji:true}]}]
+  },
+  "AI-T-006": {
+    id:"AI-T-006",
+    title:"D, E, F — Kivi's Letter March",
+    emoji:"🎵",
+    bg:"#FFE4EE",
+    xp:5,
+    coins:3,
+    scenes:[{type:"tap-choice",prompt:"Find the letter D!",kiviLoad:"D! Duh duh D! Find the letter D!",kiviOk:"D! Duh duh Dog! Great finding!",kiviNo:"D looks like a straight line with a big bump on the RIGHT! Find D!",opts:[{text:"D",correct:true,color:"#FF4E8B",sub:null,isEmoji:false},{text:"B",correct:false,color:"#0EA5E9",sub:null,isEmoji:false},{text:"P",correct:false,color:"#22C55E",sub:null,isEmoji:false}]},{type:"tap-choice",prompt:"Find the letter E!",kiviLoad:"E! Eh eh E! E has three little lines sticking out! Find E!",kiviOk:"E! Eh eh Elephant! You found E!",kiviNo:"E has THREE lines going to the right, like a comb! Find E!",opts:[{text:"F",correct:false,color:"#22C55E",sub:null,isEmoji:false},{text:"E",correct:true,color:"#FF4E8B",sub:null,isEmoji:false},{text:"L",correct:false,color:"#FFD93D",sub:null,isEmoji:false}]},{type:"song",prompt:"March with Kivi! D E F!",kiviLoad:"Now let us march! D E F! D E F! March march march!",kiviOk:"Wonderful marching! D for Dog, E for Elephant, F for Fish!",lines:["D  E  F,","D  E  F!","March along,","D  E  F! 🎵"]}]
+  },
+  "AI-T-007": {
+    id:"AI-T-007",
+    title:"The Round Letter O",
+    emoji:"⭕",
+    bg:"#FFE4EE",
+    xp:5,
+    coins:3,
+    scenes:[{type:"tap-choice",prompt:"O is a circle! Find the O!",kiviLoad:"O is perfectly round, like a circle! Find the letter O!",kiviOk:"O! O is a perfect circle! Oh oh Orange!",kiviNo:"O is a complete circle, round all the way! Find O!",opts:[{text:"O",correct:true,color:"#FF4E8B",sub:null,isEmoji:false},{text:"Q",correct:false,color:"#0EA5E9",sub:null,isEmoji:false},{text:"C",correct:false,color:"#22C55E",sub:null,isEmoji:false}]},{type:"tap-choice",prompt:"O is for Orange! Find it!",kiviLoad:"O is for Orange! Oh oh Orange! Find the orange!",kiviOk:"Orange! Oh oh Orange! O is for Orange!",kiviNo:"An orange is round and orange coloured! Find it!",opts:[{text:"🍊",correct:true,color:"#e2e8f0",sub:"Orange!",isEmoji:true},{text:"🍋",correct:false,color:"#e2e8f0",sub:"Lemon",isEmoji:true},{text:"🍇",correct:false,color:"#e2e8f0",sub:"Grapes",isEmoji:true}]},{type:"tap-choice",prompt:"Which shape is like the letter O?",kiviLoad:"O is like a circle! Which shape is most like O?",kiviOk:"Circle! O and a circle are both perfectly round! Amazing!",kiviNo:"O is round, like a circle! Which one is perfectly round?",opts:[{text:"⬛",correct:false,color:"#e2e8f0",sub:"Square",isEmoji:true},{text:"⭕",correct:true,color:"#e2e8f0",sub:"Circle!",isEmoji:true},{text:"🔺",correct:false,color:"#e2e8f0",sub:"Triangle",isEmoji:true}]}]
+  },
+  "AI-T-008": {
+    id:"AI-T-008",
+    title:"Tall Letters: I, L, T",
+    emoji:"📏",
+    bg:"#FFE4EE",
+    xp:5,
+    coins:3,
+    scenes:[{type:"tap-choice",prompt:"Find the tall straight letter I!",kiviLoad:"I is a tall straight letter! Find the letter I!",kiviOk:"I! Straight and tall! Ih ih Insect!",kiviNo:"I is just one straight tall line, like a tree trunk! Find I!",opts:[{text:"I",correct:true,color:"#FF4E8B",sub:null,isEmoji:false},{text:"O",correct:false,color:"#0EA5E9",sub:null,isEmoji:false},{text:"S",correct:false,color:"#22C55E",sub:null,isEmoji:false}]},{type:"tap-choice",prompt:"Find the letter L!",kiviLoad:"L has a straight line going down, then one going right at the bottom! Find L!",kiviOk:"L! Like a right angle at the bottom! L is for Lion!",kiviNo:"L goes down, then makes a foot going right at the bottom! Find L!",opts:[{text:"L",correct:true,color:"#FF4E8B",sub:null,isEmoji:false},{text:"T",correct:false,color:"#0EA5E9",sub:null,isEmoji:false},{text:"I",correct:false,color:"#22C55E",sub:null,isEmoji:false}]},{type:"tap-choice",prompt:"Find the letter T!",kiviLoad:"T has arms! A tall line going down with two arms at the top! Find T!",kiviOk:"T! Arms on top! T is for Tiger! Terrific!",kiviNo:"T has a long line going down AND two arms going out at the TOP! Find T!",opts:[{text:"T",correct:true,color:"#FF4E8B",sub:null,isEmoji:false},{text:"L",correct:false,color:"#0EA5E9",sub:null,isEmoji:false},{text:"F",correct:false,color:"#22C55E",sub:null,isEmoji:false}]}]
+  },
+  "AI-T-009": {
+    id:"AI-T-009",
+    title:"Kivi Sings the Vowels",
+    emoji:"🎵",
+    bg:"#FFE4EE",
+    xp:5,
+    coins:3,
+    scenes:[{type:"song",prompt:"Sing the vowel song with Kivi!",kiviLoad:"The vowels are A, E, I, O, U! They are very special letters! Let us sing!",kiviOk:"Beautiful singing! A, E, I, O, U are the vowels! You know them!",lines:["A  E  I,","O  U  too!","Vowels are special,","A  E  I  O  U! 🎵"]},{type:"tap-choice",prompt:"Which of these is a vowel? Tap it!",kiviLoad:"A, E, I, O, U are vowels! Which one here is a vowel? Tap it!",kiviOk:"A is a vowel! A, E, I, O, U! You remembered!",kiviNo:"The vowels are A, E, I, O, U! Which one do you see here? Tap it!",opts:[{text:"B",correct:false,color:"#0EA5E9",sub:null,isEmoji:false},{text:"A",correct:true,color:"#FF4E8B",sub:null,isEmoji:false},{text:"C",correct:false,color:"#22C55E",sub:null,isEmoji:false}]},{type:"tap-choice",prompt:"Tap the vowel!",kiviLoad:"A, E, I, O, U! One of these is a vowel! Tap it!",kiviOk:"O is a vowel! A, E, I, O, U! You are a vowel expert!",kiviNo:"Remember A, E, I, O, U are vowels! Can you spot one?",opts:[{text:"D",correct:false,color:"#0EA5E9",sub:null,isEmoji:false},{text:"O",correct:true,color:"#FF4E8B",sub:null,isEmoji:false},{text:"G",correct:false,color:"#22C55E",sub:null,isEmoji:false}]}]
+  },
+  "AI-T-010": {
+    id:"AI-T-010",
+    title:"Letters in My Name",
+    emoji:"✨",
+    bg:"#FFE4EE",
+    xp:5,
+    coins:3,
+    scenes:[{type:"tap-choice",prompt:"Find the letter K — in Kivi!",kiviLoad:"K is the first letter in the name KIVI! That is Kivi the fox! Find K!",kiviOk:"K! K is for Kivi! Kuh kuh Kivi!",kiviNo:"K has a tall line and two arms pointing out to the right like a V! Find K!",opts:[{text:"K",correct:true,color:"#FF4E8B",sub:null,isEmoji:false},{text:"H",correct:false,color:"#0EA5E9",sub:null,isEmoji:false},{text:"R",correct:false,color:"#22C55E",sub:null,isEmoji:false}]},{type:"tap-choice",prompt:"Find the letter I — second in Kivi!",kiviLoad:"K, I, V, I! The second letter in KIVI is I! Find I!",kiviOk:"I! K, I! You found it! Brilliant!",kiviNo:"I is a tall straight line! Simple and tall! Find I!",opts:[{text:"I",correct:true,color:"#FF4E8B",sub:null,isEmoji:false},{text:"J",correct:false,color:"#0EA5E9",sub:null,isEmoji:false},{text:"T",correct:false,color:"#22C55E",sub:null,isEmoji:false}]},{type:"song",prompt:"Kivi spells his name! Sing along!",kiviLoad:"Kivi wants to spell his name! K, I, V, I! That spells KIVI!",kiviOk:"You spelled KIVI! K, I, V, I! Amazing!",lines:["K  I  V  I,","K  I  V  I!","That  spells  Kivi,","Kivi  the  Fox! 🦊"]}]
+  },
+  "AI-T-011": {
+    id:"AI-T-011",
+    title:"Big A, Small a — Match Them!",
+    emoji:"🔤",
+    bg:"#FFE4EE",
+    xp:5,
+    coins:3,
+    scenes:[{type:"tap-choice",prompt:"Every letter has a big and small version! Find the small a!",kiviLoad:"Every letter has a BIG version and a small version! Find the small letter a!",kiviOk:"Small a! Big A and small a are both the letter A! Brilliant!",kiviNo:"The small a looks like a little round shape with a tail! Find a!",opts:[{text:"a",correct:true,color:"#FF4E8B",sub:null,isEmoji:false},{text:"e",correct:false,color:"#0EA5E9",sub:null,isEmoji:false},{text:"o",correct:false,color:"#22C55E",sub:null,isEmoji:false}]},{type:"tap-choice",prompt:"Find the small b that matches big B!",kiviLoad:"Big B and small b go together! Find the small b!",kiviOk:"Small b! Big B and small b are both B! Great matching!",kiviNo:"Small b has a tall line going up, then a bump on the right! Find b!",opts:[{text:"d",correct:false,color:"#22C55E",sub:null,isEmoji:false},{text:"b",correct:true,color:"#FF4E8B",sub:null,isEmoji:false},{text:"p",correct:false,color:"#0EA5E9",sub:null,isEmoji:false}]},{type:"tap-choice",prompt:"Match! Find the small c!",kiviLoad:"Big C and small c! Find small c!",kiviOk:"Small c! Big C and small c are both C! Wonderful matching!",kiviNo:"Small c is a little half circle, open on the right! Find c!",opts:[{text:"c",correct:true,color:"#FF4E8B",sub:null,isEmoji:false},{text:"a",correct:false,color:"#0EA5E9",sub:null,isEmoji:false},{text:"e",correct:false,color:"#22C55E",sub:null,isEmoji:false}]}]
+  },
+  "AI-T-012": {
+    id:"AI-T-012",
+    title:"The Alphabet Rainbow A–E",
+    emoji:"🌈",
+    bg:"#FFE4EE",
+    xp:5,
+    coins:3,
+    scenes:[{type:"tap-choice",prompt:"A comes first! Tap A!",kiviLoad:"The alphabet starts with A! A, B, C, D, E! Find and tap A!",kiviOk:"A is FIRST in the alphabet! A, B, C, D, E!",kiviNo:"A comes first! A is at the very beginning! Find A!",opts:[{text:"A",correct:true,color:"#FF0000",sub:null,isEmoji:false},{text:"C",correct:false,color:"#22C55E",sub:null,isEmoji:false},{text:"E",correct:false,color:"#FFD93D",sub:null,isEmoji:false}]},{type:"tap-choice",prompt:"B comes after A! Tap B!",kiviLoad:"A then B! What comes after A? Tap B!",kiviOk:"B comes after A! A, B! You know the alphabet order!",kiviNo:"A, then B! B comes right after A! Find B!",opts:[{text:"D",correct:false,color:"#0EA5E9",sub:null,isEmoji:false},{text:"B",correct:true,color:"#FF6B35",sub:null,isEmoji:false},{text:"E",correct:false,color:"#FFD93D",sub:null,isEmoji:false}]},{type:"song",prompt:"Sing A B C D E with Kivi!",kiviLoad:"A, B, C, D, E! Let us sing the first five letters of the alphabet!",kiviOk:"A, B, C, D, E! You know the first five letters! Rainbow champion!",lines:["A  B  C,","D  and  E!","Five  letters,","A  B  C  D  E! 🌈"]}]
+  },
+  "AI-T-013": {
+    id:"AI-T-013",
+    title:"The Alphabet Rainbow F–J",
+    emoji:"🌈",
+    bg:"#FFE4EE",
+    xp:5,
+    coins:3,
+    scenes:[{type:"tap-choice",prompt:"Find the letter F!",kiviLoad:"F, G, H, I, J! The next five letters! Find F!",kiviOk:"F! Fuh fuh Fish! F comes after E!",kiviNo:"F has a tall line and arms going to the LEFT only, not both sides! Find F!",opts:[{text:"F",correct:true,color:"#FF4E8B",sub:null,isEmoji:false},{text:"E",correct:false,color:"#0EA5E9",sub:null,isEmoji:false},{text:"L",correct:false,color:"#22C55E",sub:null,isEmoji:false}]},{type:"tap-choice",prompt:"Find the letter H!",kiviLoad:"H! Huh huh Hat! Two tall lines with a bridge between them! Find H!",kiviOk:"H! H is for Hat! Huh huh Hat!",kiviNo:"H looks like two tall lines connected by a bridge in the middle! Find H!",opts:[{text:"N",correct:false,color:"#22C55E",sub:null,isEmoji:false},{text:"H",correct:true,color:"#FF4E8B",sub:null,isEmoji:false},{text:"M",correct:false,color:"#FFD93D",sub:null,isEmoji:false}]},{type:"song",prompt:"Sing F G H I J!",kiviLoad:"F, G, H, I, J! The next five letters! Sing along!",kiviOk:"F, G, H, I, J! You are going all the way through the alphabet!",lines:["F  G  H,","I  and  J!","Five  more  letters,","F  G  H  I  J! 🌈"]}]
+  },
+  "AI-T-014": {
+    id:"AI-T-014",
+    title:"The Alphabet Rainbow K–Z",
+    emoji:"🌈",
+    bg:"#FFE4EE",
+    xp:5,
+    coins:3,
+    scenes:[{type:"tap-choice",prompt:"K, L, M — find the letter M!",kiviLoad:"K, L, M! M has four bumps at the top like mountain peaks! Find M!",kiviOk:"M! Muh muh Monkey! M has those big mountain bumps!",kiviNo:"M looks like two mountain peaks side by side! Find M!",opts:[{text:"M",correct:true,color:"#FF4E8B",sub:null,isEmoji:false},{text:"N",correct:false,color:"#0EA5E9",sub:null,isEmoji:false},{text:"W",correct:false,color:"#22C55E",sub:null,isEmoji:false}]},{type:"tap-choice",prompt:"Find the letter S!",kiviLoad:"S! Sss sss Snake! S is wiggly like a snake! Find S!",kiviOk:"S! Sss sss Snake! S wiggles just like a snake!",kiviNo:"S wiggles like a snake! It goes one way then the other! Find S!",opts:[{text:"Z",correct:false,color:"#0EA5E9",sub:null,isEmoji:false},{text:"S",correct:true,color:"#FF4E8B",sub:null,isEmoji:false},{text:"C",correct:false,color:"#22C55E",sub:null,isEmoji:false}]},{type:"song",prompt:"Kivi sings to the end of the alphabet!",kiviLoad:"All the way to Z! Let us finish the alphabet song together!",kiviOk:"You know the WHOLE alphabet! From A all the way to Z! AMAZING!",lines:["W  X,","Y  and  Z!","Now  I  know,","My  A  B  C! 🎊"]}]
+  },
+  "AI-T-015": {
+    id:"AI-T-015",
+    title:"Kivi's Full Alphabet Parade",
+    emoji:"🎉",
+    bg:"#FFE4EE",
+    xp:5,
+    coins:3,
+    scenes:[{type:"tap-choice",prompt:"Parade time! Find A — the leader!",kiviLoad:"It is the alphabet parade! A leads the way! Find A!",kiviOk:"A leads the parade! A, B, C all the way to Z!",kiviNo:"A is the very first letter! A leads the parade! Find A!",opts:[{text:"A",correct:true,color:"#FF0000",sub:null,isEmoji:false},{text:"Z",correct:false,color:"#FFD93D",sub:null,isEmoji:false},{text:"M",correct:false,color:"#22C55E",sub:null,isEmoji:false}]},{type:"tap-choice",prompt:"Z is last in the parade! Find Z!",kiviLoad:"Z is the very last letter! Z closes the parade! Find Z!",kiviOk:"Z! Z is last! Now the parade is complete from A to Z!",kiviNo:"Z is the very LAST letter! A, B, C... all the way to Z! Find Z!",opts:[{text:"S",correct:false,color:"#0EA5E9",sub:null,isEmoji:false},{text:"N",correct:false,color:"#22C55E",sub:null,isEmoji:false},{text:"Z",correct:true,color:"#FF4E8B",sub:null,isEmoji:false}]},{type:"song",prompt:"Celebrate the whole alphabet with Kivi!",kiviLoad:"You have learned so many letters! Let us celebrate with the full alphabet song!",kiviOk:"THE WHOLE ALPHABET! You are incredible! A to Z, you know them all!",lines:["A  B  C  D  E  F  G,","H  I  J  K  L  M  N  O  P!","Q  R  S,  T  U  V,","W  X  Y  and  Z! 🎉"]}]
+  },
+  "MM-T-001": {
+    id:"MM-T-001",
+    title:"Count the Coconuts: 1, 2, 3",
+    emoji:"🥥",
+    bg:"#EDE9FF",
+    xp:5,
+    coins:3,
+    scenes:[{type:"count-tap",prompt:"Tap the ONE coconut!",kiviLoad:"One coconut! Tap it and count with Kivi! ONE!",kiviOk:"ONE! One coconut! One is just one single thing! Great!",items:["🥥"]},{type:"count-tap",prompt:"Two coconuts! Tap each one!",kiviLoad:"Two coconuts now! Tap each one! One... Two!",kiviOk:"TWO! One, two! Two coconuts! Brilliant counting!",items:["🥥","🥥"]},{type:"count-tap",prompt:"Three coconuts! Count them all!",kiviLoad:"THREE coconuts! Tap each one! One, two, three!",kiviOk:"THREE! One, two, THREE! Amazing counting all the way to three!",items:["🥥","🥥","🥥"]}]
+  },
+  "MM-T-002": {
+    id:"MM-T-002",
+    title:"One More Coconut! (1–5)",
+    emoji:"🥥",
+    bg:"#EDE9FF",
+    xp:5,
+    coins:3,
+    scenes:[{type:"tap-choice",prompt:"How many coconuts? Tap the number!",kiviLoad:"Count the coconut! How many are there? Tap the right number!",kiviOk:"ONE! Just one coconut! You counted perfectly!",kiviNo:"Count again! There is just ONE coconut! Tap the number 1!",opts:[{text:"2",correct:false,color:"#0EA5E9",sub:null,isEmoji:false},{text:"1",correct:true,color:"#FF4E8B",sub:null,isEmoji:false},{text:"3",correct:false,color:"#22C55E",sub:null,isEmoji:false}],sceneTop:"🥥"},{type:"tap-choice",prompt:"Count and tap the number!",kiviLoad:"Count these coconuts! One, two... How many? Tap it!",kiviOk:"TWO! One, two! Two coconuts! Super counting!",kiviNo:"Count them! One... two! There are TWO coconuts! Tap 2!",opts:[{text:"1",correct:false,color:"#0EA5E9",sub:null,isEmoji:false},{text:"3",correct:false,color:"#22C55E",sub:null,isEmoji:false},{text:"2",correct:true,color:"#FF4E8B",sub:null,isEmoji:false}],sceneTop:"🥥🥥"},{type:"count-tap",prompt:"Five coconuts! Tap them all!",kiviLoad:"Five coconuts! Count with Kivi! One two three four five!",kiviOk:"FIVE! One two three four FIVE! You counted all the way to five!",items:["🥥","🥥","🥥","🥥","🥥"]}]
+  },
+  "MM-T-003": {
+    id:"MM-T-003",
+    title:"Big and Small: Sort Them!",
+    emoji:"🔵",
+    bg:"#EDE9FF",
+    xp:5,
+    coins:3,
+    scenes:[{type:"tap-choice",prompt:"Which one is BIG? Tap it!",kiviLoad:"Big and small! Which one is BIG? Big means very large! Tap the big one!",kiviOk:"The elephant is BIG! Elephants are very big and heavy animals!",kiviNo:"Big means very very large! Which one is bigger? Tap the big one!",opts:[{text:"🐘",correct:true,color:"#e2e8f0",sub:"Big!",isEmoji:true},{text:"🐭",correct:false,color:"#e2e8f0",sub:"Small",isEmoji:true}]},{type:"tap-choice",prompt:"Which one is SMALL? Tap it!",kiviLoad:"Now find the SMALL one! Small means tiny and little!",kiviOk:"The caterpillar is SMALL and tiny! Great spotting!",kiviNo:"Small means tiny! Which one is very little? Tap it!",opts:[{text:"🦁",correct:false,color:"#e2e8f0",sub:"Big!",isEmoji:true},{text:"🐛",correct:true,color:"#e2e8f0",sub:"Small!",isEmoji:true}]},{type:"two-group",prompt:"Sort! Big left, small right!",kiviLoad:"Sort the animals! Big ones go on the LEFT, small ones go on the RIGHT! Tap an animal then tap a group!",kiviOk:"Perfect sorting! Big things and small things sorted perfectly! You are a sorting champion!",items:["🐘","🐭","🐋","🐜"],groups:[{label:"BIG 🐘",color:"#7C3AED",correct:[0,2]},{label:"SMALL 🐜",color:"#0EA5E9",correct:[1,3]}]}]
+  },
+  "MM-T-004": {
+    id:"MM-T-004",
+    title:"Circle, Square, Triangle — Find Them",
+    emoji:"🔷",
+    bg:"#EDE9FF",
+    xp:5,
+    coins:3,
+    scenes:[{type:"tap-choice",prompt:"Find the CIRCLE! It is round!",kiviLoad:"A circle is round with no corners! Find the circle!",kiviOk:"Circle! Round and round, no corners! Beautiful circle!",kiviNo:"A circle is perfectly round, like a ball! No corners! Find it!",opts:[{text:"⭕",correct:true,color:"#e2e8f0",sub:"Circle!",isEmoji:true},{text:"⬛",correct:false,color:"#e2e8f0",sub:"Square",isEmoji:true},{text:"🔺",correct:false,color:"#e2e8f0",sub:"Triangle",isEmoji:true}]},{type:"tap-choice",prompt:"Find the SQUARE! Four equal sides!",kiviLoad:"A square has four equal sides and four corners! Find the square!",kiviOk:"Square! Four equal sides, four corners! Like a window!",kiviNo:"A square has four equal sides and four corners! Like a tile! Find it!",opts:[{text:"⭕",correct:false,color:"#e2e8f0",sub:"Circle",isEmoji:true},{text:"⬛",correct:true,color:"#e2e8f0",sub:"Square!",isEmoji:true},{text:"🔺",correct:false,color:"#e2e8f0",sub:"Triangle",isEmoji:true}]},{type:"tap-choice",prompt:"Find the TRIANGLE! Three corners!",kiviLoad:"A triangle has three sides and three corners! Find the triangle!",kiviOk:"Triangle! Three corners, three sides! Great shape spotting!",kiviNo:"A triangle has three sides and looks like a mountain peak! Find it!",opts:[{text:"⭕",correct:false,color:"#e2e8f0",sub:"Circle",isEmoji:true},{text:"⬛",correct:false,color:"#e2e8f0",sub:"Square",isEmoji:true},{text:"🔺",correct:true,color:"#e2e8f0",sub:"Triangle!",isEmoji:true}]}]
+  },
+  "MM-T-005": {
+    id:"MM-T-005",
+    title:"Tap the Red Shape",
+    emoji:"🔴",
+    bg:"#EDE9FF",
+    xp:5,
+    coins:3,
+    scenes:[{type:"tap-choice",prompt:"Tap the RED thing!",kiviLoad:"Red! Like a fire truck or an apple! Find the red thing and tap it!",kiviOk:"RED! That is the red apple! Red is bright and warm!",kiviNo:"Red is the colour of apples and fire trucks! Find something red!",opts:[{text:"🍎",correct:true,color:"#e2e8f0",sub:"Red!",isEmoji:true},{text:"🫐",correct:false,color:"#e2e8f0",sub:"Blue",isEmoji:true},{text:"🍋",correct:false,color:"#e2e8f0",sub:"Yellow",isEmoji:true}]},{type:"tap-choice",prompt:"Which colour is RED?",kiviLoad:"Which of these circles is the colour RED? Tap the red one!",kiviOk:"RED circle! Red is bold and bright! You know your colours!",kiviNo:"Red is bold and bright, like a fire truck! Find the red circle!",opts:[{text:"🔴",correct:true,color:"#e2e8f0",sub:"Red!",isEmoji:true},{text:"🔵",correct:false,color:"#e2e8f0",sub:"Blue",isEmoji:true},{text:"🟢",correct:false,color:"#e2e8f0",sub:"Green",isEmoji:true}]},{type:"tap-choice",prompt:"Which is YELLOW?",kiviLoad:"Yellow! Bright like sunshine and bananas! Find the yellow shape!",kiviOk:"YELLOW! Bright like sunshine! You know all the colours so well!",kiviNo:"Yellow is bright like the sun! Find the yellow shape!",opts:[{text:"🔵",correct:false,color:"#e2e8f0",sub:"Blue",isEmoji:true},{text:"🔴",correct:false,color:"#e2e8f0",sub:"Red",isEmoji:true},{text:"🟡",correct:true,color:"#e2e8f0",sub:"Yellow!",isEmoji:true}]}]
+  },
+  "MM-T-006": {
+    id:"MM-T-006",
+    title:"Which Has More? (1–3)",
+    emoji:"⚖️",
+    bg:"#EDE9FF",
+    xp:5,
+    coins:3,
+    scenes:[{type:"tap-choice",prompt:"Which group has MORE stars?",kiviLoad:"More means a bigger amount! Which group has MORE stars? Tap it!",kiviOk:"Three stars! Three is MORE than one! Great counting!",kiviNo:"Count each group! Which one has more? Tap the group with more stars!",opts:[{text:"⭐",correct:false,color:"#e2e8f0",sub:"1 star",isEmoji:true},{text:"⭐⭐⭐",correct:true,color:"#e2e8f0",sub:"3 stars!",isEmoji:true}]},{type:"tap-choice",prompt:"Which group has MORE coconuts?",kiviLoad:"Count carefully! Which group has MORE coconuts? Tap it!",kiviOk:"Two coconuts is MORE than one! You understand more and fewer!",kiviNo:"Count them! One coconut on one side, two on the other! Which is more?",opts:[{text:"🥥🥥",correct:true,color:"#e2e8f0",sub:"2 coconuts!",isEmoji:true},{text:"🥥",correct:false,color:"#e2e8f0",sub:"1 coconut",isEmoji:true}]},{type:"tap-choice",prompt:"Which has MORE fish?",kiviLoad:"Which group has MORE fish? Count and tap!",kiviOk:"THREE fish is MORE than two! More means a bigger number! Brilliant!",kiviNo:"Count the fish in each group! Three is more than two!",opts:[{text:"🐟🐟🐟",correct:true,color:"#e2e8f0",sub:"3 fish!",isEmoji:true},{text:"🐟🐟",correct:false,color:"#e2e8f0",sub:"2 fish",isEmoji:true}]}]
+  },
+  "MM-T-007": {
+    id:"MM-T-007",
+    title:"Tall and Short with Kivi",
+    emoji:"📏",
+    bg:"#EDE9FF",
+    xp:5,
+    coins:3,
+    scenes:[{type:"tap-choice",prompt:"Which is TALL? Tap it!",kiviLoad:"Tall means stretching high up! Which one is tall? Tap it!",kiviOk:"The giraffe is TALL! Giraffes have very long necks! Tall!",kiviNo:"Tall means reaching up high! A giraffe is very tall! Find the tall one!",opts:[{text:"🦒",correct:true,color:"#e2e8f0",sub:"Tall!",isEmoji:true},{text:"🐢",correct:false,color:"#e2e8f0",sub:"Short",isEmoji:true}]},{type:"tap-choice",prompt:"Which is SHORT? Tap it!",kiviLoad:"Short means not very tall! Which one is SHORT?",kiviOk:"The seedling is SHORT! Just a tiny little plant! Short!",kiviNo:"Short means small and not very tall! A little seedling is short! Find it!",opts:[{text:"🌲",correct:false,color:"#e2e8f0",sub:"Tall",isEmoji:true},{text:"🌱",correct:true,color:"#e2e8f0",sub:"Short!",isEmoji:true}]},{type:"two-group",prompt:"Sort! Tall left, short right!",kiviLoad:"Sort by height! TALL things go on the LEFT, SHORT things on the RIGHT! Tap then tap a group!",kiviOk:"Perfect! You know tall and short! The giraffe and tree are tall, the ant and seedling are short!",items:["🦒","🐜","🌲","🌱"],groups:[{label:"TALL 🦒",color:"#7C3AED",correct:[0,2]},{label:"SHORT 🌱",color:"#22C55E",correct:[1,3]}]}]
+  },
+  "MM-T-008": {
+    id:"MM-T-008",
+    title:"Shape Sort: Put Them in the Box",
+    emoji:"📦",
+    bg:"#EDE9FF",
+    xp:5,
+    coins:3,
+    scenes:[{type:"two-group",prompt:"Sort! Circles left, squares right!",kiviLoad:"Circles go on the LEFT! Squares go on the RIGHT! Tap a shape then tap a group!",kiviOk:"Perfect shape sorting! Circles and squares! You are a shape expert!",items:["⭕","⬛","🔵","🟥"],groups:[{label:"CIRCLES ⭕",color:"#FF4E8B",correct:[0,2]},{label:"SQUARES ⬛",color:"#7C3AED",correct:[1,3]}]},{type:"tap-choice",prompt:"What shape is this?",kiviLoad:"Look at this shape! What is it called? Tap the right answer!",kiviOk:"Triangle! Three sides, three corners! You know your shapes!",kiviNo:"Count the corners! Three corners means it is a triangle! Tap triangle!",opts:[{text:"Circle",correct:false,color:"#0EA5E9",sub:null,isEmoji:false},{text:"Triangle",correct:true,color:"#FF4E8B",sub:null,isEmoji:false},{text:"Square",correct:false,color:"#22C55E",sub:null,isEmoji:false}],sceneTop:"🔺"},{type:"tap-choice",prompt:"Which shape has NO corners?",kiviLoad:"One shape has no corners at all! Which one? Tap it!",kiviOk:"Circle! A circle is perfectly round with no corners at all! Brilliant!",kiviNo:"Corners are the pointy bits! Which shape has NO pointy bits? Round and smooth!",opts:[{text:"⭕",correct:true,color:"#e2e8f0",sub:"Circle!",isEmoji:true},{text:"⬛",correct:false,color:"#e2e8f0",sub:"Square",isEmoji:true},{text:"🔺",correct:false,color:"#e2e8f0",sub:"Triangle",isEmoji:true}]}]
+  },
+  "MM-T-009": {
+    id:"MM-T-009",
+    title:"Kivi's Counting Song 1–5",
+    emoji:"🎵",
+    bg:"#EDE9FF",
+    xp:5,
+    coins:3,
+    scenes:[{type:"song",prompt:"Count and sing with Kivi!",kiviLoad:"Let us count and sing together! One, two, three, four, five!",kiviOk:"One, two, three, four, five! You counted with the song! Amazing!",lines:["One  little  star, ⭐","Two  little  stars, ⭐⭐","Three  four  five,","One  two  three  four  FIVE! 🎵"]},{type:"count-tap",prompt:"Tap to count — 1, 2, 3, 4, 5!",kiviLoad:"Now YOU count! Tap each star as you count from one to five!",kiviOk:"ONE TWO THREE FOUR FIVE! You counted all the way to five! Superstar!",items:["⭐","⭐","⭐","⭐","⭐"]},{type:"tap-choice",prompt:"How many stars? Tap the number!",kiviLoad:"Count the stars! How many are there? Tap the right number!",kiviOk:"THREE! One, two, three stars! You can count AND recognise numbers!",kiviNo:"Count the stars! One... two... three! There are THREE stars! Tap 3!",opts:[{text:"2",correct:false,color:"#0EA5E9",sub:null,isEmoji:false},{text:"4",correct:false,color:"#22C55E",sub:null,isEmoji:false},{text:"3",correct:true,color:"#FF4E8B",sub:null,isEmoji:false}],sceneTop:"⭐⭐⭐"}]
+  },
+  "MM-T-010": {
+    id:"MM-T-010",
+    title:"Pattern Fun: Red Blue Red…",
+    emoji:"🔴",
+    bg:"#EDE9FF",
+    xp:5,
+    coins:3,
+    scenes:[{type:"tap-choice",prompt:"What comes next? Red, Blue, Red, Blue, ___?",kiviLoad:"Red, blue, red, blue... what comes next? Tap the answer!",kiviOk:"RED! Red, blue, RED, blue! You spotted the pattern! Brilliant!",kiviNo:"The pattern goes Red, Blue, Red, Blue... What comes after blue? Red!",opts:[{text:"🔴",correct:true,color:"#e2e8f0",sub:"Red!",isEmoji:true},{text:"🟡",correct:false,color:"#e2e8f0",sub:"Yellow",isEmoji:true},{text:"🟢",correct:false,color:"#e2e8f0",sub:"Green",isEmoji:true}],sceneTop:"🔴🔵🔴🔵❓"},{type:"tap-choice",prompt:"Star, Heart, Star, Heart, ___?",kiviLoad:"Star, heart, star, heart... what comes next?",kiviOk:"STAR! Star, heart, star, heart, STAR! You found the pattern!",kiviNo:"The pattern goes star, heart, star, heart... What comes after heart? Star!",opts:[{text:"⭐",correct:true,color:"#e2e8f0",sub:"Star!",isEmoji:true},{text:"🌙",correct:false,color:"#e2e8f0",sub:"Moon",isEmoji:true},{text:"💛",correct:false,color:"#e2e8f0",sub:"Circle",isEmoji:true}],sceneTop:"⭐❤️⭐❤️❓"},{type:"song",prompt:"Pattern song with Kivi!",kiviLoad:"Patterns are everywhere! Let us sing a pattern song!",kiviOk:"You spotted patterns everywhere! Red, blue, red, blue! Pattern superstar!",lines:["Red  blue  red  blue, 🔴🔵","Red  blue  red  blue!","Patterns  patterns,","Everywhere  we  go! 🌈"]}]
+  },
+  "CK-T-001": {
+    id:"CK-T-001",
+    title:"Tap the Red!",
+    emoji:"🔴",
+    bg:"#FFE8DC",
+    xp:5,
+    coins:3,
+    scenes:[{type:"tap-choice",prompt:"Tap the RED thing!",kiviLoad:"Red! Find something RED and tap it! Red like an apple!",kiviOk:"RED apple! Red is a warm, bright colour! Beautiful!",kiviNo:"Red is the colour of fire and apples! Find something red!",opts:[{text:"🍎",correct:true,color:"#e2e8f0",sub:"Red!",isEmoji:true},{text:"🫐",correct:false,color:"#e2e8f0",sub:"Blue",isEmoji:true},{text:"🍋",correct:false,color:"#e2e8f0",sub:"Yellow",isEmoji:true}]},{type:"tap-choice",prompt:"Which colour is RED? Tap it!",kiviLoad:"Which of these is the colour RED? Tap the red one!",kiviOk:"RED circle! Red is bright and bold! You know your colours!",kiviNo:"Red is bold and bright! Find the red circle!",opts:[{text:"🔴",correct:true,color:"#e2e8f0",sub:"Red!",isEmoji:true},{text:"🔵",correct:false,color:"#e2e8f0",sub:"Blue",isEmoji:true},{text:"🟢",correct:false,color:"#e2e8f0",sub:"Green",isEmoji:true}]},{type:"song",prompt:"Red things! Sing with Kivi!",kiviLoad:"Red, red, red! So many red things! Let us sing!",kiviOk:"Red, red, red! Apples, fire trucks, roses, all red! Amazing!",lines:["Apples are red, 🍎","Fire trucks too! 🚒","Roses are red,","Red  red  red! 🔴"]}]
+  },
+  "CK-T-002": {
+    id:"CK-T-002",
+    title:"Tap the Blue!",
+    emoji:"🔵",
+    bg:"#FFE8DC",
+    xp:5,
+    coins:3,
+    scenes:[{type:"tap-choice",prompt:"Find something BLUE! Tap it!",kiviLoad:"Blue! Like the sky and the ocean! Find the blue thing!",kiviOk:"Blue blueberries! Blue is a cool, calming colour like the ocean!",kiviNo:"Blue is the colour of the sky! Find the blue one!",opts:[{text:"🫐",correct:true,color:"#e2e8f0",sub:"Blue!",isEmoji:true},{text:"🍓",correct:false,color:"#e2e8f0",sub:"Red",isEmoji:true},{text:"🌻",correct:false,color:"#e2e8f0",sub:"Yellow",isEmoji:true}]},{type:"tap-choice",prompt:"Tap the BLUE shape!",kiviLoad:"Blue! Which shape is blue? Tap it!",kiviOk:"BLUE circle! Blue like the sky! Wonderful!",kiviNo:"Blue is cool and calming! Find the blue circle!",opts:[{text:"🔴",correct:false,color:"#e2e8f0",sub:"Red",isEmoji:true},{text:"🔵",correct:true,color:"#e2e8f0",sub:"Blue!",isEmoji:true},{text:"🟡",correct:false,color:"#e2e8f0",sub:"Yellow",isEmoji:true}]},{type:"song",prompt:"Blue things! Sing along!",kiviLoad:"Blue, blue, blue! The sky is blue! Let us sing!",kiviOk:"Blue sky, blue ocean, blue blueberries! You love blue!",lines:["The sky is blue, ☁️","The ocean too! 🌊","Blueberries are blue,","Blue  blue  blue! 🔵"]}]
+  },
+  "CK-T-003": {
+    id:"CK-T-003",
+    title:"Tap the Yellow!",
+    emoji:"🌟",
+    bg:"#FFE8DC",
+    xp:5,
+    coins:3,
+    scenes:[{type:"tap-choice",prompt:"Find something YELLOW! Tap it!",kiviLoad:"Yellow! Bright like sunshine! Find the yellow thing!",kiviOk:"Yellow banana! Yellow is bright and cheerful like sunshine!",kiviNo:"Yellow is bright like the sun! Find something yellow!",opts:[{text:"🍌",correct:true,color:"#e2e8f0",sub:"Yellow!",isEmoji:true},{text:"🍇",correct:false,color:"#e2e8f0",sub:"Purple",isEmoji:true},{text:"🍓",correct:false,color:"#e2e8f0",sub:"Red",isEmoji:true}]},{type:"tap-choice",prompt:"Which is YELLOW?",kiviLoad:"Yellow! Bright and sunny! Which one is yellow? Tap it!",kiviOk:"YELLOW! Bright and sunny! You know your colours so well!",kiviNo:"Yellow is bright like sunshine! Find the yellow circle!",opts:[{text:"🟡",correct:true,color:"#e2e8f0",sub:"Yellow!",isEmoji:true},{text:"🟢",correct:false,color:"#e2e8f0",sub:"Green",isEmoji:true},{text:"🔴",correct:false,color:"#e2e8f0",sub:"Red",isEmoji:true}]},{type:"song",prompt:"Yellow things are everywhere!",kiviLoad:"Yellow yellow yellow! Sunshine is yellow! Let us sing!",kiviOk:"Sunshine, bananas, stars, all yellow! Wonderful singing!",lines:["Sunshine is yellow, ☀️","Bananas too! 🍌","Stars are yellow,","Yellow  yellow  yellow! 🌟"]}]
+  },
+  "CK-T-004": {
+    id:"CK-T-004",
+    title:"Paint the Shape: Big Circle",
+    emoji:"⭕",
+    bg:"#FFE8DC",
+    xp:5,
+    coins:3,
+    scenes:[{type:"tap-choice",prompt:"Find the CIRCLE to paint!",kiviLoad:"We are going to paint a big circle! First, find the circle shape!",kiviOk:"Circle! Round and perfect! Let us paint it!",kiviNo:"A circle is perfectly round! Like a ball! Find the circle!",opts:[{text:"⭕",correct:true,color:"#e2e8f0",sub:"Circle!",isEmoji:true},{text:"⬛",correct:false,color:"#e2e8f0",sub:"Square",isEmoji:true},{text:"🔺",correct:false,color:"#e2e8f0",sub:"Triangle",isEmoji:true}]},{type:"tap-choice",prompt:"What colour shall we paint it?",kiviLoad:"Pick any colour to paint our circle! All colours are wonderful!",kiviOk:"Wonderful choice! Your circle looks absolutely beautiful!",kiviNo:"Any colour is the right choice! Just tap the colour you love!",opts:[{text:"🔴",correct:true,color:"#e2e8f0",sub:"Red!",isEmoji:true},{text:"🔵",correct:true,color:"#e2e8f0",sub:"Blue!",isEmoji:true},{text:"🟡",correct:true,color:"#e2e8f0",sub:"Yellow!",isEmoji:true}]},{type:"song",prompt:"Circles everywhere! Sing with Kivi!",kiviLoad:"We painted a circle! Circles are round and can roll! Let us sing!",kiviOk:"Round and round! Circles are everywhere! Great painting!",lines:["Circles are round, ⭕","Round  round  round!","They roll along,","Round  and  round! 🔴"]}]
+  },
+  "CK-T-005": {
+    id:"CK-T-005",
+    title:"Paint the Shape: Square House",
+    emoji:"⬛",
+    bg:"#FFE8DC",
+    xp:5,
+    coins:3,
+    scenes:[{type:"tap-choice",prompt:"Find the SQUARE shape!",kiviLoad:"Squares have four equal sides! Houses are shaped like squares! Find the square!",kiviOk:"Square! Four equal sides! Windows are squares! Great finding!",kiviNo:"A square has four sides all the same length! Find the square!",opts:[{text:"⬛",correct:true,color:"#e2e8f0",sub:"Square!",isEmoji:true},{text:"⭕",correct:false,color:"#e2e8f0",sub:"Circle",isEmoji:true},{text:"🔺",correct:false,color:"#e2e8f0",sub:"Triangle",isEmoji:true}]},{type:"tap-choice",prompt:"A house has a square and triangle roof! Find the house!",kiviLoad:"A house is a square with a triangle roof on top! Can you find the house?",kiviOk:"HOUSE! A square body and triangle roof! Beautiful house!",kiviNo:"A house has a square shape with a pointy triangle roof! Find the house!",opts:[{text:"🏠",correct:true,color:"#e2e8f0",sub:"House!",isEmoji:true},{text:"🌲",correct:false,color:"#e2e8f0",sub:"Tree",isEmoji:true},{text:"⭐",correct:false,color:"#e2e8f0",sub:"Star",isEmoji:true}]},{type:"song",prompt:"Squares make houses! Sing along!",kiviLoad:"Squares are everywhere! Windows, doors, houses! Let us sing!",kiviOk:"Square, square, square! Houses, windows, tiles, all squares! Wonderful!",lines:["Squares have four sides, ◼","All  the  same  length!","Houses are squares,","Square  square  square! 🏠"]}]
+  },
+  "CK-T-006": {
+    id:"CK-T-006",
+    title:"All the Colours! Rainbow Time",
+    emoji:"🌈",
+    bg:"#FFE8DC",
+    xp:5,
+    coins:3,
+    scenes:[{type:"tap-choice",prompt:"Find the RAINBOW!",kiviLoad:"A rainbow has all the colours! Red, orange, yellow, green, blue! Find the rainbow!",kiviOk:"RAINBOW! A rainbow has red, orange, yellow, green, blue and more!",kiviNo:"A rainbow has all the colours! It appears after rain! Find it!",opts:[{text:"🌈",correct:true,color:"#e2e8f0",sub:"Rainbow!",isEmoji:true},{text:"☁️",correct:false,color:"#e2e8f0",sub:"Cloud",isEmoji:true},{text:"⭐",correct:false,color:"#e2e8f0",sub:"Star",isEmoji:true}]},{type:"two-group",prompt:"Sort the colours! Warm left, cool right!",kiviLoad:"Warm colours feel like sunshine! Cool colours feel like the ocean! Sort them! Tap then tap a group!",kiviOk:"Perfect! Warm reds and oranges, cool blues and greens! Rainbow expert!",items:["🔴","🔵","🟠","🟢"],groups:[{label:"WARM ☀️",color:"#FF6B35",correct:[0,2]},{label:"COOL 🌊",color:"#0EA5E9",correct:[1,3]}]},{type:"song",prompt:"Rainbow song! All the colours!",kiviLoad:"Red, orange, yellow, green, blue! The rainbow! Let us sing!",kiviOk:"All the colours of the rainbow! You are a rainbow superstar!",lines:["Red  orange  yellow, 🌈","Green  blue  too!","All  the  colours,","Make  a  rainbow! 🌈"]}]
+  },
+  "CK-T-007": {
+    id:"CK-T-007",
+    title:"Stamp Art with Kivi",
+    emoji:"🖌️",
+    bg:"#FFE8DC",
+    xp:5,
+    coins:3,
+    scenes:[{type:"tap-choice",prompt:"Tap to make a stamp! Tap the STAR!",kiviLoad:"Stamp art! Tap things to make stamps! Tap the star!",kiviOk:"STAMP! You made a star stamp! Art is so fun!",kiviNo:"Find the star and tap it to make a beautiful stamp!",opts:[{text:"⭐",correct:true,color:"#e2e8f0",sub:"Star!",isEmoji:true},{text:"🔲",correct:false,color:"#e2e8f0",sub:"Box",isEmoji:true},{text:"💧",correct:false,color:"#e2e8f0",sub:"Drop",isEmoji:true}]},{type:"tap-choice",prompt:"What shape shall we stamp next?",kiviLoad:"What shape do you want to stamp next? You choose! All choices are perfect!",kiviOk:"Wonderful choice! Your stamp art is absolutely beautiful!",kiviNo:"All choices are wonderful! Tap any shape to stamp it!",opts:[{text:"💛",correct:true,color:"#e2e8f0",sub:"Heart!",isEmoji:true},{text:"❄️",correct:true,color:"#e2e8f0",sub:"Snowflake!",isEmoji:true},{text:"🌸",correct:true,color:"#e2e8f0",sub:"Flower!",isEmoji:true}]},{type:"song",prompt:"Stamp stamp stamp with Kivi!",kiviLoad:"Stamp stamp stamp! Making art with stamps! Let us sing!",kiviOk:"Stamp stamp stamp! You made beautiful art! Kivi loves your creativity!",lines:["Stamp  stamp  stamp, 👋","Making  art  today!","Stamp  stamp  stamp,","In  a  wonderful  way! 🎨"]}]
+  },
+  "CK-T-008": {
+    id:"CK-T-008",
+    title:"Kivi's Colour Mixing",
+    emoji:"🎨",
+    bg:"#FFE8DC",
+    xp:5,
+    coins:3,
+    scenes:[{type:"tap-choice",prompt:"Mix red and blue! What colour do you get?",kiviLoad:"When we mix red and blue paint together, we get a new colour! What is it?",kiviOk:"PURPLE! Red and blue make PURPLE! Mixing colours is magic!",kiviNo:"Red and blue together make a beautiful purple colour! Tap purple!",opts:[{text:"🟣",correct:true,color:"#e2e8f0",sub:"Purple!",isEmoji:true},{text:"🟢",correct:false,color:"#e2e8f0",sub:"Green",isEmoji:true},{text:"🟠",correct:false,color:"#e2e8f0",sub:"Orange",isEmoji:true}]},{type:"tap-choice",prompt:"Mix yellow and blue! What colour?",kiviLoad:"Yellow and blue mix together! What new colour do they make?",kiviOk:"GREEN! Yellow and blue make GREEN! Like grass and trees!",kiviNo:"Yellow and blue mix together to make green! Like leaves on a tree! Tap green!",opts:[{text:"🟠",correct:false,color:"#e2e8f0",sub:"Orange",isEmoji:true},{text:"🟢",correct:true,color:"#e2e8f0",sub:"Green!",isEmoji:true},{text:"🟣",correct:false,color:"#e2e8f0",sub:"Purple",isEmoji:true}]},{type:"song",prompt:"Mixing colours is magic! Sing!",kiviLoad:"Mixing colours is magic! Red plus blue equals purple! Let us sing!",kiviOk:"Colour mixing magic! Purple and green! You are a colour scientist!",lines:["Red  plus  blue, 🔴🔵","Makes  purple! 🟣","Yellow  plus  blue,","Makes  green! 🟢 Magic! ✨"]}]
+  },
+  "CK-T-009": {
+    id:"CK-T-009",
+    title:"Draw with Kivi: My Face",
+    emoji:"😊",
+    bg:"#FFE8DC",
+    xp:5,
+    coins:3,
+    scenes:[{type:"tap-choice",prompt:"A face has EYES! Find the eyes!",kiviLoad:"We are drawing a face! First, where are the eyes? Tap the eyes!",kiviOk:"EYES! Two eyes to see the world! Eyes go at the top of the face!",kiviNo:"Eyes help us see! Two eyes on a face! Find the eyes!",opts:[{text:"👀",correct:true,color:"#e2e8f0",sub:"Eyes!",isEmoji:true},{text:"👃",correct:false,color:"#e2e8f0",sub:"Nose",isEmoji:true},{text:"👄",correct:false,color:"#e2e8f0",sub:"Mouth",isEmoji:true}]},{type:"tap-choice",prompt:"Now find the NOSE!",kiviLoad:"Every face has a nose to smell things! Find the nose!",kiviOk:"NOSE! The nose goes in the middle of the face to smell lovely things!",kiviNo:"The nose helps us smell! It is in the middle of the face! Find it!",opts:[{text:"👀",correct:false,color:"#e2e8f0",sub:"Eyes",isEmoji:true},{text:"👃",correct:true,color:"#e2e8f0",sub:"Nose!",isEmoji:true},{text:"👄",correct:false,color:"#e2e8f0",sub:"Mouth",isEmoji:true}]},{type:"song",prompt:"Face song! Sing with Kivi!",kiviLoad:"Eyes, nose, mouth! A smiley face! Let us sing the face song!",kiviOk:"Eyes, nose, mouth, ears! You know all the parts of a face! Beautiful!",lines:["Two eyes to see, 👀","A nose to smell! 👃","A big happy mouth,","And ears as well! 😊"]}]
+  },
+  "CK-T-010": {
+    id:"CK-T-010",
+    title:"Colour Sorting Game",
+    emoji:"🌈",
+    bg:"#FFE8DC",
+    xp:5,
+    coins:3,
+    scenes:[{type:"two-group",prompt:"Sort! Red things left, Blue things right!",kiviLoad:"Red things go LEFT! Blue things go RIGHT! Sort them! Tap then tap a group!",kiviOk:"Perfect colour sorting! Red apple and rose, blue blueberry and water! Expert!",items:["🍎","🫐","🌹","💧"],groups:[{label:"RED 🔴",color:"#FF4E8B",correct:[0,2]},{label:"BLUE 🔵",color:"#0EA5E9",correct:[1,3]}]},{type:"two-group",prompt:"Sort! Yellow left, Green right!",kiviLoad:"Yellow things go LEFT! Green things go RIGHT! Tap then tap a group!",kiviOk:"Sunflower and lemon are yellow! Tree and frog are green! Perfect sorting!",items:["🌻","🌳","🍋","🐸"],groups:[{label:"YELLOW 🌟",color:"#FF6B35",correct:[0,2]},{label:"GREEN 🌿",color:"#22C55E",correct:[1,3]}]},{type:"song",prompt:"Colour sorting song!",kiviLoad:"You sorted all the colours! Red, blue, yellow, green! Fantastic!",kiviOk:"You sorted ALL the colours! Red, blue, yellow, green! COLOUR CHAMPION!",lines:["Red  blue  yellow  green, 🌈","Colours  everywhere!","Sorting  sorting,","Colours  in  the  air! ✨"]}]
+  },
+};
+
+const SN_STORIES = [
+  {
+    id:"SN-T-001",
+    title:"My Morning Routine",
+    emoji:"🌅",
+    pages:[{em:"🌅",text:"Good morning! The sun is up and it is time to wake up!",kivi:"Good morning! The sun is shining! It is a beautiful new day!"},{em:"😴",text:"Kivi wakes up slowly. First, a big morning stretch!",kivi:"Stretch those arms up high! A big morning stretch feels so wonderful!"},{em:"🦷",text:"Next, Kivi brushes teeth. Brush brush brush!",kivi:"Brush brush brush! Clean teeth are happy teeth! Brush for two whole minutes!"},{em:"👕",text:"Then Kivi gets dressed. One leg, then the other!",kivi:"Getting dressed! One leg in, then the other. You can do it all by yourself!"},{em:"🥣",text:"Breakfast time! Kivi loves a yummy breakfast.",kivi:"Breakfast is the most important meal! Yummy food gives us energy for the day!"},{em:"🎒",text:"Bag is packed! Kivi is ready. What a great morning!",kivi:"Morning routine complete! You did every step! You are all ready for the day!"}]
+  },
+  {
+    id:"SN-T-002",
+    title:"Getting Dressed",
+    emoji:"👕",
+    pages:[{em:"👕",text:"Time to get dressed! First, find your clothes.",kivi:"Getting dressed! First, find the clothes you want to wear today!"},{em:"🧦",text:"Socks first! One sock on the left foot.",kivi:"Socks first! Find the left foot. Push the sock on carefully!"},{em:"👖",text:"Next come the trousers. One leg at a time!",kivi:"Trousers time! Sit down if you need to. One leg, then the other!"},{em:"👕",text:"Now the top! Head through the hole, then arms!",kivi:"Pop your head through! Now find the arm holes! There you go!"},{em:"👟",text:"Almost done! Shoes on last.",kivi:"Shoes! Left foot in the left shoe, right foot in the right shoe!"},{em:"🎉",text:"All dressed! You did it all by yourself!",kivi:"You got dressed all by yourself! That is something to be very proud of!"}]
+  },
+  {
+    id:"SN-T-003",
+    title:"Sharing with Friends",
+    emoji:"🤝",
+    pages:[{em:"🧸",text:"Kivi has a favourite toy. A friend wants to play too.",kivi:"Kivi has a special toy. A friend comes over and wants to play with it."},{em:"😟",text:"Kivi feels unsure about sharing. That is okay!",kivi:"It is normal to feel unsure about sharing. Sharing can feel hard sometimes."},{em:"🤔",text:"Kivi thinks: if I share, we can both play!",kivi:"If we share the toy, both friends can play! That sounds like so much fun!"},{em:"🤝",text:"Kivi decides to share. The friend is so happy!",kivi:"Kivi shares! The friend feels so happy! Sharing is such a kind thing to do!"},{em:"😊",text:"They play together and have so much fun!",kivi:"Playing together is even more fun than playing alone! Sharing is wonderful!"},{em:"🥰",text:"Sharing makes both friends feel good inside.",kivi:"When we share, everyone feels happy! Kivi and friend are the best of friends!"}]
+  },
+  {
+    id:"SN-T-004",
+    title:"When I Feel Angry",
+    emoji:"😤",
+    pages:[{em:"😤",text:"Sometimes things do not go the way we want. We might feel angry.",kivi:"Sometimes we feel angry. That is a completely normal feeling. Everyone feels angry sometimes."},{em:"🌋",text:"Angry feelings can feel hot inside, like a volcano!",kivi:"Anger can feel hot and big inside. Like a volcano getting ready to erupt!"},{em:"🛑",text:"When angry, we can STOP and take a deep breath.",kivi:"When you feel the anger building, STOP! Take a big deep breath. In through the nose."},{em:"💨",text:"Breathe in deeply... and breathe out slowly.",kivi:"And out through the mouth. Breathe in slowly... and out slowly. Feel the anger getting smaller."},{em:"💬",text:"We can use words: I feel angry because...",kivi:"Using words helps everyone understand! You can say: I feel angry because this happened."},{em:"😌",text:"The angry feeling will pass. Kivi feels calm again.",kivi:"After we breathe and use our words, the angry feeling gets smaller. Kivi feels calm now!"}]
+  },
+  {
+    id:"SN-T-005",
+    title:"Taking Turns",
+    emoji:"🎮",
+    pages:[{em:"🎮",text:"Kivi and a friend both want to play the same game.",kivi:"Two friends, one game! What should we do? Taking turns is the answer!"},{em:"1️⃣",text:"Taking turns means one person plays first, then the other.",kivi:"One friend plays first! The other friend waits patiently. Then they swap!"},{em:"⏳",text:"Waiting is hard sometimes. But it only takes a moment!",kivi:"Waiting feels hard. But the turn will come! Count slowly to ten while you wait!"},{em:"🔄",text:"Now it is the other friend's turn! Swap over!",kivi:"Swap! Now it is your turn! See how fast it came? Taking turns is fair!"},{em:"😊",text:"Both friends get to play! Taking turns is fair.",kivi:"Both friends played! Taking turns means everyone gets a chance. That is fair!"},{em:"🥰",text:"Taking turns keeps everyone happy!",kivi:"When we take turns, everyone is happy! You are a wonderful kind friend!"}]
+  },
+  {
+    id:"SN-T-006",
+    title:"Asking for Help",
+    emoji:"🙋",
+    pages:[{em:"🤔",text:"Sometimes things are too hard to do alone.",kivi:"Sometimes something is very hard. That is completely okay! Everyone needs help sometimes."},{em:"🙋",text:"Asking for help is a brave and smart thing to do!",kivi:"Asking for help is BRAVE! It shows you know what you need. Very clever!"},{em:"💬",text:"We can say: Can you help me please?",kivi:"The magic words are: Can you help me please? These are wonderful words!"},{em:"👋",text:"A teacher, parent, or friend can help.",kivi:"Teachers, parents, and friends love to help! Just ask and they will come!"},{em:"🤝",text:"The helper and Kivi work together.",kivi:"Working together makes hard things much easier! Two heads are better than one!"},{em:"⭐",text:"Kivi did it with help! Asking was the right choice.",kivi:"You did it! Asking for help was exactly the right thing to do! Well done!"}]
+  },
+  {
+    id:"SN-T-007",
+    title:"Bedtime Routine",
+    emoji:"🌙",
+    pages:[{em:"🌙",text:"The moon is up. It is time for bed.",kivi:"Look! The moon is shining. Night time is here. It is time for rest and sleep!"},{em:"🛁",text:"First, bath time. Splish splash!",kivi:"Bath time! Warm water, bubbles, splish splash! Getting clean before bed!"},{em:"🦷",text:"Brush teeth before bed. Brush brush brush!",kivi:"Brush teeth again! Night time brushing keeps teeth clean all through the night!"},{em:"👕",text:"Put on pyjamas. Cosy and soft!",kivi:"Pyjamas! Soft and cosy. Perfect for sleeping in all night!"},{em:"📖",text:"Maybe a bedtime story. Snuggle up!",kivi:"A bedtime story! Snuggle up and listen. Stories help us feel calm and sleepy."},{em:"😴",text:"Close your eyes. Sleep time. Sweet dreams!",kivi:"Close those eyes. Breathing slowly. Sweet dreams, little one! Tomorrow is a new adventure!"}]
+  },
+  {
+    id:"SN-T-008",
+    title:"Going to a New Place",
+    emoji:"🏫",
+    pages:[{em:"🏫",text:"Today we are going somewhere new. That can feel scary.",kivi:"Going somewhere new can feel scary. That is a completely normal feeling!"},{em:"😟",text:"Kivi feels nervous. Tummy feels funny.",kivi:"A nervous tummy is normal! It means your body is getting ready for something new!"},{em:"🔍",text:"Let us think about what to expect. New places are just new!",kivi:"New places might seem strange at first. But soon they will feel familiar!"},{em:"🤝",text:"There will be people there who want to help.",kivi:"At the new place, there will be kind people who want to help you feel comfortable!"},{em:"🌟",text:"Kivi takes a breath and walks in bravely.",kivi:"Take a deep breath and walk in! Being brave does not mean not feeling scared!"},{em:"😊",text:"The new place was not so scary after all!",kivi:"It was okay! New places get easier every time you go! You are so brave!"}]
+  },
+  {
+    id:"SN-T-009",
+    title:"When I Feel Sad",
+    emoji:"🌧️",
+    pages:[{em:"🌧️",text:"Sometimes sad things happen. It is okay to feel sad.",kivi:"Sometimes we feel sad. Sadness is a normal feeling. It is okay to feel sad!"},{em:"😢",text:"Kivi feels sad today. Tears want to come.",kivi:"Kivi feels sad. Tears are okay! Crying is a way our body lets feelings out."},{em:"💬",text:"Kivi can tell someone: I feel sad today.",kivi:"Telling someone helps! We can say: I feel sad today. Can you be with me?"},{em:"🤗",text:"A hug from someone who cares helps a lot.",kivi:"A hug from someone who loves you makes the sad feeling smaller! Ask for a hug!"},{em:"🌈",text:"Sad feelings do not last forever. They will pass.",kivi:"Sad feelings come and go, like rain clouds. After the rain, comes a rainbow!"},{em:"😊",text:"Kivi starts to feel a little better.",kivi:"Feeling a little better now! Sad feelings pass. Kivi feels hopeful again today."}]
+  },
+  {
+    id:"SN-T-010",
+    title:"I Am Amazing",
+    emoji:"⭐",
+    pages:[{em:"🌟",text:"Kivi is special. There is nobody else just like Kivi!",kivi:"You are special! There is nobody in the whole world exactly like you!"},{em:"💪",text:"Kivi can do so many wonderful things!",kivi:"Think of all the things you can do! You are getting better every single day!"},{em:"❤️",text:"Kivi is kind and caring.",kivi:"Being kind and caring is one of the most wonderful things you can be!"},{em:"🤔",text:"When Kivi makes mistakes, that is how we learn.",kivi:"Mistakes help us learn! Everyone makes mistakes. That is how we grow and get better!"},{em:"🌱",text:"Kivi is growing and learning every day.",kivi:"Every day you learn something new! You are growing into an amazing person!"},{em:"⭐",text:"Kivi is amazing, just the way Kivi is!",kivi:"You are amazing, exactly as you are! Kivi believes in you! You are wonderful!"}]
+  },
+];
+
+const WORLD_ACTS = {
+  ai:["AI-T-001","AI-T-002","AI-T-003","AI-T-004","AI-T-005","AI-T-006","AI-T-007","AI-T-008","AI-T-009","AI-T-010","AI-T-011","AI-T-012","AI-T-013","AI-T-014","AI-T-015"],
+  mm:["MM-T-001","MM-T-002","MM-T-003","MM-T-004","MM-T-005","MM-T-006","MM-T-007","MM-T-008","MM-T-009","MM-T-010"],
+  ck:["CK-T-001","CK-T-002","CK-T-003","CK-T-004","CK-T-005","CK-T-006","CK-T-007","CK-T-008","CK-T-009","CK-T-010"],
+  sn:["SN-T-001","SN-T-002","SN-T-003","SN-T-004","SN-T-005","SN-T-006","SN-T-007","SN-T-008","SN-T-009","SN-T-010"]
+};
+
+const WORLDS={
+  ai:{name:'Alphabet Island', color:'var(--ai)', bg:'var(--ai-l)', cls:'wc-ai'},
+  mm:{name:'Math Mountain',   color:'var(--mm)', bg:'var(--mm-l)', cls:'wc-mm'},
+  ck:{name:'Creativity Kingdom', color:'var(--ck)', bg:'var(--ck-l)', cls:'wc-ck'},
+  sn:{name:"Kivi's Stories",  color:'var(--sn)', bg:'var(--sn-l)', cls:'wc-sn'},
+};
+</script>
+<script>
+/* ── HUB ──────────────────────────────────────────────────────────── */
+function initHub(){
+  setTimeout(()=>Voice.say("Welcome to Kivi's Toddler World! Tap a world to start learning!"),700);
+}
+
+/* ── WORLD LIST ───────────────────────────────────────────────────── */
+function openWorld(key){
+  S.world=key;
+  const wm=WORLDS[key];
+  const wlScreen=document.getElementById('world-list');
+  wlScreen.style.background=wm.bg;
+  document.getElementById('wlTitle').textContent=wm.name;
+  const list=document.getElementById('actList');
+  list.innerHTML='';
+
+  const ids=WORLD_ACTS[key]||[];
+  ids.forEach(id=>{
+    const isSN=key==='sn';
+    const data=isSN?SN_STORIES.find(s=>s.id===id):ACTS[id];
+    if(!data)return;
+    const isDone=S.done.has(id);
+    const card=document.createElement('div');
+    card.className='act-card'+(isDone?' done':'');
+    card.setAttribute('role','button');
+    card.setAttribute('tabindex','0');
+    card.onclick=()=>isSN?startStory(id):startActivity(id);
+    card.onkeydown=e=>{if(e.key==='Enter')card.onclick();};
+    const sceneCount=isSN?(data.pages||[]).length:(data.scenes||[]).length;
+    const typeLabel=isSN?'Social Story':'Activity';
+    card.innerHTML=
+      '<div class="ac-icon" style="background:'+wm.bg+'">'+data.emoji+'</div>'+
+      '<div class="ac-body">'+
+        '<div class="ac-title">'+data.title+'</div>'+
+        '<div class="ac-meta">'+typeLabel+' &bull; '+sceneCount+(isSN?' pages':' scenes')+'</div>'+
+      '</div>'+
+      '<div class="ac-right">'+
+        '<span class="ac-xp">&#x2B50; 5 XP</span>'+
+        (isDone?'<span class="ac-done">&#x2705;</span>':'')+
+      '</div>';
+    list.appendChild(card);
+  });
+
+  showScreen('world-list');
+  setTimeout(()=>Voice.say('Welcome to '+wm.name+'! Tap an activity to begin!'),400);
+}
+
+/* ── START ACTIVITY ───────────────────────────────────────────────── */
+function startActivity(id){
+  const a=ACTS[id];if(!a)return;
+  S.actId=id;S.sceneIdx=0;S.answered=false;
+  S.countTapped=new Set();S.selectedSort=-1;S.sortPlacements={};
+  buildDots(a.scenes.length);
+  showScreen('activity-play');
+  document.getElementById('sceneArea').innerHTML='';
+  document.getElementById('nextBtn').classList.remove('show');
+  document.getElementById('kiviBubble').textContent='Let us learn together!';
+  setTimeout(()=>renderScene(0),250);
+}
+
+function buildDots(n){
+  document.getElementById('apDots').innerHTML=
+    Array.from({length:n},(_,i)=>'<div class="apdot" id="apd'+i+'"></div>').join('');
+  updateDots(0,n);
+}
+
+function updateDots(cur,total){
+  for(let i=0;i<total;i++){
+    const d=document.getElementById('apd'+i);if(!d)continue;
+    d.className='apdot'+(i<cur?' done':i===cur?' cur':'');
+  }
+}
+
+/* ── RENDER SCENE ─────────────────────────────────────────────────── */
+function renderScene(idx){
+  const a=ACTS[S.actId];if(!a)return;
+  const sc=a.scenes[idx];if(!sc)return;
+  S.sceneIdx=idx;S.answered=false;
+  S.countTapped=new Set();S.selectedSort=-1;S.sortPlacements={};
+  updateDots(idx,a.scenes.length);
+  document.getElementById('nextBtn').classList.remove('show');
+  document.getElementById('kiviBubble').textContent=sc.prompt||'';
+
+  const area=document.getElementById('sceneArea');
+  area.innerHTML='';
+
+  if(sc.type==='tap-choice') renderTapChoice(sc,area);
+  else if(sc.type==='count-tap') renderCountTap(sc,area);
+  else if(sc.type==='two-group') renderTwoGroup(sc,area);
+  else if(sc.type==='song')    renderSong(sc,area);
+
+  Voice.stop();
+  setTimeout(()=>Voice.say(sc.kiviLoad||sc.prompt||''),450);
+}
+
+function nextScene(){
+  const a=ACTS[S.actId];if(!a)return;
+  const next=S.sceneIdx+1;
+  if(next>=a.scenes.length){completeActivity();return;}
+  renderScene(next);
+}
+
+function exitActivity(){openWorld(S.world);}
+
+/* ── TAP CHOICE ───────────────────────────────────────────────────── */
+function renderTapChoice(sc,area){
+  if(sc.sceneTop){
+    const top=document.createElement('div');
+    top.className='scene-top-emoji';top.textContent=sc.sceneTop;
+    area.appendChild(top);
+  }
+  const row=document.createElement('div');row.className='choices';
+  (sc.opts||[]).forEach((opt,i)=>{
+    const btn=document.createElement('button');
+    btn.className='cbtn';btn.id='cb'+i;
+    btn.style.borderColor=opt.color||'#e2e8f0';
+    btn.setAttribute('aria-label',opt.sub||opt.text||'');
+    if(opt.isEmoji){
+      btn.innerHTML='<span class="cbtn-em">'+opt.text+'</span>'+
+        (opt.sub?'<span class="cbtn-sub">'+opt.sub+'</span>':'');
+    } else {
+      btn.innerHTML='<span class="cbtn-lbl" style="color:'+(opt.color||'#1E293B')+'">'+opt.text+'</span>'+
+        (opt.sub?'<span class="cbtn-sub">'+opt.sub+'</span>':'');
+    }
+    btn.onclick=()=>handleTapChoice(i,!!opt.correct,sc);
+    row.appendChild(btn);
+  });
+  area.appendChild(row);
+}
+
+function handleTapChoice(idx,correct,sc){
+  if(S.answered)return;
+  Voice.stop();
+  const btn=document.getElementById('cb'+idx);if(!btn)return;
+  if(correct){
+    S.answered=true;
+    btn.classList.add('correct');
+    document.getElementById('kiviBubble').textContent=sc.kiviOk||'';
+    spawnSparkles(btn);
+    Voice.say(sc.kiviOk||'Wonderful!',{done:()=>document.getElementById('nextBtn').classList.add('show')});
+  } else {
+    btn.classList.add('wrong');
+    document.getElementById('kiviBubble').textContent=sc.kiviNo||'Try again!';
+    // Reveal correct
+    (sc.opts||[]).forEach((opt,i)=>{
+      if(opt.correct){const cb=document.getElementById('cb'+i);if(cb)cb.classList.add('reveal');}
+    });
+    Voice.say(sc.kiviNo||'Try again!',{done:()=>{
+      S.answered=false;
+      document.querySelectorAll('.cbtn').forEach(b=>b.classList.remove('wrong','correct','reveal'));
+      Voice.say(sc.kiviLoad||sc.prompt||'');
+      document.getElementById('kiviBubble').textContent=sc.prompt||'';
+    }});
+  }
+}
+
+/* ── COUNT TAP ────────────────────────────────────────────────────── */
+function renderCountTap(sc,area){
+  const grid=document.createElement('div');grid.className='count-grid';
+  (sc.items||[]).forEach((em,i)=>{
+    const el=document.createElement('div');
+    el.className='citem';el.id='ci'+i;el.textContent=em;
+    el.setAttribute('role','button');el.setAttribute('aria-label','Tap to count '+em);
+    el.onclick=()=>handleCountTap(i,sc);
+    grid.appendChild(el);
+  });
+  area.appendChild(grid);
+  const num=document.createElement('div');num.className='count-num';num.id='countNum';num.style.display='none';
+  area.appendChild(num);
+}
+
+function handleCountTap(idx,sc){
+  const el=document.getElementById('ci'+idx);if(!el||el.classList.contains('tapped'))return;
+  el.classList.add('tapped');
+  S.countTapped.add(idx);
+  const n=S.countTapped.size;
+  const numEl=document.getElementById('countNum');
+  if(numEl){numEl.style.display='block';numEl.textContent=n;}
+  Voice.say(String(n));
+  const total=(sc.items||[]).length;
+  if(n>=total){
+    S.answered=true;
+    document.getElementById('kiviBubble').textContent=sc.kiviOk||'';
+    spawnSparklesScreen();
+    Voice.say(sc.kiviOk||'Amazing counting!',{done:()=>document.getElementById('nextBtn').classList.add('show')});
+  }
+}
+
+/* ── TWO GROUP SORT ───────────────────────────────────────────────── */
+function renderTwoGroup(sc,area){
+  const wrap=document.createElement('div');wrap.className='sort-wrap';
+
+  // Items row
+  const itemRow=document.createElement('div');itemRow.className='sort-items-row';
+  (sc.items||[]).forEach((em,i)=>{
+    const el=document.createElement('div');
+    el.className='sitem';el.id='si'+i;el.textContent=em;
+    el.setAttribute('role','button');el.setAttribute('tabindex','0');
+    el.onclick=()=>selectSortItem(i);
+    el.onkeydown=e=>{if(e.key==='Enter')selectSortItem(i);};
+    itemRow.appendChild(el);
+  });
+  wrap.appendChild(itemRow);
+
+  // Buckets
+  const bRow=document.createElement('div');bRow.className='sort-buckets';
+  (sc.groups||[]).forEach((g,gi)=>{
+    const bkt=document.createElement('div');
+    bkt.className='bucket';bkt.id='bkt'+gi;
+    bkt.style.borderColor=g.color;bkt.style.color=g.color;
+    bkt.style.background=g.color+'18';
+    bkt.setAttribute('role','button');bkt.setAttribute('tabindex','0');
+    bkt.onclick=()=>dropSort(gi,sc);
+    bkt.onkeydown=e=>{if(e.key==='Enter')dropSort(gi,sc);};
+    bkt.innerHTML='<div class="bucket-lbl">'+g.label+'</div><div class="bucket-items" id="bi'+gi+'"></div>';
+    bRow.appendChild(bkt);
+  });
+  wrap.appendChild(bRow);
+
+  const hint=document.createElement('div');hint.className='sort-hint';hint.id='sortHint';
+  hint.textContent='Tap an item, then tap a group!';
+  wrap.appendChild(hint);
+  area.appendChild(wrap);
+}
+
+function selectSortItem(idx){
+  if(document.getElementById('si'+idx)?.classList.contains('placed'))return;
+  S.selectedSort=idx;
+  document.querySelectorAll('.sitem:not(.placed)').forEach(el=>el.classList.remove('selected'));
+  const el=document.getElementById('si'+idx);if(el)el.classList.add('selected');
+  Voice.stop();
+}
+
+function dropSort(groupIdx,sc){
+  if(S.selectedSort<0){
+    document.getElementById('sortHint').textContent='First tap an item above!';
+    return;
+  }
+  const correct=(sc.groups||[])[groupIdx]?.correct||[];
+  if(!correct.includes(S.selectedSort)){
+    const bkt=document.getElementById('bkt'+groupIdx);
+    if(bkt)bkt.classList.add('wrong-flash');
+    setTimeout(()=>bkt?.classList.remove('wrong-flash'),400);
+    document.getElementById('sortHint').textContent='Hmm, try the other group!';
+    Voice.say('Not quite! Try the other group!');
+    S.selectedSort=-1;
+    document.querySelectorAll('.sitem').forEach(el=>el.classList.remove('selected'));
+    return;
+  }
+  // Place
+  const em=(sc.items||[])[S.selectedSort];
+  const bi=document.getElementById('bi'+groupIdx);
+  if(bi){const sp=document.createElement('span');sp.textContent=em;bi.appendChild(sp);}
+  const si=document.getElementById('si'+S.selectedSort);
+  if(si)si.classList.add('placed');
+  S.sortPlacements[S.selectedSort]=groupIdx;
+  S.selectedSort=-1;
+  document.querySelectorAll('.sitem').forEach(el=>el.classList.remove('selected'));
+  const placed=Object.keys(S.sortPlacements).length;
+  const total=(sc.items||[]).length;
+  if(placed>=total){
+    S.answered=true;
+    document.getElementById('sortHint').textContent='';
+    document.getElementById('kiviBubble').textContent=sc.kiviOk||'';
+    spawnSparklesScreen();
+    Voice.say(sc.kiviOk||'Perfect sorting!',{done:()=>document.getElementById('nextBtn').classList.add('show')});
+  } else {
+    document.getElementById('sortHint').textContent='Good! Keep going!';
+    Voice.say('Good! Keep going!');
+  }
+}
+
+/* ── SONG ─────────────────────────────────────────────────────────── */
+let songActive=false;
+function renderSong(sc,area){
+  songActive=false;
+  const wrap=document.createElement('div');wrap.className='song-wrap';
+  wrap.innerHTML=
+    '<span class="song-kivi">&#x1F98A;</span>'+
+    '<div class="song-lines" id="songLines">'+
+      (sc.lines||[]).map((l,i)=>'<div class="song-line" id="sl'+i+'">'+l+'</div>').join('')+
+    '</div>'+
+    '<button class="song-play-btn" id="songPlayBtn" onclick="playSong()">&#x1F3B5; Play Song!</button>';
+  area.appendChild(wrap);
+}
+
+function playSong(){
+  if(songActive)return;
+  songActive=true;
+  const sc=ACTS[S.actId]?.scenes[S.sceneIdx];if(!sc)return;
+  const btn=document.getElementById('songPlayBtn');if(btn){btn.disabled=true;btn.style.opacity='.6';}
+  const lines=sc.lines||[];
+  const txt=lines.map(l=>l.replace(/<[^>]*>/g,' ').replace(/[^\w\s,.!?]/g,' ')).join(' ');
+  Voice.say(txt,{rate:.76,pitch:1.18,done:()=>{
+    songActive=false;
+    document.getElementById('kiviBubble').textContent=sc.kiviOk||'';
+    spawnSparklesScreen();
+    Voice.say(sc.kiviOk||'Wonderful singing!',{done:()=>{
+      S.answered=true;
+      document.getElementById('nextBtn').classList.add('show');
+    }});
+  }});
+  lines.forEach((_,i)=>{
+    setTimeout(()=>{
+      document.querySelectorAll('.song-line').forEach(el=>el.classList.remove('active'));
+      const el=document.getElementById('sl'+i);if(el)el.classList.add('active');
+    },i*1900);
+  });
+}
+
+/* ── STORIES ──────────────────────────────────────────────────────── */
+function startStory(id){
+  const story=SN_STORIES.find(s=>s.id===id);if(!story)return;
+  S.actId=id;S.storyPage=0;
+  buildDots(story.pages.length);
+  showScreen('activity-play');
+  document.getElementById('nextBtn').classList.remove('show');
+  document.getElementById('sceneArea').innerHTML='';
+  setTimeout(()=>renderStoryPage(story,0),250);
+}
+
+function renderStoryPage(story,idx){
+  updateDots(idx,story.pages.length);
+  const p=story.pages[idx];if(!p)return;
+  const isLast=idx>=story.pages.length-1;
+  document.getElementById('kiviBubble').textContent=p.text;
+  const area=document.getElementById('sceneArea');
+  area.innerHTML='';
+  const wrap=document.createElement('div');wrap.className='story-wrap';
+  const em=document.createElement('span');em.className='story-em';em.textContent=p.em;
+  const txt=document.createElement('div');txt.className='story-txt';txt.textContent=p.text;
+  const nxt=document.createElement('button');nxt.className='story-nxt';
+  nxt.innerHTML=isLast?'&#x1F389; Finish Story!':'Next &#x27A1;&#xFE0F;';
+  nxt.onclick=()=>{
+    const st=SN_STORIES.find(s=>s.id===S.actId);if(!st)return;
+    const ni=idx+1;
+    if(ni>=st.pages.length)completeActivity(st.title);
+    else{S.storyPage=ni;renderStoryPage(st,ni);}
+  };
+  wrap.appendChild(em);wrap.appendChild(txt);wrap.appendChild(nxt);
+  area.appendChild(wrap);
+  Voice.stop();
+  setTimeout(()=>Voice.say(p.kivi||p.text),450);
+}
+
+/* ── COMPLETION ───────────────────────────────────────────────────── */
+function completeActivity(title){
+  const a=ACTS[S.actId];
+  const xp=a?a.xp:5, coins=a?a.coins:3;
+  const t=title||(a?a.title:'Activity');
+  S.done.add(S.actId);S.totalXP+=xp;S.totalCoins+=coins;
+  document.getElementById('celXP').textContent=xp;
+  document.getElementById('celCoins').textContent=coins;
+  document.getElementById('celTitle').textContent='Amazing Work!';
+  document.getElementById('celSub').textContent='You finished: '+t;
+  showScreen('celebrate');
+  spawnConfetti();
+  Voice.say('Amazing work! You finished '+t+'! You earned '+xp+' stars and '+coins+' coins! You are incredible!');
+}
+
+function goNext(){
+  const isSN=S.world==='sn';
+  const ids=isSN?SN_STORIES.map(s=>s.id):(WORLD_ACTS[S.world]||[]);
+  const idx=ids.indexOf(S.actId);
+  const nextId=idx>=0&&idx+1<ids.length?ids[idx+1]:null;
+  if(nextId){isSN?startStory(nextId):startActivity(nextId);}
+  else{
+    openWorld(S.world);
+    setTimeout(()=>Voice.say('You finished all the activities! You are a superstar!'),400);
+  }
+}
+
+/* ── PARTICLES ────────────────────────────────────────────────────── */
+function spawnSparkles(anchor){
+  const ems=['&#x2B50;','&#x2728;','&#x1F4AB;','&#x1F31F;'];
+  const r=anchor?anchor.getBoundingClientRect():{left:window.innerWidth/2-30,top:window.innerHeight/2-30,width:60,height:60};
+  ems.forEach((em,i)=>{
+    const s=document.createElement('div');s.className='spk';s.innerHTML=em;
+    const ang=(i/ems.length)*2*Math.PI,d=65+Math.random()*50;
+    s.style.cssText='left:'+(r.left+r.width/2)+'px;top:'+(r.top+r.height/2)+'px;'+
+      '--dx:'+Math.cos(ang)*d+'px;--dy:'+Math.sin(ang)*d+'px;--d:'+(0.65+Math.random()*0.4)+'s;';
+    document.body.appendChild(s);setTimeout(()=>s.remove(),1200);
+  });
+}
+function spawnSparklesScreen(){
+  const el=document.querySelector('.cbtn.correct')||document.getElementById('sceneArea');
+  if(el)spawnSparkles(el);
+}
+function spawnConfetti(){
+  const cols=['#FFD93D','#FF6B35','#FF4E8B','#22C55E','#7C3AED','#0EA5E9','#FF7B35'];
+  const c=document.getElementById('cfCont');if(!c)return;c.innerHTML='';
+  for(let i=0;i<75;i++){
+    const el=document.createElement('div');el.className='cf';
+    el.style.cssText='left:'+Math.random()*100+'%;background:'+cols[i%cols.length]+';'+
+      'width:'+(6+Math.random()*8)+'px;height:'+(5+Math.random()*8)+'px;'+
+      'border-radius:'+(Math.random()>.5?'50%':'2px')+';'+
+      '--d:'+(2+Math.random()*2.5)+'s;--del:'+Math.random()*1.2+'s;'+
+      '--r:'+(Math.random()>.5?'':'-')+(180+Math.floor(Math.random()*360))+'deg;';
+    c.appendChild(el);setTimeout(()=>el.remove(),4500);
+  }
+}
+
+/* ── INIT ─────────────────────────────────────────────────────────── */
+document.addEventListener('DOMContentLoaded',()=>initHub());
+</script>
+</body>
+</html>
