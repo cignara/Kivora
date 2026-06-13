@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no"/>
+<title>Number Knowledge: 1 to 10 - Kivora Quiz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+:root{--purple:#7C3AED;--indigo:#4F46E5;--gold:#FFD93D;--orange:#FF6B35;--green:#22C55E;--wrong-bg:#FFF3CD;--wrong-border:#FF8C00;--ease:cubic-bezier(.4,0,.2,1);}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{width:100%;height:100%;overflow:hidden;background:#0C0520;}
+body{font-family:'Nunito',sans-serif;touch-action:manipulation;user-select:none;}
+button{border:none;background:none;cursor:pointer;font-family:inherit;}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important;}}
+.mt-bg{position:fixed;inset:0;z-index:0;max-width:560px;margin:0 auto;background:radial-gradient(ellipse at 50% 0%,#220c56 0%,#110630 45%,#0C0520 100%);}
+.mt{position:absolute;bottom:0;left:0;right:0;}
+.mt-a{height:48%;background:#1a0840;clip-path:polygon(0 100%,0 58%,8% 35%,18% 52%,28% 20%,40% 46%,52% 10%,63% 40%,74% 22%,86% 44%,100% 30%,100% 100%);animation:breathe 8s ease-in-out infinite alternate;}
+.mt-b{height:38%;background:#110630;clip-path:polygon(0 100%,0 68%,12% 42%,24% 62%,37% 32%,50% 55%,63% 28%,76% 50%,88% 38%,100% 52%,100% 100%);animation:breathe 10s ease-in-out 1s infinite alternate;}
+.mt-c{height:28%;background:#0b0420;clip-path:polygon(0 100%,0 75%,15% 55%,28% 72%,42% 48%,55% 68%,68% 50%,82% 65%,100% 55%,100% 100%);animation:breathe 12s ease-in-out 2s infinite alternate;}
+@keyframes breathe{0%{transform:scaleY(1);}100%{transform:scaleY(1.012) translateY(-2px);}}
+.star{position:absolute;border-radius:50%;background:#fff;animation:twinkle var(--d,2s) ease-in-out var(--del,0s) infinite alternate;}
+@keyframes twinkle{0%{opacity:.1;}100%{opacity:.9;}}
+#app{width:100%;height:100%;position:relative;overflow:hidden;display:flex;flex-direction:column;max-width:560px;margin:0 auto;}
+.screen{position:absolute;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:14px;opacity:0;pointer-events:none;transform:translateY(18px);transition:opacity .35s var(--ease),transform .35s var(--ease);}
+.screen.active{opacity:1;pointer-events:all;transform:translateY(0);}
+.screen.exit{opacity:0;transform:translateY(-18px);}
+.intro-kivi{font-size:5rem;display:block;margin-bottom:10px;animation:float 3s ease-in-out infinite alternate;filter:drop-shadow(0 0 20px rgba(124,58,237,.5));}
+@keyframes float{0%{transform:translateY(0);}100%{transform:translateY(-14px);}}
+.intro-badge{display:inline-block;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);border-radius:50px;padding:5px 16px;font-size:.72rem;font-weight:800;color:rgba(255,255,255,.85);letter-spacing:.08em;text-transform:uppercase;margin-bottom:12px;}
+.intro-title{font-family:'Baloo 2',cursive;font-weight:800;font-size:clamp(1.5rem,6vw,2rem);color:white;line-height:1.15;margin-bottom:6px;text-align:center;text-shadow:0 2px 16px rgba(0,0,0,.4);}
+.intro-sub{font-size:.88rem;color:rgba(255,255,255,.7);font-weight:700;margin-bottom:18px;text-align:center;}
+.intro-speech{background:white;border-radius:18px;padding:14px 18px;max-width:310px;margin:0 auto 22px;font-size:.88rem;font-weight:800;color:#1E293B;line-height:1.5;box-shadow:0 8px 32px rgba(0,0,0,.25);position:relative;text-align:center;}
+.intro-speech::after{content:'';position:absolute;top:-9px;left:50%;transform:translateX(-50%);border:5px solid transparent;border-bottom-color:white;}
+.intro-rules{display:flex;flex-direction:column;gap:7px;margin-bottom:22px;width:100%;max-width:310px;}
+.intro-rule{display:flex;align-items:center;gap:9px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:9px 13px;font-size:.8rem;font-weight:700;color:rgba(255,255,255,.85);}
+.btn-start{background:linear-gradient(135deg,var(--gold),var(--orange));color:#1E293B;font-family:'Baloo 2',cursive;font-weight:800;font-size:1.05rem;padding:15px 42px;border-radius:50px;box-shadow:0 8px 28px rgba(255,180,0,.45);transition:transform .2s;animation:glow 2.5s ease-in-out infinite;}
+@keyframes glow{0%,100%{box-shadow:0 8px 28px rgba(255,180,0,.45);}50%{box-shadow:0 8px 44px rgba(255,180,0,.72);}}
+#screen-quiz{padding:12px 13px 12px;justify-content:flex-start;}
+.quiz-hdr{width:100%;max-width:520px;display:flex;align-items:center;justify-content:space-between;margin-bottom:9px;flex-shrink:0;}
+.q-num{font-size:.72rem;font-weight:800;color:rgba(255,255,255,.75);letter-spacing:.06em;text-transform:uppercase;}
+.q-dots{display:flex;gap:4px;align-items:center;}
+.qdot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.2);transition:all .3s;}
+.qdot.done{background:rgba(255,220,60,.75);}
+.qdot.active{background:white;width:18px;border-radius:3px;}
+.q-hdr-right{display:flex;align-items:center;gap:8px;}
+.q-xp{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);border-radius:50px;padding:4px 10px;font-size:.72rem;font-weight:800;color:var(--gold);}
+.mute-btn{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-size:.9rem;transition:background .2s;}
+.kivi-ribbon{width:100%;max-width:520px;display:flex;align-items:center;gap:9px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:13px;padding:8px 12px;margin-bottom:9px;flex-shrink:0;min-height:44px;}
+.ribbon-kivi{font-size:1.5rem;flex-shrink:0;}
+.ribbon-kivi.talking{animation:kiviTalk .5s ease-in-out infinite alternate;}
+@keyframes kiviTalk{0%{transform:scale(1);}100%{transform:scale(1.15);}}
+.ribbon-txt{font-size:.78rem;font-weight:800;color:rgba(255,255,255,.88);line-height:1.4;flex:1;}
+.wave-bars{display:flex;align-items:flex-end;gap:2px;height:16px;flex-shrink:0;opacity:0;transition:opacity .3s;}
+.wave-bars.on{opacity:1;}
+.wb{width:3px;background:var(--gold);border-radius:2px;animation:waveUp .7s ease-in-out infinite alternate;}
+.wb:nth-child(1){animation-delay:0s;}.wb:nth-child(2){animation-delay:.12s;}.wb:nth-child(3){animation-delay:.24s;}
+@keyframes waveUp{0%{transform:scaleY(.3);}100%{transform:scaleY(1);}}
+.ribbon-replay{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:.75rem;flex-shrink:0;}
+.q-card{width:100%;max-width:520px;flex:1;background:#fff;border-radius:22px;padding:16px 14px 14px;display:flex;flex-direction:column;gap:10px;box-shadow:0 12px 48px rgba(0,0,0,.35);overflow:hidden;}
+.q-card.correct-glow{box-shadow:0 0 0 3px var(--green),0 12px 48px rgba(34,197,94,.25);}
+.q-card.wrong-shake{animation:shake .4s ease;}
+@keyframes shake{0%,100%{transform:translateX(0);}20%{transform:translateX(-8px);}40%{transform:translateX(8px);}60%{transform:translateX(-5px);}80%{transform:translateX(5px);}}
+.q-prompt-row{display:flex;align-items:center;gap:8px;}
+.q-prompt{font-family:'Baloo 2',cursive;font-weight:800;font-size:clamp(1rem,4vw,1.22rem);color:#1E293B;line-height:1.35;flex:1;}
+.q-read-btn{width:34px;height:34px;background:#EDE9FE;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.9rem;color:var(--purple);flex-shrink:0;transition:all .2s;}
+.q-read-btn.reading{background:var(--purple);color:white;animation:readPulse 1s ease-in-out infinite;}
+@keyframes readPulse{0%,100%{box-shadow:0 0 0 0 rgba(124,58,237,.4);}50%{box-shadow:0 0 0 6px rgba(124,58,237,0);}}
+.obj-scene{background:#F8FAFF;border-radius:13px;padding:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;min-height:88px;}
+.obj-row{display:flex;gap:4px;justify-content:center;align-items:center;}
+.oe{font-size:1.8rem;line-height:1;}.oe.sm{font-size:1.45rem;}.oe.xs{font-size:1.15rem;}
+.scene-lbl{font-size:.68rem;font-weight:700;color:#94a3b8;margin-top:6px;text-align:center;}
+.im-row{display:flex;gap:7px;width:100%;}
+.im-card{flex:1;background:#F8FAFF;border-radius:14px;border:3px solid #e2e8f0;padding:10px 6px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;cursor:pointer;min-height:96px;transition:all .2s var(--ease);}
+.im-card:hover{border-color:#c4b5fd;background:#EDE9FE;}.im-card:active{transform:scale(.97);}
+.im-card.ok{border-color:var(--green);background:#f0fdf4;animation:pop .3s var(--ease);}
+.im-card.no{border-color:var(--wrong-border);background:var(--wrong-bg);}
+.im-card.reveal{border-color:var(--green);background:#f0fdf4;}
+@keyframes pop{0%{transform:scale(1);}50%{transform:scale(1.06);}100%{transform:scale(1);}}
+.im-lbl{font-size:.65rem;font-weight:800;color:#94a3b8;letter-spacing:.04em;text-transform:uppercase;}
+.mc-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;width:100%;}
+.mc-btn{background:#F8FAFF;border:3px solid #e2e8f0;border-radius:14px;padding:13px 8px;font-family:'Baloo 2',cursive;font-weight:800;font-size:clamp(1.55rem,7vw,2.1rem);color:#1E293B;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;min-height:64px;}
+.mc-btn:hover{border-color:#c4b5fd;background:#EDE9FE;color:var(--purple);}
+.mc-btn.ok{border-color:var(--green);background:#f0fdf4;color:var(--green);animation:pop .3s;}
+.mc-btn.no{border-color:var(--wrong-border);background:var(--wrong-bg);color:var(--wrong-border);}
+.mc-btn.reveal{border-color:var(--green);background:#f0fdf4;color:var(--green);}
+.tf-row{display:flex;gap:9px;width:100%;}
+.tf-btn{flex:1;border-radius:16px;border:3px solid;padding:16px 8px;font-family:'Baloo 2',cursive;font-weight:800;font-size:1.15rem;cursor:pointer;transition:all .2s;min-height:66px;display:flex;align-items:center;justify-content:center;gap:7px;}
+.tf-t{border-color:#4ade80;background:#f0fdf4;color:#16a34a;}.tf-t:hover{background:#dcfce7;}
+.tf-f{border-color:#fb923c;background:#fff7ed;color:#ea580c;}.tf-f:hover{background:#ffedd5;}
+.tf-btn.ok{animation:pop .3s;border-width:4px;}.tf-btn.no{opacity:.45;}.tf-btn.reveal{border-width:4px;}
+#react-panel{position:fixed;bottom:0;left:50%;transform:translateX(-50%) translateY(102%);width:100%;max-width:560px;z-index:50;background:linear-gradient(135deg,var(--purple),var(--indigo));border-radius:22px 22px 0 0;padding:16px 18px 22px;display:flex;align-items:flex-start;gap:12px;transition:transform .4s var(--ease);box-shadow:0 -8px 40px rgba(0,0,0,.4);}
+#react-panel.up{transform:translateX(-50%) translateY(0);}
+.rp-kivi{font-size:2.8rem;flex-shrink:0;animation:rKivi .5s ease-in-out infinite alternate;}
+@keyframes rKivi{0%{transform:scale(1) rotate(-3deg);}100%{transform:scale(1.1) rotate(3deg);}}
+.rp-body{flex:1;}
+.rp-label{font-size:.68rem;font-weight:800;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.08em;margin-bottom:3px;}
+.rp-msg{font-family:'Baloo 2',cursive;font-weight:800;font-size:.9rem;color:white;line-height:1.4;margin-bottom:6px;}
+.rp-wave{display:flex;align-items:flex-end;gap:2px;height:14px;opacity:0;transition:opacity .3s;margin-bottom:5px;}
+.rp-wave.on{opacity:1;}
+.rp-skip{font-size:.7rem;color:rgba(255,255,255,.45);text-decoration:underline;cursor:pointer;display:inline-block;}
+.rp-right{flex-shrink:0;font-size:1.5rem;animation:starPop .4s var(--ease) .1s both;margin-top:4px;}
+@keyframes starPop{0%{transform:scale(0) rotate(-15deg);opacity:0;}70%{transform:scale(1.2) rotate(4deg);}100%{transform:scale(1) rotate(0);opacity:1;}}
+.spk{position:fixed;pointer-events:none;z-index:60;font-size:1rem;animation:spkFly var(--d,.8s) var(--ease) both;}
+@keyframes spkFly{0%{opacity:1;transform:translate(0,0) scale(1);}100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(.2);}}
+#screen-results{text-align:center;}
+.res-kivi{font-size:4.8rem;display:block;margin-bottom:8px;animation:float 2.5s ease-in-out infinite alternate;}
+.res-badge{display:inline-block;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);border-radius:50px;padding:5px 16px;font-size:.7rem;font-weight:800;color:rgba(255,255,255,.85);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;}
+.res-title{font-family:'Baloo 2',cursive;font-weight:800;font-size:clamp(1.5rem,6vw,2rem);color:white;line-height:1.2;margin-bottom:5px;text-shadow:0 2px 16px rgba(0,0,0,.4);}
+.res-sub{font-size:.83rem;color:rgba(255,255,255,.65);font-weight:700;margin-bottom:16px;}
+.res-stars{display:flex;justify-content:center;gap:9px;margin-bottom:15px;}
+.rstr{font-size:2.6rem;animation:starPop .35s var(--ease) var(--del,.2s) both;}
+.rstr.dim{filter:grayscale(1);opacity:.2;animation:none;}
+.res-msg{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:14px;padding:11px 16px;font-family:'Baloo 2',cursive;font-weight:800;font-size:.92rem;color:white;max-width:300px;line-height:1.4;margin-bottom:15px;}
+.res-coins{display:flex;gap:9px;justify-content:center;margin-bottom:20px;}
+.rc{background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.2);border-radius:12px;padding:10px 16px;text-align:center;min-width:74px;}
+.rc-val{font-family:'Baloo 2',cursive;font-weight:800;font-size:1.4rem;display:block;margin-bottom:2px;}
+.rc-val.xp{color:var(--gold);}.rc-val.co{color:var(--orange);}.rc-val.gm{color:#4ade80;}
+.rc-lbl{font-size:.68rem;font-weight:700;color:rgba(255,255,255,.5);}
+.res-btns{display:flex;flex-direction:column;gap:9px;width:100%;max-width:290px;}
+.btn-g{width:100%;padding:14px;border-radius:50px;background:linear-gradient(135deg,var(--gold),var(--orange));color:#1E293B;font-family:'Baloo 2',cursive;font-weight:800;font-size:.95rem;box-shadow:0 6px 24px rgba(255,180,0,.4);transition:transform .2s;}
+.btn-g:hover{transform:translateY(-2px);}
+.btn-s{width:100%;padding:12px;border-radius:50px;background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.25);color:white;font-family:'Baloo 2',cursive;font-weight:800;font-size:.88rem;}
+.btn-gh{font-size:.78rem;font-weight:700;color:rgba(255,255,255,.4);text-decoration:underline;cursor:pointer;padding:7px 0;}
+#screen-review{justify-content:flex-start;overflow-y:auto;padding-top:18px;}
+.rev-hdr{width:100%;max-width:520px;display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-shrink:0;}
+.rev-title{font-family:'Baloo 2',cursive;font-weight:800;font-size:1.15rem;color:white;}
+.rev-bonus{background:rgba(255,220,60,.15);border:1px solid rgba(255,220,60,.3);border-radius:50px;padding:5px 12px;font-size:.7rem;font-weight:800;color:var(--gold);}
+.rev-list{display:flex;flex-direction:column;gap:9px;width:100%;max-width:520px;}
+.rev-item{background:white;border-radius:14px;padding:13px 14px;display:flex;gap:11px;align-items:flex-start;cursor:pointer;transition:box-shadow .2s;}
+.rev-item:hover{box-shadow:0 4px 16px rgba(0,0,0,.12);}
+.rev-ic{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0;font-weight:800;}
+.ri-ok{background:#dcfce7;color:#16a34a;}.ri-no{background:#fff7ed;color:#ea580c;}
+.rev-body{flex:1;}
+.rev-q{font-weight:800;font-size:.82rem;color:#1E293B;margin-bottom:4px;line-height:1.3;}
+.rev-exp{font-size:.76rem;color:#64748B;line-height:1.5;}
+.rev-tap{font-size:.67rem;color:#c4b5fd;font-weight:700;margin-top:3px;}
+.rev-footer{width:100%;max-width:520px;padding:14px 0 6px;display:flex;flex-direction:column;gap:9px;flex-shrink:0;}
+.cf{position:fixed;pointer-events:none;z-index:80;border-radius:2px;animation:cfFall var(--d,3s) linear var(--del,0s) both;}
+@keyframes cfFall{0%{transform:translateY(-20px) rotate(0deg);opacity:1;}100%{transform:translateY(110vh) rotate(var(--r,360deg));opacity:0;}}
+</style>
+</head>
+<body>
+<div class="mt-bg" aria-hidden="true">
+  <div class="mt mt-a"></div><div class="mt mt-b"></div><div class="mt mt-c"></div>
+  <div id="sf"></div>
+</div>
+<div id="app">
+<div id="screen-intro" class="screen active">
+  <span class="intro-kivi">&#x1F98A;</span>
+  <div class="intro-badge">&#x26F0;&#xFE0F; Math Mountain &middot; Quiz</div>
+  <h1 class="intro-title">Number Knowledge:<br>1 to 10</h1>
+  <p class="intro-sub">Kivi speaks every question &amp; explains every answer!</p>
+  <div class="intro-speech">Kivi has 10 number questions &mdash; I will count with you and explain everything!</div>
+  <div class="intro-rules">
+    <div class="intro-rule"><span style="font-size:1rem;flex-shrink:0">&#x1F50A;</span><span>Kivi <strong>reads every question</strong> aloud to you</span></div>
+    <div class="intro-rule"><span style="font-size:1rem;flex-shrink:0">&#x1F4A1;</span><span>Kivi <strong>counts &amp; explains</strong> every wrong answer</span></div>
+    <div class="intro-rule"><span style="font-size:1rem;flex-shrink:0">&#x2B50;</span><span>Every try earns <strong>XP, Coins &amp; a Gem!</strong></span></div>
+  </div>
+  <button class="btn-start" onclick="startQuiz()">Let&#x2019;s Go! &#x1F680;</button>
+</div>
+<div id="screen-quiz" class="screen">
+  <div class="quiz-hdr">
+    <span class="q-num" id="qNum">Question 1 of 10</span>
+    <div class="q-dots" id="qDots"></div>
+    <div class="q-hdr-right">
+      <span class="q-xp">&#x2B50; <span id="qXP">0</span></span>
+      <button class="mute-btn" id="muteBtn" onclick="toggleMute()" title="Toggle Kivi voice">&#x1F50A;</button>
+    </div>
+  </div>
+  <div class="kivi-ribbon">
+    <span class="ribbon-kivi" id="ribbonKivi">&#x1F98A;</span>
+    <span class="ribbon-txt" id="ribbonTxt">Ready to count?</span>
+    <div class="wave-bars" id="waveBars"><div class="wb"></div><div class="wb"></div><div class="wb"></div></div>
+    <button class="ribbon-replay" onclick="replayQ()" title="Replay question">&#x1F501;</button>
+  </div>
+  <div class="q-card" id="qCard">
+    <div class="q-prompt-row">
+      <div class="q-prompt" id="qPrompt"></div>
+      <button class="q-read-btn" id="qReadBtn" onclick="replayQ()" title="Read aloud">&#x1F50A;</button>
+    </div>
+    <div id="qContent"></div>
+  </div>
+</div>
+<div id="screen-results" class="screen">
+  <span class="res-kivi">&#x1F98A;</span>
+  <div class="res-badge">&#x2B50; Quiz Complete!</div>
+  <h2 class="res-title" id="resTitle">Amazing!</h2>
+  <p class="res-sub">Number Knowledge: 1 to 10</p>
+  <div class="res-stars" id="resStars"></div>
+  <div class="res-msg" id="resMsg"></div>
+  <div class="res-coins">
+    <div class="rc"><span class="rc-val xp" id="rXP">0</span><span class="rc-lbl">XP Stars</span></div>
+    <div class="rc"><span class="rc-val co" id="rCo">0</span><span class="rc-lbl">Coins</span></div>
+    <div class="rc"><span class="rc-val gm">1</span><span class="rc-lbl">Gem</span></div>
+  </div>
+  <div class="res-btns">
+    <button class="btn-g" onclick="startQuiz()">Try Again!</button>
+    <button class="btn-s" onclick="showReview()">Review With Kivi &#x1F50D;</button>
+    <button class="btn-s" onclick="nextActivity()">Next Activity &#x2192;</button>
+    <button class="btn-gh" onclick="goHome()">Back to Math Mountain</button>
+  </div>
+</div>
+<div id="screen-review" class="screen">
+  <div class="rev-hdr">
+    <span class="rev-title">&#x1F4CB; Review with Kivi</span>
+    <span class="rev-bonus">+3 Coins &#x1FA99;</span>
+  </div>
+  <div class="rev-list" id="revList"></div>
+  <div class="rev-footer">
+    <button class="btn-g" onclick="startQuiz()">Try Again!</button>
+    <button class="btn-gh" onclick="showScreen('results')">&larr; Back to Results</button>
+  </div>
+</div>
+<div id="react-panel">
+  <div class="rp-kivi">&#x1F98A;</div>
+  <div class="rp-body">
+    <div class="rp-label" id="rpLabel">Kivi says&hellip;</div>
+    <div class="rp-msg" id="rpMsg"></div>
+    <div class="rp-wave" id="rpWave"><div class="wb"></div><div class="wb"></div><div class="wb"></div></div>
+    <div class="rp-skip" onclick="skipReaction()">Tap to skip &rsaquo;</div>
+  </div>
+  <div class="rp-right" id="rpRight">&#x2B50;</div>
+</div>
+</div>
+<script>
+// === SPEECH ENGINE ===
+const Speech=(()=>{
+  const sy=window.speechSynthesis;
+  let voice=null,muted=false,safeT=null;
+  const pick=()=>{
+    const vs=sy.getVoices();if(!vs.length)return;
+    voice=vs.find(v=>v.name==="Samantha")
+      ||vs.find(v=>v.name==="Google US English")
+      ||vs.find(v=>/Aria|Zira/i.test(v.name))
+      ||vs.find(v=>v.lang.startsWith("en-US"))
+      ||vs.find(v=>v.lang.startsWith("en"))
+      ||vs[0];
+  };
+  pick();if(sy.onvoiceschanged!==undefined)sy.onvoiceschanged=pick;
+  function setUI(on){
+    document.getElementById("waveBars").classList.toggle("on",on);
+    document.getElementById("rpWave").classList.toggle("on",on);
+    document.getElementById("ribbonKivi").classList.toggle("talking",on);
+    const r=document.getElementById("qReadBtn");if(r)r.classList.toggle("reading",on);
+  }
+  function stop(){sy.cancel();clearTimeout(safeT);setUI(false);}
+  function say(txt,opts={}){
+    if(muted||!txt){if(opts.onDone)opts.onDone();return;}
+    stop();
+    const u=new SpeechSynthesisUtterance(txt);
+    u.rate=opts.rate||0.86;u.pitch=opts.pitch||1.1;u.volume=1;
+    if(voice)u.voice=voice;
+    let done=false;
+    const fin=()=>{if(done)return;done=true;clearTimeout(safeT);setUI(false);if(opts.onDone)opts.onDone();};
+    u.onstart=()=>setUI(true);u.onend=fin;u.onerror=fin;
+    safeT=setTimeout(fin,Math.max(2500,txt.length*82));
+    sy.speak(u);
+  }
+  return{say,stop,setMuted:v=>{muted=v;if(v)stop();},isMuted:()=>muted};
+})();
+
+// === QUESTION DATA ===
+const QS=[
+  {id:1,type:"image-match",
+   prompt:"Touch the group that has ONE coconut!",
+   hint:"Which group has just one? Count each one!",
+   sLoad:"Which group has just ONE coconut? Look at each group carefully and count! Tap the group with only one coconut!",
+   sOk:"Yes! ONE coconut! One means just a single thing, and you found it! Wonderful counting!",
+   sNo:"Let me count each group with you! This group: one, two, three. This group: just one coconut! That was the group with only one coconut! Let us try the next question!",
+   groups:[{n:3,e:"&#x1F965;",c:false},{n:1,e:"&#x1F965;",c:true},{n:5,e:"&#x1F965;",c:false}],correct:1,
+   review:"Count each group: one group had three, one group had just one, one group had five. Just one was the answer!"},
+  {id:2,type:"multiple-choice",
+   prompt:"Touch the number TWO!",
+   hint:"Kivi has two apples. Which number card matches?",
+   sLoad:"Kivi has TWO apples! Count them: one apple, two apples! Now look at the number cards. Which card shows the number two? Tap it!",
+   sOk:"TWO! The number 2! One apple, two apples, and you matched the number perfectly! Brilliant!",
+   sNo:"Count the apples with Kivi: one apple, two apples! We have TWO apples, so we need the card that says two. That is the number 2! Remember this for next time!",
+   scene:{emojis:["&#x1F34E;","&#x1F34E;"],label:"Count Kivi's apples!"},opts:["1","2","5","9"],correct:1,
+   review:"One apple, two apples means the number 2! The card showing 2 was the right answer."},
+  {id:3,type:"image-match",
+   prompt:"Which group has THREE stars?",
+   hint:"Count the stars in each group. Find exactly three!",
+   sLoad:"Count the stars in every group! Which group has exactly THREE stars? Take your time and tap the right group!",
+   sOk:"THREE stars! One, two, three! You counted every one perfectly! Kivi is so proud!",
+   sNo:"Count with Kivi! One group: one, two, three, four, five stars. Another group: one, two, three stars. Three is the right answer! Count each star one by one!",
+   groups:[{n:5,e:"&#x2B50;",c:false},{n:3,e:"&#x2B50;",c:true},{n:1,e:"&#x2B50;",c:false}],correct:1,
+   review:"One, two, three: the middle group had exactly three stars! Always count each one carefully."},
+  {id:4,type:"true-false",
+   prompt:"This group has FOUR coconuts. True or false?",
+   hint:"Count the coconuts first, then decide!",
+   sLoad:"Look at these coconuts! Kivi says there are FOUR of them. Is that true or false? Count every coconut carefully, then tap your answer!",
+   sOk:"TRUE! Count with Kivi: one, two, three, FOUR coconuts! Kivi was right and so were you! Brilliant!",
+   sNo:"Count with Kivi: one, two, three, FOUR coconuts! Kivi WAS right! There are four, so the answer was TRUE! Count every one next time before deciding!",
+   scene:{emojis:["&#x1F965;","&#x1F965;","&#x1F965;","&#x1F965;"],label:"Count these coconuts!"},answer:true,
+   review:"One, two, three, four coconuts. Kivi was correct! The answer was TRUE."},
+  {id:5,type:"multiple-choice",
+   prompt:"How many fish are swimming?",
+   hint:"Count every fish, then tap the matching number!",
+   sLoad:"Count every single fish in the water! How many are swimming? Count them one by one, then tap the number that matches!",
+   sOk:"FIVE fish! One, two, three, four, FIVE! You counted every one! You are a fantastic counter!",
+   sNo:"Count with Kivi: one fish, two fish, three fish, four fish, FIVE fish! There are FIVE fish swimming! The answer is 5! Count them slowly next time!",
+   scene:{emojis:["&#x1F41F;","&#x1F41F;","&#x1F41F;","&#x1F41F;","&#x1F41F;"],label:"Count the swimming fish!"},opts:["3","5","7","10"],correct:1,
+   review:"One through five: there were five fish swimming! Count slowly, one by one."},
+  {id:6,type:"image-match",
+   prompt:"Which group has SIX flowers?",
+   hint:"Count all three groups. Find exactly six flowers!",
+   sLoad:"Three groups of flowers! Count each group and find the one that has exactly SIX flowers. Take your time and count carefully!",
+   sOk:"SIX flowers! One, two, three, four, five, SIX! You counted every petal perfectly! What a champion!",
+   sNo:"Count each group with Kivi! One group: one, two, three, four. Another: one through eight. And the last: one, two, three, four, five, SIX! Six flowers was the answer!",
+   groups:[{n:4,e:"&#x1F338;",c:false},{n:8,e:"&#x1F338;",c:false},{n:6,e:"&#x1F338;",c:true}],correct:2,
+   review:"One, two, three, four, five, six: the last group had exactly six flowers!"},
+  {id:7,type:"true-false",
+   prompt:"Kivi says there are NINE stars. True or false?",
+   hint:"Count every star very carefully before you answer!",
+   sLoad:"Kivi says there are NINE stars in the picture. Is that true or false? Count every single star very carefully before you tap your answer!",
+   sOk:"FALSE! Count with Kivi: one, two, three, four, five, six, SEVEN stars! Only seven, not nine! Great catch! You counted better than Kivi!",
+   sNo:"Count every star with Kivi: one, two, three, four, five, six, SEVEN! There are SEVEN stars, not nine! So the answer was FALSE! Count every star next time before deciding!",
+   scene:{emojis:["&#x2B50;","&#x2B50;","&#x2B50;","&#x2B50;","&#x2B50;","&#x2B50;","&#x2B50;"],label:"How many stars do you see?"},answer:false,
+   review:"One through seven: there were only 7 stars, not 9! The answer was FALSE."},
+  {id:8,type:"multiple-choice",
+   prompt:"Touch the number SEVEN!",
+   hint:"Count the balloons, then find the matching number!",
+   sLoad:"Count all the balloons floating up there! Then find the number card that shows how many there are. How many balloons? Tap the right number!",
+   sOk:"SEVEN balloons! One, two, three, four, five, six, SEVEN! And you matched the number seven perfectly! You are incredible!",
+   sNo:"Count the balloons: one, two, three, four, five, six, seven! SEVEN balloons! The card with the number 7 was the right answer! Count carefully next time!",
+   scene:{emojis:["&#x1F388;","&#x1F388;","&#x1F388;","&#x1F388;","&#x1F388;","&#x1F388;","&#x1F388;"],label:"Count the floating balloons!"},opts:["6","7","8","9"],correct:1,
+   review:"Seven balloons: one through seven! The answer was the number 7."},
+  {id:9,type:"image-match",
+   prompt:"Which group has EIGHT butterflies?",
+   hint:"Count every butterfly. Which group has exactly eight?",
+   sLoad:"Three groups of butterflies! Count every butterfly in each group. Which group has exactly EIGHT? Take your time and count carefully!",
+   sOk:"EIGHT butterflies! One, two, three, four, five, six, seven, EIGHT! You counted magnificently! Kivi loves counting with you!",
+   sNo:"Count each group with Kivi! First group: one through ten, that is ten butterflies. Last group: one through five, that is five. The middle group: one, two, three, four, five, six, seven, EIGHT! Eight was the answer!",
+   groups:[{n:10,e:"&#x1F98B;",c:false},{n:8,e:"&#x1F98B;",c:true},{n:5,e:"&#x1F98B;",c:false}],correct:1,
+   review:"One through eight: the middle group had exactly eight butterflies!"},
+  {id:10,type:"multiple-choice",
+   prompt:"Count ALL the coconuts in both rows!",
+   hint:"Two rows of coconuts. Count them all together!",
+   sLoad:"This is the big finale! Look carefully. There are TWO rows of coconuts. Count EVERY coconut in BOTH rows! How many altogether? Tap the right number, you can do it!",
+   sOk:"TEN! Amazing! First row: one, two, three, four, FIVE! Second row: six, seven, eight, nine, TEN! Five plus five equals ten! YOU ARE A NUMBER SUPERSTAR!",
+   sNo:"Count with Kivi! First row: one, two, three, four, five! Second row: six, seven, eight, nine, ten! Five plus five makes TEN! The answer was ten! You will get it next time, keep counting!",
+   scene:{emojis:["&#x1F965;","&#x1F965;","&#x1F965;","&#x1F965;","&#x1F965;","|","&#x1F965;","&#x1F965;","&#x1F965;","&#x1F965;","&#x1F965;"],label:"Count both rows together!"},opts:["6","8","10","12"],correct:2,
+   review:"Two rows of five coconuts: five plus five equals ten! The answer was 10."},
+];
+
+const BANDS=[
+  {stars:3,title:"PERFECT SCORE!",msg:"Ten out of ten! Every answer right! You are an absolute number superstar!",
+   speak:"Perfect score! Ten out of ten! Every single answer was correct! You are an absolute number superstar and Kivi is so incredibly proud of you! You can count all the way from one to ten!"},
+  {stars:2,title:"Great Work!",msg:"Two stars! Your counting is getting so strong! Keep going!",
+   speak:"Two stars! You did so well! Your counting skills are getting stronger every single time you practise! Kivi believes in you. Try again and you will get that perfect score!"},
+  {stars:1,title:"You Did It!",msg:"One star and you tried every question! That is brilliant!",
+   speak:"One star! And you finished all ten questions! That is absolutely brilliant! Every question you tried made you a better counter. Kivi is so proud of you for never giving up! Keep practising!"},
+];
+
+const S={qi:0,xp:0,coins:0,answers:[],answered:false,rTimer:null,skipR:false};
+
+document.addEventListener("DOMContentLoaded",()=>{
+  const sf=document.getElementById("sf");
+  for(let i=0;i<55;i++){
+    const s=document.createElement("div"),z=Math.random()<.25?3:Math.random()<.6?2:1.5;
+    s.className="star";s.style.cssText="width:"+z+"px;height:"+z+"px;top:"+Math.random()*62+"%;left:"+Math.random()*100+"%;--d:"+(1+Math.random()*2.5)+"s;--del:"+Math.random()*4+"s;";
+    sf.appendChild(s);
+  }
+  buildDots();
+});
+
+function showScreen(id){
+  document.querySelectorAll(".screen.active").forEach(el=>{el.classList.add("exit");setTimeout(()=>el.classList.remove("active","exit"),370);});
+  setTimeout(()=>{const t=document.getElementById("screen-"+id);if(t)t.classList.add("active");},60);
+}
+function buildDots(){document.getElementById("qDots").innerHTML=QS.map((_,i)=>'<div class="qdot" id="qdot'+i+'"></div>').join("");}
+function updateDots(i){QS.forEach((_,j)=>{const d=document.getElementById("qdot"+j);if(!d)return;d.className="qdot"+(j<i?" done":(j===i?" active":""));});}
+
+function startQuiz(){
+  S.qi=0;S.xp=0;S.coins=0;S.answers=[];S.answered=false;
+  buildDots();
+  Speech.say("Lets go! Kivi will count with you and explain everything! Ready? Here is your first question!",{
+    onDone:()=>{showScreen("quiz");setTimeout(()=>renderQ(0),350);}
+  });
+}
+
+function renderQ(idx){
+  const q=QS[idx];S.answered=false;
+  document.getElementById("qCard").className="q-card";
+  document.getElementById("qNum").textContent="Question "+(idx+1)+" of "+QS.length;
+  document.getElementById("qXP").textContent=S.xp;
+  document.getElementById("ribbonTxt").textContent=q.hint;
+  document.getElementById("qPrompt").textContent=q.prompt;
+  updateDots(idx);
+  const c=document.getElementById("qContent");
+  if(q.type==="image-match")c.innerHTML=renderIM(q);
+  else if(q.type==="multiple-choice")c.innerHTML=renderMC(q);
+  else c.innerHTML=renderTF(q);
+  setTimeout(()=>Speech.say(q.sLoad),400);
+}
+
+function eGrid(n,em){
+  const sz=n<=5?"oe":n<=7?"oe sm":"oe xs";
+  const rows=n<=5?[n]:n<=6?[3,n-3]:n<=8?[Math.ceil(n/2),n-Math.ceil(n/2)]:n===9?[3,3,3]:[5,5];
+  return rows.map(r=>'<div class="obj-row">'+Array(r).fill('<span class="'+sz+'">'+em+"</span>").join("")+"</div>").join("");
+}
+function renderIM(q){
+  return'<div class="im-row">'+q.groups.map((g,i)=>'<div class="im-card" id="im'+i+'" onclick="ansIM('+i+','+g.c+')" role="button"><div>'+eGrid(g.n,g.e)+'</div><span class="im-lbl">'+["A","B","C"][i]+"</span></div>").join("")+"</div>";
+}
+function renderMC(q){
+  const hasPipe=q.scene.emojis.includes("|"),emojis=q.scene.emojis.filter(e=>e!=="|"),sz=emojis.length>5?" sm":"";
+  let sc;
+  if(hasPipe){const h=5;sc='<div class="obj-row">'+emojis.slice(0,h).map(e=>'<span class="oe xs">'+e+"</span>").join("")+'</div><div class="obj-row">'+emojis.slice(h).map(e=>'<span class="oe xs">'+e+"</span>").join("")+"</div>";}
+  else sc='<div class="obj-row">'+emojis.map(e=>'<span class="oe'+sz+'">'+e+"</span>").join("")+"</div>";
+  return'<div class="obj-scene"><div style="text-align:center;">'+sc+'<div class="scene-lbl">'+q.scene.label+"</div></div></div>"+'<div class="mc-grid">'+q.opts.map((o,i)=>'<button class="mc-btn" id="mc'+i+'" onclick="ansMC('+i+","+(i===q.correct)+')" aria-label="'+o+'">'+o+"</button>").join("")+"</div>";
+}
+function renderTF(q){
+  const em=q.scene.emojis,sz=em.length>5?" sm":"";
+  return'<div class="obj-scene"><div style="text-align:center;"><div class="obj-row">'+em.map(e=>'<span class="oe'+sz+'">'+e+"</span>").join("")+'</div><div class="scene-lbl">'+q.scene.label+"</div></div></div>"+'<div class="tf-row"><button class="tf-btn tf-t" id="tfT" onclick="ansTF(true,'+q.answer+')">TRUE</button><button class="tf-btn tf-f" id="tfF" onclick="ansTF(false,'+q.answer+')">FALSE</button></div>';
+}
+
+function ansIM(idx,ok){if(S.answered)return;S.answered=true;document.getElementById("im"+idx).classList.add(ok?"ok":"no");if(!ok){document.getElementById("im"+QS[S.qi].correct).classList.add("reveal");}onAns(ok);}
+function ansMC(idx,ok){if(S.answered)return;S.answered=true;document.getElementById("mc"+idx).classList.add(ok?"ok":"no");if(!ok){document.getElementById("mc"+QS[S.qi].correct).classList.add("reveal");}onAns(ok);}
+function ansTF(val,correct){if(S.answered)return;S.answered=true;const ok=(val===correct);document.getElementById(val?"tfT":"tfF").classList.add(ok?"ok":"no");if(!ok){document.getElementById(correct?"tfT":"tfF").classList.add("reveal");}onAns(ok);}
+
+function onAns(ok){
+  S.answers.push({qi:S.qi,ok});
+  if(ok){awardXP(2);spawnSparkles();}
+  else document.getElementById("qCard").classList.add("wrong-shake");
+  Speech.stop();
+  setTimeout(()=>showReaction(ok,QS[S.qi]),550);
+}
+
+function showReaction(ok,q){
+  S.skipR=false;
+  const panel=document.getElementById("react-panel");
+  document.getElementById("rpLabel").textContent=ok?"Well done!":"Kivi explains...";
+  document.getElementById("rpMsg").textContent=ok?q.sOk:q.sNo;
+  document.getElementById("rpRight").textContent=ok?"\u2B50":"\u1F4A1";
+  panel.classList.add("up");
+  const txt=ok?q.sOk:q.sNo;
+  const after=()=>{if(S.skipR)return;panel.classList.remove("up");setTimeout(advance,400);};
+  Speech.say(txt,{onDone:after});
+  clearTimeout(S.rTimer);S.rTimer=setTimeout(after,12000);
+}
+function skipReaction(){S.skipR=true;Speech.stop();clearTimeout(S.rTimer);document.getElementById("react-panel").classList.remove("up");setTimeout(advance,380);}
+function advance(){const n=S.qi+1;if(n>=QS.length){showResults();return;}S.qi=n;renderQ(S.qi);}
+function replayQ(){Speech.stop();Speech.say(QS[S.qi].sLoad);}
+function toggleMute(){const m=!Speech.isMuted();Speech.setMuted(m);document.getElementById("muteBtn").textContent=m?"(mute)":"(sound)";if(!m)replayQ();}
+
+function showResults(){
+  const cor=S.answers.filter(a=>a.ok).length;
+  const b=cor===QS.length?0:cor/QS.length>=.6?1:2;
+  const B=BANDS[b],xpB=[10,5,3][b];
+  awardXP(xpB);S.coins=[10,5,5][b];
+  showScreen("results");
+  document.getElementById("resTitle").textContent=B.title;
+  document.getElementById("resMsg").textContent=B.msg;
+  document.getElementById("resStars").innerHTML=Array(3).fill(null).map((_,i)=>'<span class="rstr'+(i>=B.stars?" dim":"")+'" style="--del:'+(0.2+i*0.25)+'s">&#x2B50;</span>').join("");
+  animCount("rXP",0,S.xp,1100);animCount("rCo",0,S.coins,900);
+  if(B.stars===3)setTimeout(spawnConfetti,350);
+  setTimeout(()=>Speech.say(B.speak),700);
+}
+
+function showReview(){
+  awardCoins(3);showScreen("review");
+  document.getElementById("revList").innerHTML=S.answers.map(a=>{const q=QS[a.qi];return'<div class="rev-item" onclick="kiviExplain(this,'+a.qi+')" role="button"><div class="rev-ic '+(a.ok?"ri-ok":"ri-no")+'">'+(a.ok?"OK":"!")+'</div><div class="rev-body"><div class="rev-q">'+q.prompt+'</div><div class="rev-exp">'+q.review+'</div><div class="rev-tap">Tap to hear Kivi explain</div></div></div>';}).join("");
+  Speech.say("Lets review your answers together! Tap any question and Kivi will explain it for you!",{rate:.85});
+}
+function kiviExplain(el,qi){Speech.stop();const q=QS[qi];Speech.say(q.sNo,{rate:.85,pitch:1.05});}
+
+function spawnSparkles(){const card=document.getElementById("qCard");if(!card)return;const r=card.getBoundingClientRect();["&#x2B50;","&#x2728;","&#x1F4AB;"].forEach((em,i)=>{const s=document.createElement("div");s.className="spk";s.innerHTML=em;const a=(i/3)*2*Math.PI,d=75+Math.random()*55;s.style.cssText="left:"+(r.left+r.width/2)+"px;top:"+(r.top+r.height*.4)+"px;--dx:"+Math.cos(a)*d+"px;--dy:"+Math.sin(a)*d+"px;--d:"+(0.7+Math.random()*.4)+"s;";document.body.appendChild(s);setTimeout(()=>s.remove(),1200);});}
+function spawnConfetti(){const cols=["#FFD93D","#FF6B35","#FF4E8B","#22C55E","#7C3AED","#0EA5E9"];for(let i=0;i<65;i++){const c=document.createElement("div");c.className="cf";c.style.cssText="left:"+Math.random()*100+"%;background:"+cols[i%cols.length]+";width:"+(6+Math.random()*8)+"px;height:"+(5+Math.random()*8)+"px;border-radius:"+(Math.random()>.5?"50%":"2px")+";--d:"+(2+Math.random()*2.5)+"s;--del:"+Math.random()*1.2+"s;--r:"+(Math.random()>.5?"":"-")+(180+Math.floor(Math.random()*360))+"deg;";document.body.appendChild(c);setTimeout(()=>c.remove(),4500);}}
+function awardXP(n){S.xp+=n;const e=document.getElementById("qXP");if(e)e.textContent=S.xp;}
+function awardCoins(n){S.coins+=n;}
+function animCount(id,from,to,dur){const el=document.getElementById(id);if(!el)return;let st=null;(function step(ts){if(!st)st=ts;const p=Math.min((ts-st)/dur,1);el.textContent=Math.floor(from+(to-from)*(1-Math.pow(1-p,3)));if(p<1)requestAnimationFrame(step);else el.textContent=to;})(performance.now());}
+function nextActivity(){alert("Opening: Counting Coconuts Activity (ACT-001)\n\nIn the full platform this navigates to the linked activity!");}
+function goHome(){if(confirm("Leave the quiz?")){Speech.stop();showScreen("intro");S.xp=0;S.coins=0;S.answers=[];buildDots();}}
+</script>
+</body>
+</html>
